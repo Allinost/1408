@@ -1,0 +1,44 @@
+\ProvidesPackage{beamer_theme_408}
+
+% 408 考研零基础课程 Beamer 共用主题
+% 使用方法: \usepackage{beamer_theme_408}
+
+% --- 主题与配色 ---
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+% --- 中文支持 ---
+\usepackage{ctex}
+\usepackage{xeCJK}
+
+% --- 常用数学包 ---
+\usepackage{amsmath, amssymb}
+
+% --- 代码展示 ---
+\usepackage{listings}
+\lstset{
+    basicstyle=\ttfamily\small,
+    language=C,
+    showstringspaces=false,
+    frame=single,
+    breaklines=true
+}
+
+% --- 绘图 ---
+\usepackage{tikz}
+
+% --- 颜色定义 ---
+\usepackage{xcolor}
+\definecolor{408blue}{RGB}{0,82,164}
+\definecolor{408orange}{RGB}{230,126,34}
+
+% --- 页脚设置 ---
+\setbeamertemplate{page number in head/foot}{}
+
+% --- 超链接 ---
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=408blue,
+    urlcolor=408blue
+}
