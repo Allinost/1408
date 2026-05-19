@@ -1,0 +1,249 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 计算机网络}
+\subtitle{4-2 网络性能指标}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握速率、带宽、吞吐量的概念
+        \item 理解四种时延及其计算
+        \item 掌握时延带宽积和RTT的含义
+        \item 理解信道利用率与时延的关系
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{速率与带宽}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{速率（Rate）}
+        \begin{itemize}
+            \item 指\textbf{实际}数据传送速率
+            \item 单位：bps（bit/s）、kb/s、Mb/s、Gb/s
+            \item 注意：$1$ kb/s = $10^3$ b/s
+            \item 存储器中 $1$ KB = $2^{10}$ B
+            \item 通信中 $1$ kb/s = $10^3$ b/s
+            \item 考研中\textbf{特别注意}换算！
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{带宽（Bandwidth）}
+        \begin{itemize}
+            \item 原意：信号频率范围（Hz）
+            \item 计网中指\textbf{最高}数据速率
+            \item 单位：bps
+            \item 表示网络通信\textbf{能力}的上限
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{exampleblock}{对比}
+        带宽就像公路的\textbf{限速}，速率就像汽车当前的\textbf{实际速度}。
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{吞吐量}
+    \begin{itemize}
+        \item \textbf{定义}：单位时间内通过某个网络（或信道、接口）的\textbf{实际}数据量
+        \item 单位：bps
+        \item 受网络带宽和当前网络负载的\textbf{限制}
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{exampleblock}{理解}
+        \begin{itemize}
+            \item 带宽 = \textbf{理论最高}可达速率
+            \item 吞吐量 = \textbf{实际}达到的速率
+            \item 吞吐量 $\le$ 带宽
+            \item 例：100Mbps的以太网，实际吞吐量可能只有40Mbps
+        \end{itemize}
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{block}{考研提示}
+        区分"带宽"（理论最大值）和"吞吐量"（实际测量值）。
+    \end{block}
+\end{frame}
+
+\begin{frame}{时延 --- 概述}
+    \textbf{时延（Delay / Latency）}：数据从网络一端传输到另一端所需的总时间。\\
+    \vspace{0.3em}
+    由四部分组成：
+    \begin{enumerate}
+        \item \textbf{发送时延}（传输时延）
+        \item \textbf{传播时延}
+        \item \textbf{处理时延}
+        \item \textbf{排队时延}
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{block}{总时延公式}
+        \begin{center}
+            \Large
+            $\text{总时延} = \text{发送时延} + \text{传播时延} + \text{处理时延} + \text{排队时延}$
+        \end{center}
+    \end{block}
+\end{frame}
+
+\begin{frame}{发送时延与传播时延}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{发送时延}
+        \begin{itemize}
+            \item 从发送第一个bit到最后一个bit发出所需时间
+            \item 公式：
+            $$\text{发送时延} = \frac{\text{数据长度}}{\text{带宽}}$$
+            \item 取决于\textbf{数据长度}和\textbf{发送速率}
+        \end{itemize}
+        \vspace{0.5em}
+        \textbf{何时为主要因素？}
+        \begin{itemize}
+            \item 数据量大时，发送时延占主导
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{传播时延}
+        \begin{itemize}
+            \item 数据在信道上传播所需时间
+            \item 公式：
+            $$\text{传播时延} = \frac{\text{信道长度}}{\text{传播速度}}$$
+            \item 取决于\textbf{物理介质}和\textbf{距离}
+        \end{itemize}
+        \vspace{0.5em}
+        \textbf{何时为主要因素？}
+        \begin{itemize}
+            \item 长距离时，传播时延占主导
+        \end{itemize}
+    \end{columns}
+    \vspace{0.3em}
+    \begin{block}{传播速度}
+        光速 $3\times10^8$m/s（真空中），在铜缆中约 $2.3\times10^8$m/s，在光纤中约 $2.0\times10^8$m/s。
+    \end{block}
+\end{frame}
+
+\begin{frame}{处理时延与排队时延}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{处理时延}
+        \begin{itemize}
+            \item 路由器/交换机检查分组首部、查路由表等处理的时间
+            \item 通常很小，但在高负载下可能增加
+            \item 与设备性能相关
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{排队时延}
+        \begin{itemize}
+            \item 分组在路由器输入/输出队列中等待的时间
+            \item 取决于网络拥塞程度
+            \item 变化最大，最不可预测
+            \item 当网络负载接近容量时急剧增加
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{exampleblock}{记忆口诀}
+        "发送靠长度，传播靠距离，处理看设备，排队看拥塞"
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{时延带宽积}
+    \begin{block}{定义}
+        \textbf{时延带宽积} = \textbf{传播时延} $\times$ \textbf{带宽}
+    \end{block}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 含义：以\textbf{比特}为单位的链路长度
+        \item 表示\textbf{信道中最多能容纳的比特数}
+        \item 类似于管道的\textbf{容积}
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{exampleblock}{类比理解}
+        水管长度 = 传播时延，水管粗细 = 带宽，时延带宽积 = 水管中的水量
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{block}{考研常考}
+        若时延带宽积为 $L$ bit，则发送方在收到第一个比特确认前最多能发送 $L$ bit。
+    \end{block}
+\end{frame}
+
+\begin{frame}{RTT（往返时间）}
+    \begin{block}{定义}
+        \textbf{RTT（Round-Trip Time）}：数据从发送端发送开始，到收到来自接收端的确认所经历的时间。
+    \end{block}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 包括：传播时延 $\times$ 2 + 处理时延（收发双方）+ 排队时延
+        \item 注意：RTT \textbf{不包含}发送时延
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{exampleblock}{举例}
+        发送方发送一个分组到接收方，接收方立即回复确认，发送方收到确认的总时间就是RTT。
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{block}{有效数据率}
+        $$\text{有效数据率} = \frac{\text{数据长度}}{\text{发送时延} + \text{RTT}}$$
+    \end{block}
+\end{frame}
+
+\begin{frame}{信道利用率与网络利用率}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{信道利用率}
+        \begin{itemize}
+            \item 数据通过时间 / 总时间
+            \item 公式：
+            $$\text{信道利用率} = \frac{\text{数据通过时间}}{T_{\text{总}}}$$
+            \item 反映信道被有效利用的程度
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{网络利用率}
+        \begin{itemize}
+            \item 各信道利用率的\textbf{加权平均值}
+            \item 反映整个网络的负载情况
+            \item 利用率越高，网络负载越重
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{alertblock}{注意}
+        利用率并非越高越好！利用率过高会导致时延急剧增大。
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{时延与利用率的关系}
+    \begin{block}{关键公式}
+        \begin{center}
+            \Large
+            $D = \dfrac{D_0}{1 - U}$
+        \end{center}
+    \end{block}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item $D$：当前网络时延
+        \item $D_0$：空闲时的时延（$U=0$）
+        \item $U$：网络利用率（$0 \le U < 1$）
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{exampleblock}{规律}
+        \begin{itemize}
+            \item 当 $U=0$ 时，$D=D_0$（最小时延）
+            \item 当 $U\to 1$ 时，$D\to \infty$（时延急剧增大）
+            \item 利用率越高，时延越大！
+        \end{itemize}
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{block}{考研提示}
+        不能片面追求高利用率，需要在利用率和时延之间做出权衡。
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item \textbf{速率}（实际速率）与\textbf{带宽}（最高速率）
+        \item \textbf{吞吐量}：实际测量值 $\le$ 带宽
+        \item \textbf{时延}：发送时延 + 传播时延 + 处理时延 + 排队时延
+        \item \textbf{发送时延} = 数据长/带宽，\textbf{传播时延} = 距离/传播速度
+        \item \textbf{时延带宽积} = 传播时延 $\times$ 带宽（比特计数的链路长度）
+        \item \textbf{RTT}：数据发送到收到确认的时间（不含发送时延）
+        \item 利用率 $U$ 越高，时延 $D = D_0/(1-U)$ 越大
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：4-3 网络体系结构}}
+    \end{center}
+\end{frame}
+\end{document}

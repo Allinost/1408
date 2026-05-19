@@ -1,0 +1,221 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-2 数制与编码}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握R进制表示与进制转换方法
+        \item 理解原码、反码、补码的定义与表示范围
+        \item 掌握补码运算优势——统一加减法
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{进位计数制}
+    \begin{block}{R进制数的通用表示}
+        \[
+            (K_n K_{n-1} \cdots K_1 K_0 . K_{-1} K_{-2} \cdots K_{-m})_R
+        \]
+        \begin{itemize}
+            \item 每一位 $K_i$ 的取值范围：$0 \sim R-1$
+            \item 基数 $R$ 表示进位的基数
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{进制} & \textbf{基数} & \textbf{数码} & \textbf{后缀} \\
+        \hline
+        二进制 & 2 & 0, 1 & B \\
+        \hline
+        八进制 & 8 & 0--7 & O 或 Q \\
+        \hline
+        十进制 & 10 & 0--9 & D \\
+        \hline
+        十六进制 & 16 & 0--9, A--F & H \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{进制转换——整数部分}
+    \begin{block}{R进制 $\to$ 十进制（按权展开法）}
+        \[
+            (K_n K_{n-1} \cdots K_0)_R = \sum_{i=0}^{n} K_i \times R^i
+        \]
+        例：$(1011)_2 = 1 \times 2^3 + 0 \times 2^2 + 1 \times 2^1 + 1 \times 2^0 = 11$
+    \end{block}
+    \begin{block}{十进制 $\to$ R进制（除基取余法）}
+        \begin{itemize}
+            \item 不断除以R，取\textbf{余数}，从下往上排列
+            \item 例：$19 \to (10011)_2$
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{进制转换——小数部分}
+    \begin{block}{十进制 $\to$ R进制小数（乘基取整法）}
+        \begin{itemize}
+            \item 不断乘以R，取\textbf{整数部分}，从上往下排列
+            \item 可能出现\textbf{无限循环}，按精度截断
+        \end{itemize}
+    \end{block}
+    \vspace{0.5em}
+    \begin{exampleblock}{例：将 $0.625$ 转为二进制}
+        \begin{align*}
+            0.625 \times 2 &= 1.25 \quad (\text{取整数 } 1) \\
+            0.25 \times 2  &= 0.5  \quad (\text{取整数 } 0) \\
+            0.5 \times 2   &= 1.0  \quad (\text{取整数 } 1)
+        \end{align*}
+        \begin{center}
+            $\therefore (0.625)_{10} = (0.101)_2$
+        \end{center}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{二进制与八进制、十六进制的转换}
+    \begin{block}{二进制 $\leftrightarrow$ 八进制（3位一组）}
+        \begin{itemize}
+            \item 从小数点开始，向左/右每3位一组
+            \item 每组转换为对应的八进制数码
+        \end{itemize}
+        \begin{center}
+            $(10\;110\;101.110)_2 = (265.6)_8$
+        \end{center}
+    \end{block}
+    \begin{block}{二进制 $\leftrightarrow$ 十六进制（4位一组）}
+        \begin{itemize}
+            \item 从小数点开始，向左/右每4位一组
+            \item 每组转换为对应的十六进制数码
+        \end{itemize}
+        \begin{center}
+            $(1011\;0101.1100)_2 = (B5.C)_{16}$
+        \end{center}
+    \end{block}
+\end{frame}
+
+\begin{frame}{原码表示法}
+    \begin{block}{定义}
+        \begin{itemize}
+            \item 最高位为\textbf{符号位}（0正1负），其余为数值位
+            \item $n$ 位原码的表示范围：$-(2^{n-1} - 1) \sim +(2^{n-1} - 1)$
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{例：8位原码}
+        \begin{align*}
+            [+1]_{\text{原}} &= 0000\;0001 \\
+            [-1]_{\text{原}} &= 1000\;0001 \\
+            [+0]_{\text{原}} &= 0000\;0000 \\
+            [-0]_{\text{原}} &= 1000\;0000 \quad (\text{零的表示不唯一！})
+        \end{align*}
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{center}
+        \textcolor{red}{缺点：零的表示不唯一，加减法运算复杂}
+    \end{center}
+\end{frame}
+
+\begin{frame}{反码表示法}
+    \begin{block}{定义}
+        \begin{itemize}
+            \item 正数的反码 = 原码
+            \item 负数的反码 = 原码符号位不变，数值位取反
+            \item $n$ 位反码的表示范围：$-(2^{n-1} - 1) \sim +(2^{n-1} - 1)$
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{例：8位反码}
+        \begin{align*}
+            [+1]_{\text{反}} &= 0000\;0001 \\
+            [-1]_{\text{反}} &= 1111\;1110 \\
+            [+0]_{\text{反}} &= 0000\;0000 \\
+            [-0]_{\text{反}} &= 1111\;1111 \quad (\text{零的表示仍不唯一！})
+        \end{align*}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{补码表示法}
+    \begin{block}{定义}
+        \begin{itemize}
+            \item 正数的补码 = 原码
+            \item 负数的补码 = 原码符号位不变，数值位取反再$+1$（即反码$+1$）
+            \item $n$ 位补码的表示范围：$-2^{n-1} \sim +(2^{n-1} - 1)$
+            \item \textcolor{red}{零的表示唯一！}
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{例：8位补码}
+        \begin{align*}
+            [+1]_{\text{补}} &= 0000\;0001 \\
+            [-1]_{\text{补}} &= 1111\;1111 \\
+            [0]_{\text{补}}   &= 0000\;0000 \quad (\text{唯一})
+        \end{align*}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{三种码制的比较}
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{数值} & \textbf{原码} & \textbf{反码} & \textbf{补码} \\
+            \hline
+            +7 & 0000 0111 & 0000 0111 & 0000 0111 \\
+            \hline
+            +0 & 0000 0000 & 0000 0000 & 0000 0000 \\
+            \hline
+            -0 & 1000 0000 & 1111 1111 & -- \\
+            \hline
+            -7 & 1000 0111 & 1111 1000 & 1111 1001 \\
+            \hline
+            -8 & -- & -- & 1000 0000 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 补码多表示一个最小负数 $-2^{n-1}$
+        \item 考研中\textbf{补码}最重要——计算机内部使用补码存储整数
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{补码的运算优势}
+    \begin{block}{统一加减法}
+        \begin{itemize}
+            \item 补码可以将\textbf{减法统一为加法}：
+            \[
+                [A - B]_{\text{补}} = [A]_{\text{补}} + [-B]_{\text{补}}
+            \]
+            \item 符号位直接参与运算，结果自动得到正确符号
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{例：$7 - 3 = 7 + (-3)$}
+        \begin{align*}
+            [7]_{\text{补}} &= 0000\;0111 \\
+            [-3]_{\text{补}} &= 1111\;1101 \\
+            \text{相加得} &= 1\;0000\;0100 \to \text{丢掉进位得 } 0000\;0100 = 4
+        \end{align*}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 进制转换：按权展开、除基取余、乘基取整
+        \item 原码/反码有正0和负0，补码零表示唯一
+        \item 补码表示范围比原码/反码多一个负数
+        \item 补码可将减法统一为加法——计算机内部使用
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-3 定点数运算——补码加减法、溢出判断}}
+    \end{center}
+\end{frame}
+
+\end{document}

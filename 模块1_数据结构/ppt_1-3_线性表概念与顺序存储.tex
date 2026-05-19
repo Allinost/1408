@@ -1,0 +1,170 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-3 线性表概念与顺序存储}
+\author{}
+\date{}
+
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握线性表的形式化定义与逻辑特征
+        \item 理解顺序表的存储结构及其优缺点
+        \item 掌握顺序表的插入、删除、查找操作的实现与时间复杂度分析
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{线性表的定义}
+    \textbf{线性表}：具有相同数据类型的 $n$ 个数据元素的有限序列
+    \[
+    L = (a_1, a_2, \ldots, a_i, \ldots, a_n)
+    \]
+    \vspace{0.5em}
+    \textbf{逻辑特征}
+    \begin{enumerate}
+        \item 存在唯一的第一个元素 $a_1$（表头）
+        \item 存在唯一的最后一个元素 $a_n$（表尾）
+        \item 除第一个元素外，每个元素有且仅有一个直接前驱
+        \item 除最后一个元素外，每个元素有且仅有一个直接后继
+    \end{enumerate}
+    \vspace{0.5em}
+    $n$ 为表长，$n = 0$ 时称为空表
+\end{frame}
+
+\begin{frame}{线性表的 ADT 定义}
+    \begin{block}{ADT List}
+        数据对象：$D = \{a_i \mid a_i \in \text{ElemSet}, i = 1,2,\ldots,n, n \ge 0\}$ \\
+        数据关系：$R = \{\langle a_{i-1}, a_i \rangle \mid a_{i-1}, a_i \in D, i = 2,3,\ldots,n\}$
+    \end{block}
+    \vspace{0.5em}
+    \textbf{基本操作}
+    \begin{itemize}
+        \item InitList(\&L) --- 初始化
+        \item ListInsert(\&L, i, e) --- 插入
+        \item ListDelete(\&L, i, \&e) --- 删除
+        \item LocateElem(L, e) --- 按值查找
+        \item GetElem(L, i) --- 按位查找
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{顺序表的结构定义}
+    \textbf{顺序表}：用一组地址连续的存储单元依次存储线性表的数据元素
+    \[
+    \text{LOC}(a_i) = \text{LOC}(a_1) + (i-1) \times k
+    \]
+    \vspace{0.5em}
+    \textbf{C 语言定义}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+#define MaxSize 50
+typedef struct {
+    ElemType data[MaxSize];
+    int length;
+} SqList;
+    \end{lstlisting}
+    \vspace{0.5em}
+    \begin{block}{核心特性}
+        随机访问 --- 时间复杂度 $O(1)$
+    \end{block}
+\end{frame}
+
+\begin{frame}{顺序表 --- 插入操作}
+    \textbf{在第 $i$ 个位置插入新元素 $e$}
+    \vspace{0.3em}
+    \textbf{步骤}
+    \begin{enumerate}
+        \item 判断 $i$ 是否合法（$1 \le i \le \text{length}+1$）
+        \item 判断表是否已满
+        \item 将第 $i$ 至第 $n$ 个元素依次后移
+        \item 插入 $e$，表长加一
+    \end{enumerate}
+    \vspace{0.5em}
+    \textbf{时间复杂度}
+    \[
+    \text{平均移动次数} = \frac{n}{2} \implies O(n)
+    \]
+\end{frame}
+
+\begin{frame}{顺序表 --- 删除操作}
+    \textbf{删除第 $i$ 个位置的元素}
+    \vspace{0.3em}
+    \textbf{步骤}
+    \begin{enumerate}
+        \item 判断 $i$ 是否合法（$1 \le i \le \text{length}$）
+        \item 将第 $i+1$ 至第 $n$ 个元素依次前移
+        \item 表长减一
+    \end{enumerate}
+    \vspace{0.5em}
+    \textbf{时间复杂度}
+    \[
+    \text{平均移动次数} = \frac{n-1}{2} \implies O(n)
+    \]
+\end{frame}
+
+\begin{frame}{顺序表 --- 按值查找}
+    \textbf{查找第一个值为 $e$ 的元素并返回位序}
+    \vspace{0.3em}
+    从第一个元素开始依次比较
+    \vspace{0.5em}
+    \textbf{时间复杂度}
+    \begin{itemize}
+        \item 最好情况：$O(1)$
+        \item 最坏情况：$O(n)$
+        \item 平均情况：$O(n)$
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{顺序表总结}
+        \begin{tabular}{ll}
+            优点：随机访问 $O(1)$，存储密度高 \\
+            缺点：插入删除 $O(n)$，需预分配空间
+        \end{tabular}
+    \end{block}
+\end{frame}
+
+\begin{frame}{例题 --- 删除所有值为 x 的元素}
+    \textbf{设计算法，删除顺序表中所有值为 $x$ 的元素}
+    \[
+    O(n), O(1)
+    \]
+    \vspace{0.3em}
+    \textbf{思路}：覆盖代替多次移动
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item 设置指针 $k = 0$
+        \item 遍历顺序表
+        \item 若 $A[i] \ne x$，则 $A[k] = A[i], k++$
+        \item 跳过等于 $x$ 的元素
+        \item 表长设为 $k$
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 线性表是 $n$ 个相同类型数据元素的有限序列，一对一关系
+        \item 顺序表采用连续存储，支持 $O(1)$ 随机访问
+        \item 插入和删除平均移动 $n/2$ 个元素，时间复杂度 $O(n)$
+        \item 按值查找平均 $O(n)$
+        \item 顺序表适用于查找频繁、插入删除较少的场景
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：线性表的链式存储}}
+    \end{center}
+\end{frame}
+
+\end{document}

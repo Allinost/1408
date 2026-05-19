@@ -1,0 +1,146 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-1 操作系统是什么}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解操作系统的定义与定位
+        \item 掌握操作系统的四大功能
+        \item 掌握操作系统的四大特征
+        \item 了解操作系统的发展历程
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{操作系统定义}
+    \textbf{操作系统（Operating System，OS）}是：
+    \begin{itemize}
+        \item 控制和管理计算机系统资源的\textbf{系统软件}
+        \item 合理组织、调度计算机的工作与资源分配
+        \item 为用户提供方便、有效的使用环境
+    \end{itemize}
+    \vspace{1em}
+    \begin{block}{一句话定义}
+        操作系统是介于\textcolor{408blue}{硬件}与\textcolor{408blue}{应用程序}之间的\textbf{系统软件}。
+    \end{block}
+    \begin{center}
+        \begin{tabular}{c}
+            \hline
+            用户应用程序 \\
+            \hline
+            \textcolor{408orange}{操作系统} \\
+            \hline
+            计算机硬件 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{操作系统的四大功能}
+    \begin{enumerate}
+        \item \textbf{处理机管理} —— CPU资源的分配与回收（进程/线程调度）
+        \item \textbf{存储器管理} —— 内存的分配与回收、虚拟内存管理
+        \item \textbf{设备管理} —— 管理I/O设备，完成用户的I/O请求
+        \item \textbf{文件管理} —— 文件的存储、共享、保护与访问控制
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{block}{目标}
+        向上层用户和应用程序提供\textbf{方便、安全、高效}的服务。
+    \end{block}
+\end{frame}
+
+\begin{frame}{操作系统的四大特征}
+    \begin{enumerate}
+        \item \textbf{并发} —— 多个程序在\textbf{宏观上同时运行}，微观上交替执行
+        \item \textbf{共享} —— 资源可被多个进程\textbf{互斥共享}或\textbf{同时共享}
+        \item \textbf{虚拟} —— 将物理实体映射为多个逻辑对应物（虚拟处理器、虚拟内存）
+        \item \textbf{异步} —— 进程的执行速度不可预知，但结果应一致
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{并发与共享}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{并发}
+            \begin{itemize}
+                \item 单核CPU：交替执行（微观串行）
+                \item 多核CPU：真正并行
+                \item 与"并行"区别：\\
+                      并发 $\neq$ 并行
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{共享}
+            \begin{itemize}
+                \item \textbf{互斥共享}：同一时刻只允许一个进程访问（如打印机）
+                \item \textbf{同时共享}：同一时刻允许多个进程访问（如磁盘文件）
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{alertblock}{注意}
+        并发和共享是操作系统\textbf{最基本的两个特征}，二者互为存在条件。
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{虚拟与异步}
+    \textbf{虚拟}
+    \begin{itemize}
+        \item 虚拟处理器：通过分时复用，一个物理CPU虚拟为多个逻辑CPU
+        \item 虚拟内存：通过请求调页，物理内存虚拟为更大的逻辑内存
+        \item 虚拟设备：通过SPOOLing技术，独占设备虚拟为共享设备
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{异步}
+    \begin{itemize}
+        \item 进程以不可预知的速度向前推进
+        \item 只要资源充足，每次运行结果应相同（可再现性）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{操作系统的发展历程}
+    \begin{enumerate}
+        \item \textbf{手工操作阶段} —— 用户独占全机，人机速度矛盾
+        \item \textbf{单道批处理系统} —— 一次一道程序，串行执行，CPU利用率低
+        \item \textbf{多道批处理系统} —— 多道程序并发，CPU利用率大幅提升
+        \item \textbf{分时操作系统} —— 时间片轮转，交互性强
+        \item \textbf{实时操作系统} —— 在规定时间内完成任务，硬实时/软实时
+        \item \textbf{分布式操作系统} —— 多机协同，资源共享
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{各种操作系统的比较}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        类型 & 主要目标 & 交互性 & 适用场景 \\
+        \hline
+        单道批处理 & 计算效率 & 弱 & 早期计算机 \\
+        多道批处理 & CPU利用率 & 弱 & 大型计算 \\
+        分时系统 & 响应时间 & 强 & 通用系统 \\
+        实时系统 & 截止时间 & 中 & 工业控制 \\
+        分布式系统 & 资源整合 & 强 & 网络环境 \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item OS是控制和管理计算机资源的系统软件，提供方便高效的使用环境
+        \item 四大功能：处理机管理、存储器管理、设备管理、文件管理
+        \item 四大特征：并发、共享、虚拟、异步
+        \item 发展历程：手工 $\to$ 单道批处理 $\to$ 多道批处理 $\to$ 分时 $\to$ 实时 $\to$ 分布式
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-2 操作系统运行环境}}
+    \end{center}
+\end{frame}
+
+\end{document}

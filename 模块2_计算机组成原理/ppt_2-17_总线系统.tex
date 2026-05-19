@@ -1,0 +1,191 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-17 总线系统}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解总线的定义与基本特性
+        \item 掌握总线的分类方式
+        \item 了解三种集中式总线仲裁方式
+        \item 区分同步总线与异步总线的时序
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{总线的定义与特性}
+    \textbf{总线}：一组能为多个部件\textbf{分时共享}的公共信息传送线路
+    \vspace{0.3em}
+    \begin{block}{两个关键特征}
+        \begin{itemize}
+            \item \textbf{共享}：多个部件连接到同一组总线上
+            \item \textbf{分时}：同一时刻只能有一个部件发送数据
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \textbf{总线的特性}：
+    \begin{itemize}
+        \item \textbf{机械特性}：尺寸、引脚数、引脚排列
+        \item \textbf{电气特性}：信号电平、传输方向
+        \item \textbf{功能特性}：各引脚的功能定义
+        \item \textbf{时间特性}：信号的时序关系
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{总线的分类}
+    \begin{enumerate}
+        \item \textbf{按数据传输方式}
+            \begin{itemize}
+                \item 并行总线（多根数据线同时传多位）
+                \item 串行总线（单根数据线逐位传输）
+            \end{itemize}
+        \item \textbf{按使用范围}
+            \begin{itemize}
+                \item 片内总线（CPU芯片内部）
+                \item 系统总线（CPU、主存、I/O之间）
+                \item 通信总线（计算机与外部设备之间）
+            \end{itemize}
+        \item \textbf{按系统总线内容}
+            \begin{itemize}
+                \item 数据总线（DB）：传输数据信息，双向
+                \item 地址总线（AB）：传输地址信息，单向
+                \item 控制总线（CB）：传输控制信号，双向
+            \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{系统总线的三大组成部分}
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{总线类型} & \textbf{传输内容} & \textbf{方向} & \textbf{位宽} \\
+            \hline
+            数据总线 DB & 数据 / 指令 & 双向 & 8/16/32/64位 \\
+            地址总线 AB & 内存地址 / I/O端口 & 单向（CPU输出） & 决定寻址空间 \\
+            控制总线 CB & 读/写/中断等控制信号 & 双向 & 多根控制线 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{block}{重要关系}
+        \begin{itemize}
+            \item 地址总线宽度 $\rightarrow$ 最大寻址空间（$2^n$，$n$为地址线根数）
+            \item 数据总线宽度 $\rightarrow$ 一次传送的数据位数
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{总线仲裁 --- 为什么需要仲裁？}
+    \begin{itemize}
+        \item 总线是共享资源
+        \item 同一时刻只能有一个主设备占用总线
+        \item 多个主设备同时请求时，需\textbf{仲裁}决定谁先使用
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{集中式仲裁}的三种方式：
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item \textbf{链式查询}：按优先顺序串联
+        \item \textbf{计数器定时查询}：由计数器轮询
+        \item \textbf{独立请求方式}：每个设备独立请求线
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{链式查询方式}
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{chain_query.png}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item BR（总线请求）线：所有设备共用
+        \item BG（总线允许）线：逐级传递
+        \item 离仲裁器最近的设备优先级最高
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{优点} & \textbf{缺点} \\
+        \hline
+        电路简单，线数少 & 优先级固定 \\
+        易扩展 & 单点故障（一级断，全部瘫痪） \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{计数器定时查询与独立请求}
+    \textbf{计数器定时查询}
+    \begin{itemize}
+        \item 仲裁器用一个计数器轮询各设备
+        \item 从计数值开始查，查到请求即停
+        \item 优先级可编程（改变计数初值）
+        \item 比链式查询灵活，但线数较多
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{独立请求方式}
+    \begin{itemize}
+        \item 每个设备有独立的请求线和允许线
+        \item 仲裁器内部并行判决
+        \item 速度最快，优先级最灵活
+        \item 但线数最多（$2n$根）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{总线的操作时序}
+    \textbf{同步总线}
+    \begin{itemize}
+        \item 由统一的时钟信号控制数据传输
+        \item 所有设备按固定时钟节拍工作
+        \item 优点：时序简单、实现容易
+        \item 缺点：时钟频率受限于最慢设备
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{异步总线}
+    \begin{itemize}
+        \item 没有统一时钟，采用\textbf{握手协议}
+        \item 请求 $\rightarrow$ 应答 $\rightarrow$ 完成
+        \item 优点：能适配不同速度的设备
+        \item 缺点：时序复杂，效率低于同步
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{常用总线标准}
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{总线标准} & \textbf{类型} & \textbf{数据宽度} & \textbf{用途} \\
+            \hline
+            PCI & 同步、并行 & 32/64位 & 系统内部扩展 \\
+            PCIe & 异步、串行 & 1/4/8/16通道 & 高速外围设备 \\
+            USB & 异步、串行 & 1位 & 外部设备连接 \\
+            SATA & 异步、串行 & 1位 & 硬盘接口 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 现代总线趋势：串行代替并行（更高频率、更少干扰）
+        \item PCIe采用差分信号传输，速度快、抗干扰强
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 总线是计算机各部件间分时共享的公共通信线路
+        \item 总线分为片内总线、系统总线、通信总线
+        \item 系统总线含数据、地址、控制三组总线
+        \item 集中式仲裁：链式查询、计数器查询、独立请求
+        \item 同步总线用统一时钟，异步总线用握手协议
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-18 I/O系统概述 --- CPU如何与外设通信}}
+    \end{center}
+\end{frame}
+
+\end{document}

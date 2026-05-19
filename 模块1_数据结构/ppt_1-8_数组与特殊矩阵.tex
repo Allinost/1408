@@ -1,0 +1,149 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-8 数组与特殊矩阵}
+\author{}
+\date{}
+
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解数组的两种存储方式及地址计算方法
+        \item 掌握对称矩阵、三角矩阵、三对角矩阵的压缩存储与地址映射
+        \item 理解稀疏矩阵的三元组存储方法
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{数组的存储结构}
+    \textbf{二维数组 $A[m][n]$}
+    \vspace{0.3em}
+    \textbf{行优先存储}
+    \[
+    \text{LOC}(a_{ij}) = \text{LOC}(a_{00}) + (i \times n + j) \times L
+    \]
+    \vspace{0.3em}
+    \textbf{列优先存储}
+    \[
+    \text{LOC}(a_{ij}) = \text{LOC}(a_{00}) + (j \times m + i) \times L
+    \]
+    \vspace{0.3em}
+    \begin{block}{C 语言}
+        采用行优先存储
+    \end{block}
+\end{frame}
+
+\begin{frame}{对称矩阵的压缩}
+    \textbf{$n$ 阶对称矩阵}：$a_{ij} = a_{ji}$
+    \vspace{0.3em}
+    \textbf{存储下三角 $+$ 主对角线}
+    \[
+    \text{元素个数} = \frac{n(n+1)}{2}
+    \]
+    \vspace{0.3em}
+    \textbf{地址映射}（$i \ge j$）
+    \[
+    \text{下标} = \frac{i(i+1)}{2} + j
+    \]
+    \vspace{0.3em}
+    当 $i < j$ 时，访问对称元素 $a_{ji}$
+\end{frame}
+
+\begin{frame}{三角矩阵}
+    \textbf{下三角矩阵}
+    \begin{itemize}
+        \item 上三角区域全部为常数 $c$
+        \item 存储 $n(n+1)/2 + 1$ 个元素
+        \item 地址映射与对称矩阵相同（$i \ge j$）
+        \item $i < j$ 时返回常数 $c$
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{上三角矩阵}
+    \begin{itemize}
+        \item 按列优先存储上三角区域
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{三对角矩阵}
+    \textbf{非零元素在三条对角线上}
+    \[
+    |i - j| \le 1
+    \]
+    \vspace{0.3em}
+    \textbf{按行优先存储}
+    \[
+    \text{下标} = 2i + j
+    \]
+    \vspace{0.3em}
+    \textbf{举例（$5 \times 5$）}
+    \[
+    a_{00}, a_{01}, a_{10}, a_{11}, a_{12}, a_{21}, a_{22}, a_{23}, a_{32}, a_{33}, a_{34}, a_{43}, a_{44}
+    \]
+\end{frame}
+
+\begin{frame}{稀疏矩阵 --- 三元组表示}
+    \textbf{只存储非零元素}
+    \[
+    (row, col, value)
+    \]
+    \vspace{0.3em}
+    \begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        row & col & value \\
+        \hline
+        0 & 0 & 3 \\
+        \hline
+        1 & 2 & 5 \\
+        \hline
+        2 & 0 & 7 \\
+        \hline
+        \vdots & \vdots & \vdots \\
+        \hline
+    \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \textbf{缺点}：失去随机访问能力
+\end{frame}
+
+\begin{frame}{稀疏矩阵 --- 十字链表}
+    \textbf{每个非零元素结点}
+    \begin{itemize}
+        \item 行号、列号、值
+        \item 指向同一行下一个非零元素的指针（右指针）
+        \item 指向同一列下一个非零元素的指针（下指针）
+    \end{itemize}
+    \vspace{0.5em}
+    优点：支持快速存取任意位置的元素
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 数组存储：行优先和列优先两种方式
+        \item 对称矩阵：存储 $n(n+1)/2$ 个元素
+        \item 三角矩阵：下三角/上三角 $+$ 常数
+        \item 三对角矩阵：存储三条对角线
+        \item 稀疏矩阵：三元组或十字链表
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：树的基本概念}}
+    \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,238 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 计算机网络}
+\subtitle{4-3 网络体系结构}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解分层思想和分层的优点
+        \item 掌握OSI七层模型及各层功能
+        \item 掌握TCP/IP四层模型
+        \item 理解五层参考模型及各层PDU
+        \item 理解封装与解封装过程
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{分层思想}
+    \begin{block}{为什么需要分层？}
+        计算机网络是一个复杂的系统，分层可以将复杂问题分解为若干个较小的、易于处理的子问题。
+    \end{block}
+    \vspace{0.3em}
+    \textbf{分层的优点}：
+    \begin{enumerate}
+        \item \textbf{各层独立}：每层完成特定功能，修改某一层不影响其他层
+        \item \textbf{接口清晰}：相邻层之间有明确的交互接口
+        \item \textbf{灵活性好}：某一层变化不影响其他层，便于技术更新
+        \item \textbf{易于实现和维护}：将复杂系统分解为简单模块
+    \end{enumerate}
+    \vspace{0.3em}
+    \begin{exampleblock}{类比}
+        类似于邮政系统：写信（应用层）$\rightarrow$ 装信封（表示层）$\rightarrow$ 投递（传输层）$\rightarrow$ 分拣（网络层）
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{OSI七层模型}
+    \begin{columns}[T]
+        \column{0.6\textwidth}
+        \textbf{OSI七层（从下到上）}：
+        \begin{enumerate}
+            \item \textbf{物理层}：传输比特流，定义接口特性
+            \item \textbf{数据链路层}：封装成帧，差错控制，流量控制
+            \item \textbf{网络层}：路由选择，分组转发，拥塞控制
+            \item \textbf{传输层}：端到端通信，可靠传输
+            \item \textbf{会话层}：会话管理，同步
+            \item \textbf{表示层}：数据格式转换，加密压缩
+            \item \textbf{应用层}：用户接口，网络服务
+        \end{enumerate}
+        \column{0.4\textwidth}
+        \begin{block}{记忆口诀}
+            "物链网传会表应"\\
+            \vspace{0.3em}
+            \small
+            物理层 $\to$ 链路层 $\to$ 网络层 $\to$ 传输层 $\to$ 会话层 $\to$ 表示层 $\to$ 应用层
+        \end{block}
+        \vspace{0.5em}
+        \begin{alertblock}{注意}
+            OSI是法律上的国际标准，但并未在实际中完全采用。
+        \end{alertblock}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{OSI模型各层功能详解}
+    \begin{table}
+        \begin{tabular}{|c|l|}
+            \hline
+            \textbf{层次} & \textbf{主要功能} \\ \hline
+            应用层 & 提供用户接口，如HTTP、FTP、SMTP、DNS \\
+            表示层 & 数据格式转换、加密/解密、压缩/解压缩 \\
+            会话层 & 建立/管理/终止会话，同步点 \\
+            传输层 & 端到端通信，可靠传输（TCP）/不可靠（UDP） \\
+            网络层 & 路由选择、分组转发、逻辑寻址（IP地址） \\
+            数据链路层 & 封装成帧、差错检测（CRC）、流量控制 \\
+            物理层 & 定义机械/电气/功能/规程特性，传输比特流 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.3em}
+    \begin{block}{考研常考}
+        各层的功能区分和典型协议是选择题高频考点。
+    \end{block}
+\end{frame}
+
+\begin{frame}{TCP/IP四层模型}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{TCP/IP四层（从下到上）}：
+        \begin{enumerate}
+            \item \textbf{网络接口层}
+            \begin{itemize}
+                \item 对应OSI的物理层+数据链路层
+                \item 无明确规定，与具体物理网络相关
+            \end{itemize}
+            \item \textbf{网际层}
+            \begin{itemize}
+                \item 对应OSI的网络层
+                \item 核心协议：\textbf{IP协议}
+            \end{itemize}
+            \item \textbf{传输层}
+            \begin{itemize}
+                \item 对应OSI的传输层
+                \item 核心协议：\textbf{TCP、UDP}
+            \end{itemize}
+            \item \textbf{应用层}
+            \begin{itemize}
+                \item 对应OSI的会话层+表示层+应用层
+                \item 包含所有高层协议
+            \end{itemize}
+        \end{enumerate}
+        \column{0.5\textwidth}
+        \begin{block}{特点}
+            \begin{itemize}
+                \item TCP/IP是\textbf{事实上的国际标准}
+                \item Internet的基础协议
+                \item 比OSI更简洁实用
+                \item 网际层（IP层）是核心
+            \end{itemize}
+        \end{block}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{五层参考模型（综合）}
+    \begin{columns}[T]
+        \column{0.55\textwidth}
+        结合OSI和TCP/IP优点的\textbf{五层模型}：
+        \begin{enumerate}
+            \item \textbf{物理层}：传输比特流
+            \item \textbf{数据链路层}：封装成帧
+            \item \textbf{网络层}：路由转发
+            \item \textbf{传输层}：端到端通信
+            \item \textbf{应用层}：用户服务
+        \end{enumerate}
+        \vspace{0.5em}
+        \textcolor{blue}{\textbf{408考研采用五层参考模型！}}
+        \column{0.45\textwidth}
+        \begin{table}
+            \small
+            \begin{tabular}{|c|c|}
+                \hline
+                \textbf{五层模型} & \textbf{对应OSI} \\ \hline
+                应用层 & 应用+表示+会话 \\
+                传输层 & 传输层 \\
+                网络层 & 网络层 \\
+                数据链路层 & 数据链路层 \\
+                物理层 & 物理层 \\
+                \hline
+            \end{tabular}
+        \end{table}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{PDU（协议数据单元）}
+    \begin{block}{定义}
+        \textbf{PDU（Protocol Data Unit）}：不同层次的数据单位，每层对数据有特定的称呼。
+    \end{block}
+    \vspace{0.5em}
+    \begin{table}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{层次} & \textbf{PDU名称} & \textbf{备注} \\ \hline
+            应用层 & \textbf{报文（Message）} & HTTP、FTP等协议的数据 \\
+            传输层 & \textbf{报文段（Segment）} & TCP段 / UDP数据报 \\
+            网络层 & \textbf{数据报/包（Packet）} & IP数据报 \\
+            数据链路层 & \textbf{帧（Frame）} & 包含MAC地址 \\
+            物理层 & \textbf{比特流（Bitstream）} & 原始的0/1信号 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.3em}
+    \begin{block}{考研常考}
+        请牢记各层PDU名称，这是408高频考点！
+    \end{block}
+\end{frame}
+
+\begin{frame}{封装与解封装}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{封装（发送方）}：
+        \begin{itemize}
+            \item 应用层：产生报文（Message）
+            \item 传输层：加TCP/UDP头部 $\to$ 报文段
+            \item 网络层：加IP头部 $\to$ 数据报
+            \item 数据链路层：加MAC头部+尾部 $\to$ 帧
+            \item 物理层：转为比特流发送
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{解封装（接收方）}：
+        \begin{itemize}
+            \item 物理层：接收比特流
+            \item 数据链路层：去掉帧头和帧尾 $\to$ 数据报
+            \item 网络层：去掉IP头部 $\to$ 报文段
+            \item 传输层：去掉TCP/UDP头部 $\to$ 报文
+            \item 应用层：读取数据
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{exampleblock}{关键理解}
+        每层只处理本层的头部信息，下层对上层是透明的！
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{三个模型的层次对应关系}
+    \begin{table}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{层次} & \textbf{OSI七层} & \textbf{TCP/IP四层} & \textbf{五层参考模型} \\ \hline
+            7 & 应用层 & \multirow{3}{*}{应用层} & \multirow{3}{*}{应用层} \\
+            6 & 表示层 & & \\
+            5 & 会话层 & & \\
+            4 & 传输层 & 传输层 & 传输层 \\
+            3 & 网络层 & 网际层 & 网络层 \\
+            2 & 数据链路层 & \multirow{2}{*}{网络接口层} & 数据链路层 \\
+            1 & 物理层 & & 物理层 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.5em}
+    \begin{center}
+        \textcolor{blue}{408考研复习以\textbf{五层参考模型}为主线}
+    \end{center}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item \textbf{分层思想}：各层独立、接口清晰、灵活性好
+        \item \textbf{OSI七层}：物、链、网、传、会、表、应
+        \item \textbf{TCP/IP四层}：网络接口、网际、传输、应用
+        \item \textbf{五层参考模型}（408采用）：物理、链路、网络、传输、应用
+        \item \textbf{PDU}：报文 $\to$ 报文段 $\to$ 数据报 $\to$ 帧 $\to$ 比特流
+        \item 发送方\textbf{封装}（加头），接收方\textbf{解封装}（去头）
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：4-4 物理层基础}}
+    \end{center}
+\end{frame}
+\end{document}

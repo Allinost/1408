@@ -1,0 +1,206 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-13 文件物理结构}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解文件的三种物理结构及优缺点
+        \item 掌握隐式链接与显式链接（FAT）的区别
+        \item 熟悉单级索引与多级索引的原理
+        \item 了解 Unix 混合索引及空闲空间管理方法
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{物理结构概述}
+    \textbf{文件物理结构}：文件数据在磁盘上的存储组织方式。
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|l|l|l|}
+            \hline
+            \textbf{类型} & \textbf{存储方式} & \textbf{顺序访问} & \textbf{随机访问} \\
+            \hline
+            连续分配 & 连续磁盘块 & 快 & 快 \\
+            链接分配 & 链表链接 & 快 & 慢 \\
+            索引分配 & 索引块映射 & 较快 & 快 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    三种方式各有优劣，不同操作系统选择不同方案。
+\end{frame}
+
+\begin{frame}{连续分配}
+    \textbf{连续分配}：文件占磁盘上连续的若干磁盘块。
+    \vspace{0.5em}
+    目录项记录：\textbf{起始块号 + 文件块数}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{优点} & \textbf{缺点} \\
+            \hline
+            $\bullet$ 顺序访问性能好（寻道少） & $\bullet$ 产生\textbf{外碎片} \\
+            $\bullet$ 支持随机访问（直接计算） & $\bullet$ 文件难以扩展 \\
+            $\bullet$ 实现简单 & $\bullet$ 需预先知道文件大小 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    类似动态分区分配中的内存管理问题。
+\end{frame}
+
+\begin{frame}{链接分配---隐式链接}
+    \textbf{隐式链接}
+    \begin{itemize}
+        \item 文件的每个数据块包含指向下一个块的指针
+        \item 目录项仅存储\textbf{首块指针}和末块指针
+        \item 形成一个单向链表
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{优点} & \textbf{缺点} \\
+            \hline
+            $\bullet$ 消除外碎片 & $\bullet$ \textbf{只支持顺序访问} \\
+            $\bullet$ 文件可动态扩展 & $\bullet$ 随机访问极慢（需遍历链表） \\
+            $\bullet$ 空间利用率高 & $\bullet$ 指针占用存储空间 \\
+            & $\bullet$ 一个指针损坏会影响整个文件 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{链接分配---显式链接（FAT）}
+    \textbf{显式链接}
+    \begin{itemize}
+        \item 整个磁盘维护一张 \textbf{FAT（文件分配表）}
+        \item FAT 表项记录下一块的块号，类似链表
+        \item 目录项存\textbf{首块块号}，查 FAT 得到后续块
+    \end{itemize}
+    \vspace{0.5em}
+    FAT 的特点：
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{优点} & \textbf{缺点} \\
+            \hline
+            $\bullet$ FAT 常驻内存，查找快 & $\bullet$ FAT 表占用大量内存 \\
+            $\bullet$ 支持随机访问（查内存中的 FAT） & $\bullet$ FAT 需备份（损坏则数据丢失） \\
+            $\bullet$ 无外碎片 & $\bullet$ 文件容量受 FAT 项数限制 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    用于 \textbf{FAT32} 文件系统。
+\end{frame}
+
+\begin{frame}{索引分配}
+    \textbf{索引分配}：每个文件有一个\textbf{索引块}，存储文件所有数据块的块号。
+    \vspace{0.5em}
+    目录项记录：\textbf{索引块块号}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{优点} & \textbf{缺点} \\
+            \hline
+            $\bullet$ 支持\textbf{随机访问} & $\bullet$ 索引块占用额外空间 \\
+            $\bullet$ 无外碎片 & $\bullet$ 小文件也需一个索引块 \\
+            $\bullet$ 文件可动态扩展 & $\bullet$ 大文件单级索引不够用 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    对于大文件，需要\textbf{多级索引}或多索引块方案。
+\end{frame}
+
+\begin{frame}{多级索引}
+    当文件很大时，单级索引块存不下所有块号，引入\textbf{多级索引}：
+    \vspace{0.5em}
+    \textbf{二级索引}：
+    \[
+    \text{索引块} \rightarrow \text{一级索引块} \rightarrow \text{数据块}
+    \]
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 若一个索引块存 $N$ 个块号
+        \item 单级索引：最多 $N$ 个数据块
+        \item 二级索引：最多 $N^2$ 个数据块
+        \item 三级索引：最多 $N^3$ 个数据块
+    \end{itemize}
+    \vspace{0.5em}
+    优点：支持超大文件。缺点：多级索引访问需多次读盘。
+\end{frame}
+
+\begin{frame}{Unix 混合索引}
+    Unix 文件系统的经典设计：结合直接 + 间接索引
+    \vspace{0.5em}
+    \textbf{索引节点（inode）}包含 15 个指针：
+    \begin{center}
+        \begin{tabular}{|c|l|c|}
+            \hline
+            \textbf{数量} & \textbf{类型} & \textbf{说明} \\
+            \hline
+            12 个 & 直接指针 & 直接指向数据块 \\
+            1 个 & 一级间接 & 指向一级索引块 \\
+            1 个 & 二级间接 & 指向二级索引块 \\
+            1 个 & 三级间接 & 指向三级索引块 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    优点：
+    \begin{itemize}
+        \item 小文件用直接指针（快速）
+        \item 大文件自动升级到间接指针
+        \item 兼顾小文件效率和大文件容量
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{文件存储空间管理}
+    操作系统需要管理磁盘空闲块，常用三种方法：
+    \vspace{0.5em}
+    \begin{description}
+        \item[空闲表法]
+            \begin{itemize}
+                \item 维护空闲块表（起始块号 + 块数）
+                \item 类似动态分区分配
+            \end{itemize}
+        \item[空闲链表法]
+            \begin{itemize}
+                \item 将所有空闲块链接成链表
+                \item 分配/回收操作链表
+            \end{itemize}
+        \item[位示图法]
+            \begin{itemize}
+                \item 用二进制位表示每个块的状态
+                \item 1: 已分配，0: 空闲
+                \item 占用空间小，查找效率高
+                \item 广泛应用于现代文件系统
+            \end{itemize}
+    \end{description}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 连续分配：访问快但外碎片多且难扩展
+        \item 链接分配：隐式（顺序访问）、显式 FAT（支持随机访问）
+        \item 索引分配：支持随机访问，多级索引支持大文件
+        \item Unix 混合索引：直接 + 间接指针，兼顾大小文件
+        \item 空闲空间管理：空闲表、空闲链表、位示图
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-14 文件共享与保护}}
+    \end{center}
+\end{frame}
+
+\end{document}

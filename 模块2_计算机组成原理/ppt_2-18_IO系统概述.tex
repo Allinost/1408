@@ -1,0 +1,198 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-18 I/O系统概述}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握I/O接口的功能与基本结构
+        \item 理解I/O端口的两种编址方式
+        \item 了解四种I/O控制方式的基本思想
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{I/O系统的基本组成}
+    \begin{center}
+        \begin{tabular}{c}
+            \textbf{I/O系统} \\
+            \hline
+            \begin{tabular}{cccc}
+                \textbf{I/O软件} & + & \textbf{I/O硬件} \\
+                ↓ & & ↓ \\
+                设备驱动程序 & & I/O接口 / 控制器 \\
+                用户层I/O程序 & & 外设（键盘、磁盘、显示器...） \\
+            \end{tabular} \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item CPU 通过 I/O 接口与外部设备通信
+        \item I/O 接口起到\textbf{协调}与\textbf{缓冲}的作用
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{I/O接口的功能}
+    \begin{enumerate}
+        \item \textbf{地址译码}：识别CPU发来的设备地址，选中对应设备
+        \item \textbf{数据缓冲}：暂存数据，协调CPU与外设的速度差异
+        \item \textbf{格式转换}：串/并转换、电平转换等
+        \item \textbf{状态监测}：记录设备状态（就绪/忙/错误）
+        \item \textbf{控制与定时}：接收CPU控制信号，控制外设操作
+        \item \textbf{中断管理}：处理中断请求与中断响应
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{I/O接口的基本结构}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \multicolumn{3}{|c|}{\textbf{I/O接口内部}} \\
+            \hline
+            数据线 & $\longleftrightarrow$ & 数据缓冲寄存器 \\
+            地址线 & $\longleftrightarrow$ & 地址译码器 \\
+            控制线 & $\longleftrightarrow$ & 控制逻辑 \\
+            状态线 & $\longleftrightarrow$ & 状态寄存器 \\
+            \hline
+            \multicolumn{3}{|c|}{$\downarrow$} \\
+            \multicolumn{3}{|c|}{外设} \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 数据缓冲寄存器：暂存CPU与外设交换的数据
+        \item 状态寄存器：存放设备状态（Busy/Ready/Error）
+        \item 控制寄存器：存放CPU发来的控制命令
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{I/O端口与编址方式}
+    \textbf{I/O端口}：I/O接口中可被CPU直接访问的寄存器（数据端口、控制端口、状态端口）
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{对比项} & \textbf{统一编址} & \textbf{独立编址} \\
+            \hline
+            地址空间 & I/O端口占用主存地址空间 & I/O端口有独立地址空间 \\
+            访问指令 & 访存指令（Load/Store） & 专用I/O指令（IN/OUT） \\
+            译码方式 & 地址线直接译码 & 需区分内存/I/O操作 \\
+            优点 & 指令丰富、编程灵活 & 不占用主存空间、易保护 \\
+            缺点 & 占用主存地址空间 & 需专用指令 \\
+            代表 & ARM、M6800 & x86 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{I/O控制方式概览}
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{控制方式} & \textbf{CPU参与程度} & \textbf{速度} & \textbf{硬件复杂度} \\
+            \hline
+            程序查询 & 完全参与 & 慢 & 低 \\
+            中断 & 参与启动和结束 & 中 & 中 \\
+            DMA & 仅参与预处理和后处理 & 快 & 高 \\
+            通道 & 几乎不参与 & 最快 & 最高 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{block}{发展趋势}
+        从程序查询 $\rightarrow$ 中断 $\rightarrow$ DMA $\rightarrow$ 通道
+        \begin{itemize}
+            \item CPU负担越来越轻
+            \item 数据传输效率越来越高
+            \item 硬件越来越复杂
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{程序查询方式}
+    \textbf{基本原理}：CPU不断轮询I/O设备状态，直到设备就绪再进行数据交换
+    \vspace{0.3em}
+    \begin{block}{工作流程}
+        \begin{enumerate}
+            \item CPU读取设备状态寄存器
+            \item 检查"就绪"标志
+            \item 若未就绪，继续轮询（循环步骤1-2）
+            \item 若就绪，进行数据传送
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \textbf{特点}：
+    \begin{itemize}
+        \item[+] 控制简单、硬件少
+        \item[-] CPU利用率极低（大部分时间在等待I/O）
+        \item[-] 实时性差
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{中断方式}
+    \textbf{基本思想}：设备就绪后主动向CPU发送中断请求，CPU暂停当前程序去处理I/O
+    \vspace{0.3em}
+    \begin{itemize}
+        \item CPU在设备工作时可执行其它程序
+        \item 设备完成后"通知"CPU
+        \item 提高了CPU利用率
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{DMA方式}
+    \begin{itemize}
+        \item 专门的DMA控制器负责数据传送
+        \item CPU仅在预处理和后处理阶段介入
+        \item 数据传送无需CPU参与，速度快
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{通道方式}
+    \begin{itemize}
+        \item 独立的I/O处理器
+        \item 可执行通道程序，管理复杂I/O操作
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{I/O控制方式的选择}
+    \begin{itemize}
+        \item \textbf{低速设备}（键盘、鼠标）：
+            \begin{itemize}
+                \item 程序查询（简单）或中断（效率更高）
+            \end{itemize}
+        \item \textbf{中速设备}（打印机、扫描仪）：
+            \begin{itemize}
+                \item 中断方式为主
+            \end{itemize}
+        \item \textbf{高速设备}（磁盘、显卡、网卡）：
+            \begin{itemize}
+                \item DMA方式或通道方式
+                \item 需要大量、连续的数据传输
+            \end{itemize}
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{408考点}
+        对比不同I/O控制方式下CPU的参与程度、数据传输效率、适用场景。
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item I/O接口起地址译码、数据缓冲、格式转换等作用
+        \item I/O端口编址：统一编址（访存指令）vs 独立编址（IN/OUT指令）
+        \item 四种控制方式：程序查询、中断、DMA、通道
+        \item 从查询到通道，CPU参与越来越少，效率越来越高
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-19 程序查询与中断 --- 两种I/O方式详解}}
+    \end{center}
+\end{frame}
+
+\end{document}

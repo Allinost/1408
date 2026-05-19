@@ -1,0 +1,186 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-9 内存管理概述}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解内存管理的四大功能
+        \item 掌握逻辑地址与物理地址的区别及地址重定位
+        \item 熟悉连续分配方式及动态分区分配算法
+        \item 理解碎片问题与紧凑技术
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{内存管理的功能}
+    内存管理是操作系统的核心功能之一，主要有四大任务：
+    \begin{itemize}
+        \item \textbf{内存分配与回收}：记录内存使用情况，为进程分配/回收空间
+        \item \textbf{地址转换}：将程序中的逻辑地址转换为物理地址
+        \item \textbf{内存保护}：确保各进程只能访问自己的内存空间
+        \item \textbf{内存扩充}：借助虚拟存储技术，在逻辑上扩充内存容量
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{逻辑地址 vs 物理地址}
+    \begin{description}
+        \item[逻辑地址（相对地址）] CPU 生成的地址，从 0 开始编号，也称虚拟地址
+        \item[物理地址（绝对地址）] 内存单元的真正地址，对应硬件地址总线
+    \end{description}
+    \vspace{1em}
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{逻辑地址} & \textbf{物理地址} \\
+            \hline
+            程序视角 & 硬件视角 \\
+            相对偏移量 & 绝对位置 \\
+            需要地址转换 & 可直接访问 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{地址重定位}
+    地址重定位：将逻辑地址转换为物理地址的过程
+    \vspace{0.5em}
+    \begin{description}
+        \item[静态重定位] 程序加载时一次性完成地址转换
+            \begin{itemize}
+                \item 优点：无需硬件支持
+                \item 缺点：程序装入后不能移动
+            \end{itemize}
+        \item[动态重定位] 程序执行时每访问一条指令实时转换
+            \begin{itemize}
+                \item 优点：程序可在内存中移动（紧凑）
+                \item 缺点：需要硬件（MMU）支持
+            \end{itemize}
+    \end{description}
+    \vspace{0.5em}
+    动态重定位依靠 \textbf{重定位寄存器} 实现：
+    \[
+    \text{物理地址} = \text{逻辑地址} + \text{重定位寄存器的值}
+    \]
+\end{frame}
+
+\begin{frame}{连续分配方式---单一连续分配}
+    \textbf{单一连续分配}
+    \begin{itemize}
+        \item 内存分为系统区（驻留 OS）和用户区（一个用户程序独占）
+        \item 整个内存一次只允许一个用户程序使用
+        \item 特点：简单，但资源利用率极低
+        \item 仅适用于单任务单用户系统（如 MS-DOS）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{连续分配方式---固定分区分配}
+    \textbf{固定分区分配}
+    \begin{itemize}
+        \item 内存预先划分为若干固定大小的分区
+        \item 每个分区可装入一个进程
+        \item 分区大小可相等或不等
+    \end{itemize}
+    \vspace{0.5em}
+    问题：
+    \begin{itemize}
+        \item 程序可能比分区小 $\rightarrow$ 分区内产生\textbf{内碎片}
+        \item 大程序可能找不到合适分区
+        \item 分区数量固定，多道程序度受限
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{连续分配方式---动态分区分配}
+    \textbf{动态分区分配}
+    \begin{itemize}
+        \item 不预先划分分区，进程需要多少就分配多少
+        \item 系统维护空闲分区表/空闲分区链
+        \item 灵活，内存利用率高
+    \end{itemize}
+    \vspace{0.5em}
+    动态分配产生\textbf{外碎片}：
+    \begin{itemize}
+        \item 各进程分配释放后，留下很多小空闲块
+        \item 总和可能很大，但各块太小无法使用
+    \end{itemize}
+    解决方案：\textbf{紧凑技术}（Compaction）
+    \begin{itemize}
+        \item 移动已分配进程，将分散的空闲块合并成大块
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{动态分区分配算法（1）}
+    \begin{description}
+        \item[首次适应（First Fit）]
+            \begin{itemize}
+                \item 空闲分区链按\textbf{地址递增}排列
+                \item 从链首查找第一个大小满足的分区
+                \item 优点：简单、速度快
+            \end{itemize}
+        \item[最佳适应（Best Fit）]
+            \begin{itemize}
+                \item 空闲分区链按\textbf{容量递增}排列
+                \item 选最小满足要求的分区
+                \item 优点：保留大块；缺点：产生微小碎片
+            \end{itemize}
+    \end{description}
+\end{frame}
+
+\begin{frame}{动态分区分配算法（2）}
+    \begin{description}
+        \item[最差适应（Worst Fit）]
+            \begin{itemize}
+                \item 空闲分区链按\textbf{容量递减}排列
+                \item 选最大分区，分割后剩余空间仍然较大
+                \item 缺点：大分区被快速破坏
+            \end{itemize}
+        \item[邻近适应（Next Fit）]
+            \begin{itemize}
+                \item 首次适应的变种
+                \item 从上次分配位置继续向下查找
+                \item 优点：无需每次都从头扫描
+            \end{itemize}
+    \end{description}
+\end{frame}
+
+\begin{frame}{碎片问题}
+    \begin{center}
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textbf{碎片类型} & \textbf{产生原因} & \textbf{相关分配方式} \\
+            \hline
+            内碎片 & 分配空间 > 实际需求 & 固定分区分配 \\
+            外碎片 & 多次分配/释放后的小空闲块 & 动态分区分配 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{1em}
+    \textbf{外碎片} 可通过\textbf{紧凑技术}解决：
+    \begin{itemize}
+        \item 移动已分配分区，将所有空闲块合并为一个连续大块
+        \item 需要动态重定位支持
+    \end{itemize}
+    \textbf{内碎片} 无法通过紧凑解决，是固定分配的固有缺陷。
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 内存管理四大功能：分配回收、地址转换、保护、扩充
+        \item 逻辑地址到物理地址的转换称为地址重定位，分为静态和动态
+        \item 连续分配有三种方式：单一连续、固定分区（内碎片）、动态分区（外碎片）
+        \item 动态分区分配算法：首次适应、最佳适应、最差适应、邻近适应
+        \item 紧凑技术解决外碎片，需要动态重定位支持
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-10 非连续分配}}
+    \end{center}
+\end{frame}
+
+\end{document}

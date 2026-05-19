@@ -1,0 +1,263 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-9 Cache映射方式}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握直接映射方式及其地址结构
+        \item 掌握全相联映射方式及其地址结构
+        \item 掌握组相联映射方式及其地址结构
+        \item 理解三种映射方式的分析与比较
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Cache映射方式概述}
+    \begin{block}{核心问题}
+        \begin{itemize}
+            \item 主存块可以放入Cache的哪些位置？
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{映射方式} & \textbf{灵活性} & \textbf{硬件复杂度} & \textbf{命中率} \\
+            \hline
+            直接映射 & 最低 & 最简单 & 较低 \\
+            \hline
+            全相联 & 最高 & 最复杂 & 最高 \\
+            \hline
+            $n$路组相联 & 折中 & 折中 & 较高 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 考研重点：理解地址结构中的\textbf{Tag、Index、Offset}划分
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{直接映射方式}
+    \begin{block}{规则}
+        \begin{itemize}
+            \item 每个主存块\textbf{只能}映射到Cache中的\textbf{唯一一行}
+            \item 映射关系：Cache行号 = 主存块号 mod Cache总行数
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{地址结构}
+        \[
+            \underbrace{\text{Tag}}_{\text{标记}} \quad
+            \underbrace{\text{Index}}_{\text{Cache行号}} \quad
+            \underbrace{\text{Offset}}_{\text{块内地址}}
+        \]
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{例：主存容量64KB，Cache容量4KB，每块16B}
+        \begin{itemize}
+            \item 块内偏移：$16 = 2^4$，Offset = 4位
+            \item Cache行数 = $4KB / 16B = 256 = 2^8$，Index = 8位
+            \item 主存地址总位数 = $16$位（$64K = 2^{16}$）
+            \item Tag = $16 - 8 - 4 = 4$位
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}[t]{直接映射的优缺点}
+    \begin{block}{优点}
+        \begin{itemize}
+            \item 硬件简单——只需比较Tag
+            \item 查表速度快——直接索引
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{缺点}
+        \begin{itemize}
+            \item \textcolor{red}{冲突率高}：多个主存块映射到同一Cache行
+            \item 频繁替换导致\textbf{抖动（Thrashing）}
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{抖动示例}
+        \begin{itemize}
+            \item 主存块0和256都映射到Cache行0
+            \item 如果程序交替访问块0和块256：
+            \begin{itemize}
+                \item 访问块0 $\to$ 调入Cache行0
+                \item 访问块256 $\to$ 替换块0
+                \item 再访问块0 $\to$ 再次替换
+            \end{itemize}
+            \item 命中率骤降！
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}[t]{全相联映射方式}
+    \begin{block}{规则}
+        \begin{itemize}
+            \item 任意主存块可以映射到\textbf{任意}Cache行
+            \item 只要Cache有空行，就不会冲突
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{地址结构}
+        \[
+            \underbrace{\text{Tag}}_{\text{标记}} \quad
+            \underbrace{\text{Offset}}_{\text{块内地址}}
+        \]
+        \begin{itemize}
+            \item 没有Index字段——需要与所有Cache行的Tag并行比较
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{优缺点}
+        \begin{itemize}
+            \item 优点：冲突率最低，空间利用率高
+            \item 缺点：\textcolor{red}{硬件最复杂}——需要$n$路比较器
+            \item 适用于小容量Cache（如TLB）
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{组相联映射方式}
+    \begin{block}{规则}
+        \begin{itemize}
+            \item 把Cache分为若干\textbf{组}，每组包含$n$行（$n$路组相联）
+            \item 主存块映射到\textbf{固定组}，组内\textbf{任意行}
+            \item 直接映射 + 全相联的\textbf{折中方案}
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{地址结构}
+        \[
+            \underbrace{\text{Tag}}_{\text{标记}} \quad
+            \underbrace{\text{Set Index}}_{\text{组号}} \quad
+            \underbrace{\text{Offset}}_{\text{块内地址}}
+        \]
+        \begin{itemize}
+            \item Set Index：组号（决定映射到哪一组）
+            \item 组内搜索需要比较所有行的Tag（并行比较）
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{组相联——寻址过程}
+    \begin{center}
+        \begin{tabular}{c}
+            CPU给出主存地址 \\
+            $\downarrow$ \\
+            Set Index $\to$ 选中Cache中的某组 \\
+            $\downarrow$ \\
+            组内所有行的Tag与地址中的Tag\textbf{并行比较} \\
+            $\downarrow$ \\
+            \begin{tabular}{c|c}
+                某行Tag匹配且有效 & 都不匹配 \\
+                $\downarrow$ & $\downarrow$ \\
+                命中，返回数据 & 缺失，从主存调入 \\
+            \end{tabular}
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{center}
+        \textcolor{blue}{$n$路组相联每组需$n$个比较器，硬件介于直接和全相联之间}
+    \end{center}
+\end{frame}
+
+\begin{frame}[t]{三种映射方式地址结构对比}
+    \begin{center}
+        \textbf{主存地址 = Tag + Index/Set + Offset} \\
+        \vspace{0.5em}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{映射方式} & \textbf{Tag} & \textbf{Index/Set} & \textbf{Offset} \\
+            \hline
+            直接映射 & 高位 & 中间（Cache行号） & 低位 \\
+            \hline
+            全相联 & 高+中间 & 无 & 低位 \\
+            \hline
+            组相联 & 高位 & 中间（组号） & 低位 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{exampleblock}{参数示例（假设Cache共64行，每块16B）}
+        \begin{itemize}
+            \item Offset = 4位（$16 = 2^4$）
+            \item 直接映射：Index = 6位（$64 = 2^6$）
+            \item 全相联：无Index，Tag位最多
+            \item 2路组相联：32组 $\to$ Set Index = 5位，Tag = 主存地址 $- 5 - 4$
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}[t]{三种映射方式的比较}
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{特性} & \textbf{直接映射} & \textbf{全相联} & \textbf{$n$路组相联} \\
+            \hline
+            Tag比较次数 & 1 & $m$ & $n$ \\
+            \hline
+            冲突率 & 高 & 低 & 中 \\
+            \hline
+            硬件成本 & 低 & 高 & 中 \\
+            \hline
+            查表速度 & 快 & 较慢 & 较快 \\
+            \hline
+            替换算法 & 无选择 & 需算法 & 需算法 \\
+            \hline
+            常用场景 & 小型Cache & TLB & 主流Cache \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 考研高频题型：给定参数，写出三种映射方式的地址格式
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{替换算法}
+    \begin{block}{常用替换算法（全相联和组相联需要）}
+        \begin{enumerate}
+            \item \textbf{Random}：随机替换——最简单
+            \item \textbf{FIFO}：先进先出——可能替换掉常用数据
+            \item \textbf{LRU}（Least Recently Used）：
+            \begin{itemize}
+                \item 替换最长时间未被访问的行
+                \item 实现需要记录访问顺序——硬件较复杂
+                \item 命中率最高
+            \end{itemize}
+            \item \textbf{LFU}（Least Frequently Used）：
+            \begin{itemize}
+                \item 替换访问次数最少的行
+            \end{itemize}
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \textcolor{blue}{LRU是最常用的近似最优替换算法}
+    \end{center}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 直接映射：固定位置，硬件简单，冲突高
+        \item 全相联：任意位置，硬件复杂，冲突低
+        \item 组相联：固定组内任意行，折中方案
+        \item 替换算法：Random、FIFO、LRU、LFU
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-10 虚拟存储器——分页、分段、段页式}}
+    \end{center}
+\end{frame}
+
+\end{document}

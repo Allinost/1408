@@ -1,0 +1,250 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 计算机网络}
+\subtitle{4-7 组帧与差错检测}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握三种组帧方法的原理和区别
+        \item 重点掌握零比特填充法的过程
+        \item 掌握CRC校验码的手工计算方法
+        \item 理解海明码的检错和纠错原理
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{组帧方法概述}
+    \begin{block}{组帧的目的}
+        在比特流中确定\textbf{帧的起始和结束}位置，使接收方能够正确识别每一帧。
+    \end{block}
+    \vspace{0.3em}
+    \textbf{三种组帧方法}：
+    \begin{enumerate}
+        \item \textbf{字符计数法}：帧首字段标明帧的长度
+        \item \textbf{字符填充法}：用特殊字符定界，数据中的定界符用转义处理
+        \item \textbf{零比特填充法}：用特殊比特模式定界，连续5个1后插0
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{table}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{方法} & \textbf{典型协议} & \textbf{特点} \\ \hline
+            字符计数法 & 早期协议 & 计数字段出错则全错 \\
+            字符填充法 & PPP协议 & 面向字符 \\
+            零比特填充法 & \textbf{HDLC} & 面向比特，最常用 \\
+            \hline
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+\begin{frame}{字符计数法}
+    \begin{block}{原理}
+        在帧的首部用一个\textbf{计数字段}来标明该帧的长度（包含计数字段自身）。
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.6]
+            \draw (0,0) rectangle (1,0.8) node[pos=.5] {\small 5};
+            \draw (1,0) rectangle (3,0.8) node[pos=.5] {\small A};
+            \draw (3,0) rectangle (5,0.8) node[pos=.5] {\small B};
+            \draw (5,0) rectangle (7,0.8) node[pos=.5] {\small C};
+            \draw (7,0) rectangle (9,0.8) node[pos=.5] {\small D};
+            \node[above] at (0.5,0.8) {\small 计数字段};
+            \node[above] at (4,0.8) {\small 数据};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    例：计数为5，表示本帧包含5个字节（1个计数字节 + 4个数据字节）
+    \vspace{0.5em}
+    \begin{alertblock}{缺点}
+        \textbf{一个错，全部错}。如果计数字段在传输中出错，接收方会错误定位帧边界，且难以恢复。
+    \end{alertblock}
+    \vspace{0.3em}
+    \begin{block}{考研提示}
+        字符计数法最大的缺点就是计数字段出错会导致整个同步失败，目前已很少使用。
+    \end{block}
+\end{frame}
+
+\begin{frame}{字符填充法}
+    \begin{block}{原理}
+        用特殊字符标识帧的开始和结束，数据中的特殊字符用\textbf{转义字符}处理。
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.5]
+            \draw[fill=blue!20] (0,0) rectangle (1.5,0.8) node[pos=.5] {\small DLE STX};
+            \draw (1.5,0) rectangle (6,0.8) node[pos=.5] {\small 数据（含转义处理）};
+            \draw[fill=blue!20] (6,0) rectangle (7.5,0.8) node[pos=.5] {\small DLE ETX};
+            \node[above] at (0.75,0.8) {\small 首定界符};
+            \node[above] at (6.75,0.8) {\small 尾定界符};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \textbf{规则}：
+    \begin{itemize}
+        \item 帧开始：\texttt{DLE STX}（Data Link Escape, Start of Text）
+        \item 帧结束：\texttt{DLE ETX}（End of Text）
+        \item 数据中出现 \texttt{DLE}：加插一个 \texttt{DLE} $\to$ \texttt{DLE DLE}
+        \item 数据中出现 \texttt{STX} / \texttt{ETX}：前加 \texttt{DLE}
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{exampleblock}{示例}
+        原始数据：\texttt{A DLE B STX C}\\
+        发送数据：\texttt{DLE STX A DLE DLE B DLE STX C DLE ETX}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{零比特填充法（HDLC）}
+    \begin{block}{原理}
+        用\textbf{标志位} \texttt{01111110} 标识帧的开始和结束，数据中连续5个1后插入0。
+    \end{block}
+    \vspace{0.3em}
+    \textbf{规则}：
+    \begin{itemize}
+        \item \textbf{帧定界符}：\texttt{01111110}（6个连续的1）
+        \item \textbf{发送方}：检查数据，遇到\textbf{连续5个1}时，在其后插入一个\textbf{0}
+        \item \textbf{接收方}：检查数据，遇到\textbf{连续5个1}时，删除其后的0
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{exampleblock}{示例}
+        原始数据：\texttt{01111110 01111111 001100}\\
+        发送时填充后：\texttt{011111\textcolor{red}{0}10 011111\textcolor{red}{0}11 001100}\\
+        接收时删除：还原为原始数据
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{block}{优点}
+        面向比特，与字符编码无关，透明性好，硬件实现简单。\textbf{HDLC使用此方法}。
+    \end{block}
+\end{frame}
+
+\begin{frame}{CRC校验码计算详解}
+    \begin{block}{模2除法规则}
+        \begin{itemize}
+            \item 模2加法/减法 = \textbf{异或}（相同为0，不同为1）
+            \item 除法时：被除数高位对齐除数，做异或
+            \item 余数位数 = 除数位数 - 1
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{例题：计算CRC码}
+        数据 $M = 110101$，生成多项式 $P = 1001$（$r=3$，即 $x^3+1$）
+        \begin{enumerate}
+            \item $M$ 后加3个0：\texttt{110101000}
+            \item 模2除法求余数：
+            \begin{align*}
+                &\texttt{110101000} \div \texttt{1001} \\
+                &\text{过程：异或计算} \\
+                &\text{余数} = \texttt{011}
+            \end{align*}
+            \item FCS = 011
+            \item 发送的帧：\texttt{110101\textcolor{red}{011}}
+        \end{enumerate}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{海明码 --- 基本原理}
+    \begin{block}{核心思想}
+        在数据位中插入多个\textbf{校验位}，通过校验位的信息不仅能检测错误，还能定位并纠正错误。
+    \end{block}
+    \vspace{0.3em}
+    \textbf{校验位数量确定}：
+    \begin{itemize}
+        \item 数据位 $k$ 位，校验位 $r$ 位
+        \item 满足：\textbf{$2^r \ge k + r + 1$}
+        \item 总码长 $n = k + r$
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{exampleblock}{例题}
+        数据位 $k=8$，求需要的校验位数？\\
+        \begin{align*}
+            r=4 &: 2^4 = 16 \ge 8+4+1 = 13 \quad \checkmark
+        \end{align*}
+        需要4位校验位。
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{海明码 --- 校验位位置}
+    \textbf{校验位放置规则}：校验位放在 $2^i$ 位置（$i=0,1,2,\dots$）
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.5]
+            \foreach \x/\label in {1/P_1,2/P_2,3/D_1,4/P_3,5/D_2,6/D_3,7/D_4,8/P_4,9/D_5,10/D_6,11/D_7,12/D_8} {
+                \draw (\x*0.8,0) rectangle (\x*0.8+0.8,0.8);
+                \node at (\x*0.8+0.4,0.4) {\small \label};
+            }
+            \node[above] at (0.4,1.2) {\tiny $2^0$};
+            \node[above] at (1.2,1.2) {\tiny $2^1$};
+            \node[above] at (2.8,1.2) {\tiny $2^2$};
+            \node[above] at (6.0,1.2) {\tiny $2^3$};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \textbf{校验规则}：
+    \begin{itemize}
+        \item 校验位 $P_i$（位置 $2^{i-1}$）校验所有位置编号二进制表示中第 $i$ 位为1的位
+        \item 例如 $P_1$（位置1，二进制0001）校验所有位置编号第0位为1的位
+        \item 例如 $P_2$（位置2，二进制0010）校验所有位置编号第1位为1的位
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{检错纠错过程}
+        接收方重新计算各校验位，若某校验位结果不一致，其位置号相加即可定位出错位。
+    \end{block}
+\end{frame}
+
+\begin{frame}{海明码计算示例}
+    \begin{exampleblock}{例题：求数据 $1011$ 的海明码}
+        \begin{enumerate}
+            \item 数据位 $k=4$，$2^r \ge 4+r+1$ $\to$ $r=3$，总长 $n=7$
+            \item 位置：$P_1$@1, $P_2$@2, $D_1$@3, $P_3$@4, $D_2$@5, $D_3$@6, $D_4$@7
+            \item 数据填入：$D_1D_2D_3D_4 = 1011$
+            \item 计算校验位（偶校验）：
+            \begin{align*}
+                P_1 &= D_1 \oplus D_2 \oplus D_4 = 1 \oplus 0 \oplus 1 = 0 \\
+                P_2 &= D_1 \oplus D_3 \oplus D_4 = 1 \oplus 1 \oplus 1 = 1 \\
+                P_3 &= D_2 \oplus D_3 \oplus D_4 = 0 \oplus 1 \oplus 1 = 0
+            \end{align*}
+            \item 海明码：\texttt{0 1 1 0 0 1 1}
+        \end{enumerate}
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{center}
+        \textcolor{blue}{接收方重新计算各校验位，与收到的校验位对比，不一致的位置之和即为出错位}
+    \end{center}
+\end{frame}
+
+\begin{frame}{三种组帧方法对比}
+    \begin{table}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{对比项} & \textbf{字符计数法} & \textbf{字符填充法} & \textbf{零比特填充法} \\ \hline
+            定界方式 & 首部计数字段 & DLE STX / ETX & 01111110标志 \\
+            面向 & 字符 & 字符 & \textbf{比特} \\
+            透明性 & 好 & 较好 & \textbf{最好} \\
+            实现复杂度 & 简单 & 较复杂 & 简单（硬件） \\
+            典型协议 & 早期协议 & PPP & \textbf{HDLC} \\
+            容错性 & \textbf{差}（一个错全错） & 较好 & 好 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.5em}
+    \begin{block}{408考研重点}
+        零比特填充法是\textbf{最重要}的组帧方法，HDLC使用，发送插0接收删0。
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item \textbf{字符计数法}：计数字段标帧长，一个错全错
+        \item \textbf{字符填充法}：DLE STX/ETX定界，数据中DLE前加DLE
+        \item \textbf{零比特填充法}（重点）：01111110定界，连续5个1后插0，HDLC使用
+        \item \textbf{CRC校验}：模2除法求余数，余数为FCS
+        \item \textbf{海明码}：$2^r \ge k+r+1$，校验位在 $2^i$ 位，可检错并纠错1位
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：模块4内容至此结束，后续进入模块5四科串联总结}}
+    \end{center}
+\end{frame}
+\end{document}

@@ -1,0 +1,172 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-8 死锁}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解死锁的定义与四个必要条件
+        \item 掌握死锁的预防策略
+        \item 理解银行家算法的核心思想
+        \item 了解死锁的检测与解除
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{死锁的定义}
+    \textbf{死锁（Deadlock）}：一组进程中的每个进程都在等待被该组中其他进程占用的资源，导致所有进程都无法继续推进。
+
+    \vspace{0.5em}
+    \begin{exampleblock}
+        类比：十字路口四个方向的车互不相让，所有车都无法通行。
+    \end{exampleblock}
+    \vspace{0.5em}
+    \begin{alertblock}{与饥饿的区别}
+        \begin{itemize}
+            \item 死锁：循环等待，所有进程\textbf{都无法继续}
+            \item 饥饿：进程等待时间过长，但\textbf{最终可能获得资源}
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{死锁的四个必要条件}
+    必须\textbf{同时满足}以下四个条件才会发生死锁：
+
+    \begin{enumerate}
+        \item \textbf{互斥} —— 资源一次只能被一个进程占用
+        \item \textbf{占有并等待} —— 进程已占有一个资源，又在等待其他资源
+        \item \textbf{不可剥夺} —— 资源不能被强制剥夺，只能由进程主动释放
+        \item \textbf{循环等待} —— 存在循环等待链：$P_1 \to P_2 \to \dots \to P_n \to P_1$
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{block}{核心}
+        破坏\textbf{任意一个}条件即可预防死锁。
+    \end{block}
+\end{frame}
+
+\begin{frame}{死锁预防}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        条件 & 预防方法 & 缺点 \\
+        \hline
+        互斥 & SPOOLing技术 & 不是所有资源可虚拟化 \\
+        占有并等待 & 一次性分配所有资源 & 资源利用率低 \\
+        不可剥夺 & 进程可被剥夺资源 & 实现复杂，开销大 \\
+        循环等待 & 资源按序分配 & 编号维护困难 \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{死锁避免 —— 银行家算法}
+    \textbf{核心思想}：资源分配前，检查系统是否处于\textbf{安全状态}。
+
+    \vspace{0.5em}
+    \textbf{算法要素}：
+    \begin{itemize}
+        \item $Available$：系统可用资源向量
+        \item $Max$：进程最大需求矩阵
+        \item $Allocation$：已分配资源矩阵
+        \item $Need$：还需资源矩阵（$Need = Max - Allocation$）
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{安全性检查}
+        找一个安全序列，使所有进程都能依次获得所需资源并完成执行。
+    \end{block}
+\end{frame}
+
+\begin{frame}{银行家算法示例}
+    系统有资源 $A$（10个），当前状态：
+
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        进程 & $Max$ & $Allocation$ & $Need$ \\
+        \hline
+        $P_0$ & 7 & 3 & 4 \\
+        $P_1$ & 6 & 2 & 4 \\
+        $P_2$ & 5 & 2 & 3 \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item $Available = 10 - (3+2+2) = 3$
+        \item 先给 $P_2$：$3 \ge 3$，$P_2$ 完成，释放 $2$ 个资源
+        \item $Available = 3-3+2 = 2$
+        \item \dots 继续检查可得安全序列 $\langle P_2, P_0, P_1 \rangle$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{死锁检测}
+    系统不预防也不避免，但定期检测是否发生死锁。
+
+    \vspace{0.5em}
+    \textbf{资源分配图}：
+    \begin{itemize}
+        \item 圆圈表示进程，方框表示资源
+        \item 进程 $\to$ 资源：请求边
+        \item 资源 $\to$ 进程：分配边
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{死锁定理}
+        如果资源分配图\textbf{不可完全化简}，则系统处于死锁状态。
+    \end{block}
+    \begin{itemize}
+        \item 化简：删除不阻塞的进程及其边，直至无可化简节点
+        \item 若存在剩余节点 $\to$ 死锁
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{死锁解除}
+    \begin{enumerate}
+        \item \textbf{资源剥夺法}
+        \begin{itemize}
+            \item 从死锁进程处剥夺资源给其他进程
+            \item 可能导致进程回退
+        \end{itemize}
+        \item \textbf{撤销进程法}
+        \begin{itemize}
+            \item 强制撤销一个或多个死锁进程
+            \item 按优先级或代价选择
+        \end{itemize}
+        \item \textbf{进程回退法}
+        \begin{itemize}
+            \item 将进程回退到安全状态（需要系统支持 checkpoint）
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{死锁处理策略对比}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        策略 & 资源利用率 & 系统开销 & 适用场景 \\
+        \hline
+        预防 & 低 & 小 & 对实时性要求高 \\
+        避免 & 中 & 较大 & 通用系统 \\
+        检测+解除 & 高 & 大 & 大型系统 \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \begin{block}{408考点提示}
+        死锁的四个必要条件、银行家算法的安全序列判断、资源分配图化简是常考题型。
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 死锁四条件：互斥、占有并等待、不可剥夺、循环等待
+        \item 预防：破坏四个条件之一（SPOOLing、一次性分配、剥夺、按序）
+        \item 避免：银行家算法，分配前检查安全性
+        \item 检测：资源分配图化简；解除：剥夺/撤销/回退
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：模块4 计算机网络}}
+    \end{center}
+\end{frame}
+
+\end{document}

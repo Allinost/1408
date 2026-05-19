@@ -1,0 +1,187 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-7 经典同步问题}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解并掌握生产者-消费者问题
+        \item 理解并掌握读者-写者问题
+        \item 理解并掌握哲学家进餐问题
+        \item 了解信号量集的概念
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{生产者-消费者问题}
+    \textbf{问题描述}：
+    \begin{itemize}
+        \item 生产者生产数据放入\textbf{有界缓冲区}
+        \item 消费者从缓冲区取数据消费
+        \item 缓冲区满时生产者等待，空时消费者等待
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{需要的信号量}：
+    \begin{itemize}
+        \item $mutex$（互斥访问缓冲区，初值 $1$）
+        \item $empty$（空缓冲区数量，初值 $n$）
+        \item $full$（满缓冲区数量，初值 $0$）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{生产者-消费者 PV操作}
+    \textbf{生产者}：
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \begin{itemize}
+                \item 生产数据
+                \item $P(empty)$
+                \item $P(mutex)$
+                \item 放入缓冲区
+                \item $V(mutex)$
+                \item $V(full)$
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{消费者}：
+            \begin{itemize}
+                \item $P(full)$
+                \item $P(mutex)$
+                \item 取出数据
+                \item $V(mutex)$
+                \item $V(empty)$
+                \item 消费数据
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{alertblock}{注意}
+        $P(empty/full)$ 必须在 $P(mutex)$ \textbf{之前}，否则可能死锁！
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{读者-写者问题}
+    \textbf{问题描述}：
+    \begin{itemize}
+        \item 读者和写者共享一个数据文件
+        \item \textbf{读者可同时读}，\textbf{写者必须独占}
+        \item 写者写时不能有其他读者或写者
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{方案：读者优先}
+    \begin{itemize}
+        \item 第一个读者进入时加锁，最后一个读者离开时解锁
+        \item 只要有读者在读，后续读者可直接进入
+        \item 写者必须等待所有读者离开
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{读者-写者 PV操作}
+    \textbf{信号量}：
+    \begin{itemize}
+        \item $rw$：数据文件互斥信号量（初值 $1$）
+        \item $mutex$：保护 $readcount$（初值 $1$）
+        \item $readcount$：读者数量（初值 $0$）
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{读者}：
+    \begin{itemize}
+        \item $P(mutex)$；$readcount++$
+        \item 若 $readcount = 1$，$P(rw)$
+        \item $V(mutex)$
+        \item 读取数据
+        \item $P(mutex)$；$readcount--$
+        \item 若 $readcount = 0$，$V(rw)$
+        \item $V(mutex)$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{哲学家进餐问题}
+    \textbf{问题描述}：
+    \begin{itemize}
+        \item 5位哲学家围坐圆桌，每两人之间放一根筷子
+        \item 哲学家需要拿起\textbf{两根筷子}才能进餐
+        \item 拿筷子和放筷子是核心问题
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \includegraphics[width=0.4\textwidth]{example-image}
+    \end{center}
+\end{frame}
+
+\begin{frame}{哲学家进餐问题的死锁与预防}
+    \textbf{可能死锁}：每位哲学家都拿起左边筷子，等待右边筷子。
+
+    \vspace{0.5em}
+    \textbf{预防死锁的方法}：
+    \begin{enumerate}
+        \item \textbf{限制人数}：最多4位哲学家同时进餐
+        \item \textbf{限制拿筷顺序}：奇数号先拿左边，偶数号先拿右边
+        \item \textbf{一次性申请}：要么同时拿到两根筷子，要么都不拿
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{哲学家进餐 PV操作}
+    方法一：用信号量 $chopstick[5]$ 表示5根筷子（初值均为 $1$）
+
+    \vspace{0.5em}
+    \textbf{第 $i$ 位哲学家}：
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            奇数号（先左后右）：
+            \begin{itemize}
+                \item $P(chopstick[i])$
+                \item $P(chopstick[(i+1)\bmod 5])$
+                \item 进餐
+                \item $V(chopstick[i])$
+                \item $V(chopstick[(i+1)\bmod 5])$
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            偶数号（先右后左）：
+            \begin{itemize}
+                \item $P(chopstick[(i+1)\bmod 5])$
+                \item $P(chopstick[i])$
+                \item 进餐
+                \item $V(chopstick[i])$
+                \item $V(chopstick[(i+1)\bmod 5])$
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{信号量集（AND型信号量）}
+    \textbf{AND型信号量}：同时申请多个资源，要么全部分配，要么一个都不分配。
+
+    \vspace{0.5em}
+    \textbf{基本操作}：
+    \begin{itemize}
+        \item $P_{sim}(S_1, S_2, \dots, S_n)$：同时申请所有信号量
+        \item $V_{sim}(S_1, S_2, \dots, S_n)$：同时释放所有信号量
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{优势}
+        解决哲学家进餐问题中"拿起两根筷子"的需求，从根源上避免死锁。
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 生产者-消费者：$mutex$互斥buffer，$empty/full$同步
+        \item 读者-写者：读者可同时读，写者独占；$readcount$计数
+        \item 哲学家进餐：5哲学家5筷子，预防死锁（限制人数/顺序/一次性申请）
+        \item 信号量集（AND型）：同时申请多个资源，防死锁
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-8 死锁}}
+    \end{center}
+\end{frame}
+
+\end{document}

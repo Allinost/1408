@@ -1,0 +1,169 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-2 操作系统运行环境}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解内核态与用户态的区别及切换方式
+        \item 掌握系统调用的概念与流程
+        \item 理解中断与异常的概念及区别
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{CPU的两种运行状态}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{内核态（管态）}
+            \begin{itemize}
+                \item 可执行\textbf{特权指令}
+                \item 可访问所有硬件资源
+                \item 操作系统的内核运行在此状态
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{用户态（目态）}
+            \begin{itemize}
+                \item 只能执行\textbf{非特权指令}
+                \item 不能直接访问硬件
+                \item 用户程序运行在此状态
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{alertblock}{核心}
+        用户态 $\xrightarrow{\text{中断/异常/系统调用}}$ 内核态
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{特权指令与非特权指令}
+    \begin{itemize}
+        \item \textbf{特权指令}：只能在\textbf{内核态}执行的指令
+        \begin{itemize}
+            \item 如：I/O指令、中断指令、内存清零、设置时钟
+        \end{itemize}
+        \item \textbf{非特权指令}：可在\textbf{用户态}执行的指令
+        \begin{itemize}
+            \item 如：算术运算、逻辑运算、访存指令
+        \end{itemize}
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{注意}
+        从内核态 $\to$ 用户态通过\textbf{修改PSW状态字}即可，但反向必须通过\textbf{中断/异常/系统调用}。
+    \end{block}
+\end{frame}
+
+\begin{frame}{系统调用}
+    \textbf{系统调用}：用户程序请求操作系统内核提供服务的一种方式。
+
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item 用户程序执行\textbf{访管指令（陷阱指令）}触发系统调用
+        \item CPU从用户态切换到内核态
+        \item OS内核处理请求并返回结果
+        \item CPU从内核态切回用户态
+    \end{enumerate}
+    \vspace{0.5em}
+    \textbf{常见系统调用类型：}
+    \begin{itemize}
+        \item 设备管理：请求/释放设备
+        \item 文件管理：创建/打开/读写/关闭文件
+        \item 进程管理：创建/撤销/阻塞/唤醒进程
+        \item 内存管理：申请/释放内存
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{系统调用与库函数的区别}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        对比项 & 系统调用 & 库函数 \\
+        \hline
+        执行状态 & 内核态 & 用户态 \\
+        开销 & 较大（需切换状态） & 较小 \\
+        例子 & read(), write() & printf(), scanf() \\
+        关系 & \multicolumn{2}{c|}{库函数通常封装系统调用} \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \begin{exampleblock}{举例}
+        \texttt{printf()} 底层调用 \texttt{write()} 系统调用完成输出。
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{中断与异常}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{中断（外中断）}
+            \begin{itemize}
+                \item 来自CPU\textbf{外部}
+                \item 与当前指令\textbf{无关}
+                \item I/O中断、时钟中断
+                \item 可屏蔽/不可屏蔽
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{异常（内中断）}
+            \begin{itemize}
+                \item 来自CPU\textbf{内部}
+                \item 由当前指令\textbf{引起}
+                \item 缺页异常、除零异常
+                \item 越界、非法指令
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{block}{共同作用}
+        中断和异常都是CPU从用户态切换到内核态的唯一手段。
+    \end{block}
+\end{frame}
+
+\begin{frame}{中断处理流程}
+    \begin{enumerate}
+        \item CPU检测到中断信号
+        \item 保护\textbf{断点}（PC/PSW等寄存器入栈）
+        \item CPU进入\textbf{内核态}
+        \item 查找\textbf{中断向量表}，找到对应的中断处理程序入口
+        \item 执行中断处理程序
+        \item 恢复断点，返回用户态
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{alertblock}{关键概念}
+        \textbf{中断向量表}：存放各类中断处理程序入口地址的表。
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{中断与异常的区别总结}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        对比项 & 中断（外中断） & 异常（内中断） \\
+        \hline
+        来源 & CPU外部 & CPU内部 \\
+        起因 & 与当前指令无关 & 由当前指令触发 \\
+        同步性 & 异步 & 同步 \\
+        可屏蔽 & 通常可屏蔽 & 不可屏蔽 \\
+        例子 & I/O中断、时钟中断 & 缺页、除零、越界 \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item CPU状态：内核态（执行特权指令）和用户态（执行非特权指令）
+        \item 用户态 $\to$ 内核态的唯一方式：中断、异常、系统调用
+        \item 系统调用通过访管指令（陷阱）触发，OS内核提供服务
+        \item 中断（外）来自CPU外部；异常（内）由CPU内部指令触发
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-3 进程概念}}
+    \end{center}
+\end{frame}
+
+\end{document}

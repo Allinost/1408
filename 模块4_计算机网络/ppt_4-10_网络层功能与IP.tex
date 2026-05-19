@@ -1,0 +1,352 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 计算机网络}
+\subtitle{4-10 网络层功能与IP}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解网络层的核心功能：路由选择与分组转发
+        \item 掌握IPv4地址的分类编址、子网划分和CIDR
+        \item 理解NAT、ARP、ICMP等关键协议的作用
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{网络层功能概述}
+    \begin{block}{网络层的核心任务}
+        将分组从源主机送达目的主机，涉及\textbf{路由选择}和\textbf{分组转发}两大功能。
+    \end{block}
+    \vspace{0.5em}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{路由选择（选路）}
+        \begin{itemize}
+            \item 确定分组从源到目的的最佳路径
+            \item 通过路由算法计算路由表
+            \item 动态/静态路由协议实现
+        \end{itemize}
+        \column{0.48\textwidth}
+        \textbf{分组转发（交换）}
+        \begin{itemize}
+            \item 路由器根据路由表将分组从入接口转发到出接口
+            \item 直接转发（同一网络）vs 间接转发（不同网络）
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,rectangle,minimum width=0.8cm,minimum height=0.5cm] (s) {源};
+            \node[draw,rectangle,minimum width=0.8cm,minimum height=0.5cm] (r1) at (2,0) {R1};
+            \node[draw,rectangle,minimum width=0.8cm,minimum height=0.5cm] (r2) at (4,0) {R2};
+            \node[draw,rectangle,minimum width=0.8cm,minimum height=0.5cm] (d) at (6,0) {目的};
+            \draw[->] (s) -- node[above]{转发} (r1);
+            \draw[->] (r1) -- node[above]{路由选择}(r2);
+            \draw[->] (r2) -- node[above]{转发}(d);
+            \draw[->,dashed] (s) to[out=45,in=135] node[above]{可选路径}(d);
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{IP协议概述}
+    \begin{block}{IP协议特点}
+        \begin{itemize}
+            \item \textbf{无连接}：发送数据前不建立连接
+            \item \textbf{不可靠}：尽力而为交付，不保证送达
+        \end{itemize}
+    \end{block}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,minimum width=3cm,minimum height=0.8cm,fill=blue!20] at (0,0) {应用层};
+            \node[draw,minimum width=3cm,minimum height=0.8cm,fill=green!20] at (0,-0.9) {传输层(TCP/UDP)};
+            \node[draw,minimum width=3cm,minimum height=0.8cm,fill=red!20] at (0,-1.8) {\textbf{网络层(IP)}};
+            \node[draw,minimum width=3cm,minimum height=0.8cm,fill=yellow!20] at (0,-2.7) {网络接口层};
+            \node[right] at (1.6,-1.8) {$\leftarrow$ 核心协议};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item IP协议是TCP/IP协议栈的核心
+        \item 上层协议数据封装在IP数据报中传输
+        \item IPv4地址长度为32位
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{IPv4地址}
+    \begin{block}{表示方法}
+        32位二进制，通常用\textbf{点分十进制}表示。
+        \[
+        192.168.1.1 \quad \Leftrightarrow \quad 11000000.10101000.00000001.00000001
+        \]
+    \end{block}
+    \vspace{0.5em}
+    \begin{columns}[t]
+        \column{0.5\textwidth}
+        \textbf{点分十进制格式}
+        \begin{itemize}
+            \item 每8位一组（一个字节）
+            \item 转换为十进制（0-255）
+            \item 用点分隔
+            \item 例：10.0.0.1
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{组成}
+        \begin{itemize}
+            \item 网络号：标识所在网络
+            \item 主机号：标识网络中的主机
+            \item 同一网络中网络号相同
+            \item 不同网络的网络号不同
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{分类编址}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node at (0,2.5) {\textbf{IP地址分类}};
+            \draw (0,2.0) -- (6,2.0);
+            \foreach \class/\pattern/\range/\start/\end in {
+                A/0+7net+24host/1.0.0.0-126.0.0.0/0/0.9,
+                B/10+14net+16host/128.0.0.0-191.255.0.0/1/-0.4,
+                C/110+21net+8host/192.0.0.0-223.255.255.0/2/-1.7,
+                D/1110组播/224.0.0.0-239.255.255.255/3/-3.0,
+                E/1111保留/240.0.0.0-255.255.255.255/4/-4.3
+            } {
+                \node[draw,minimum width=6cm,minimum height=0.7cm,fill=\class!20] at (0,\end) {\textbf{\class类}: \pattern \hspace{1em} \range};
+            }
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item \textbf{A类}：前1位为0，网络号7位，主机号24位
+        \item \textbf{B类}：前2位为10，网络号14位，主机号16位
+        \item \textbf{C类}：前3位为110，网络号21位，主机号8位
+        \item \textbf{D类}：前4位为1110，组播地址
+        \item \textbf{E类}：前4位为1111，保留
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{分类编址细节}
+    \begin{table}
+        \centering
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline
+            \textbf{类别} & \textbf{首比特} & \textbf{网络号位数} & \textbf{主机号位数} & \textbf{地址范围} \\
+            \hline
+            A & 0 & 7 & 24 & 1.0.0.0 -- 126.0.0.0 \\
+            B & 10 & 14 & 16 & 128.0.0.0 -- 191.255.0.0 \\
+            C & 110 & 21 & 8 & 192.0.0.0 -- 223.255.255.0 \\
+            D & 1110 & 组播 & 组播 & 224.0.0.0 -- 239.255.255.255 \\
+            E & 1111 & 保留 & 保留 & 240.0.0.0 -- 255.255.255.255 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.5em}
+    \begin{alertblock}{注意}
+        \begin{itemize}
+            \item 网络号全0和全127的A类地址有特殊含义
+            \item 主机号全0表示网络本身，全1表示广播地址
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{子网划分}
+    \begin{block}{为什么需要子网划分？}
+        分类编址浪费大量IP地址（如B类可容纳65534台主机，但很多网络没这么多主机）。
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,minimum width=6cm,minimum height=0.6cm,fill=blue!20] at (0,0) {网络号};
+            \node[draw,minimum width=2cm,minimum height=0.6cm,fill=green!20] at (4,0) {主机号};
+            \node[above] at (1,-0.8) {\textbf{原始分类编址}};
+            \node[draw,minimum width=3.5cm,minimum height=0.6cm,fill=blue!20] at (-1.25,-1.6) {网络号};
+            \node[draw,minimum width=2.5cm,minimum height=0.6cm,fill=red!20] at (1.75,-1.6) {子网号};
+            \node[draw,minimum width=2cm,minimum height=0.6cm,fill=green!20] at (4,-1.6) {主机号};
+            \node[above] at (1,-2.4) {\textbf{子网划分后：IP = 网络号 + 子网号 + 主机号}};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 从主机位中借出若干位作为\textbf{子网号}
+        \item 子网号位数 = 借位数
+        \item 可用子网数 $= 2^{\text{借位数}}$（需注意全0全1是否可用）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{子网掩码}
+    \begin{block}{子网掩码的作用}
+        用于区分IP地址中的网络部分和主机部分。网络号和子网号对应位全1，主机号对应位全0。
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{示例}
+        \begin{itemize}
+            \item IP地址：192.168.1.10
+            \item 子网掩码：255.255.255.0（/24）
+            \item 网络部分：192.168.1
+            \item 主机部分：10
+        \end{itemize}
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,minimum width=2.5cm,minimum height=0.6cm,fill=blue!20] at (-2,0) {网络号(24位)};
+            \node[draw,minimum width=2cm,minimum height=0.6cm,fill=green!20] at (1.5,0) {主机号(8位)};
+            \node[draw,minimum width=4.5cm,minimum height=0.6cm,fill=red!30] at (0,-0.8) {子网掩码：11111111.11111111.11111111.00000000};
+            \draw[<->] (-2,-0.8) -- (2,-0.8);
+            \node at (-2.5,-1.3) {全1};
+            \node at (2.5,-1.3) {全0};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{alertblock}{常用子网掩码}
+        /8: 255.0.0.0 \quad /16: 255.255.0.0 \quad /24: 255.255.255.0 \quad /30: 255.255.255.252
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{CIDR无分类编址}
+    \begin{block}{CIDR (Classless Inter-Domain Routing)}
+        取消ABC类划分，采用\textbf{IP地址/前缀长度}表示法，前缀长度指示网络部分位数。
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{表示方法}
+        \[
+        192.168.1.0/24 \quad \Rightarrow \quad \text{前24位为网络前缀，后8位为主机号}
+        \]
+        \[
+        10.0.0.0/8 \quad \Rightarrow \quad \text{前8位为网络前缀}
+        \]
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 有效提高IP地址利用率
+        \item 支持\textbf{路由聚合}（CIDR地址块合并）
+        \item 地址块大小 $= 2^{\text{主机位数}}$
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,minimum width=5cm,minimum height=0.6cm,fill=blue!20] at (-0.5,0) {网络前缀（任意长度）};
+            \node[draw,minimum width=2cm,minimum height=0.6cm,fill=green!20] at (3.5,0) {主机号};
+            \node[below] at (0,-0.5) {CIDR：无类别，任意长度网络前缀};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{NAT网络地址转换}
+    \begin{block}{NAT解决的问题}
+        IPv4地址枯竭——内网使用私有IP，访问外网时转换为公有IP。
+    \end{block}
+    \vspace{0.3em}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{私有IP地址范围}
+        \begin{itemize}
+            \item 10.0.0.0/8（A类私有）
+            \item 172.16.0.0/12（B类私有）
+            \item 192.168.0.0/16（C类私有）
+        \end{itemize}
+        \column{0.48\textwidth}
+        \textbf{NAT工作原理}
+        \begin{enumerate}
+            \item 内网主机发往外网的数据报
+            \item NAT路由器将源IP替换为公网IP
+            \item 记录映射关系（NAT转换表）
+            \item 响应回来时再替换回私有IP
+        \end{enumerate}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,minimum width=1.2cm] (pc1) at (-2,0) {PC1};
+            \node[draw,minimum width=1.2cm] (pc2) at (-2,-1) {PC2};
+            \node[draw,minimum width=2.5cm,minimum height=1.5cm,fill=red!20] (nat) at (1,-0.5) {NAT路由器};
+            \node[draw,minimum width=1.5cm] (svr) at (4,-0.5) {服务器};
+            \node[above] at (-2,0.3) {192.168.1.2};
+            \node[above] at (-2,-0.7) {192.168.1.3};
+            \node[above] at (1,0.8) {公网IP: 202.120.1.1};
+            \draw[->] (pc1) -- (nat);
+            \draw[->] (pc2) -- (nat);
+            \draw[->] (nat) -- (svr);
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{ARP协议}
+    \begin{block}{ARP (Address Resolution Protocol)}
+        已知IP地址，解析对应的MAC地址（同一局域网内）。
+    \end{block}
+    \vspace{0.3em}
+    \begin{columns}[t]
+        \column{0.5\textwidth}
+        \textbf{工作原理}
+        \begin{enumerate}
+            \item 主机A广播ARP请求（谁是IP\_B？）
+            \item 主机B收到后单播ARP响应（我是IP\_B，MAC是M\_B）
+            \item A将映射存入ARP缓存
+        \end{enumerate}
+        \column{0.5\textwidth}
+        \textbf{补充}
+        \begin{itemize}
+            \item ARP缓存有生存时间（TTL）
+            \item 查询ARP缓存优先于发送请求
+            \item \textbf{ARP欺骗}：伪造ARP响应的攻击
+        \end{itemize}
+    \end{columns}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node (a) {主机A (IP\_A, MAC\_A)};
+            \node[right=4cm of a] (b) {主机B (IP\_B, MAC\_B)};
+            \draw[->,thick] (a) -- node[above]{ARP请求(广播)} (b);
+            \draw[->,thick] (b) -- node[below]{ARP响应(单播)} (a);
+            \node[below=0.5cm of a] {ARP缓存表: IP\_B $\rightarrow$ MAC\_B};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{ICMP协议}
+    \begin{block}{ICMP (Internet Control Message Protocol)}
+        用于在IP网络中传递差错报告和询问信息。
+    \end{block}
+    \vspace{0.3em}
+    \begin{columns}[t]
+        \column{0.5\textwidth}
+        \textbf{差错报告报文}
+        \begin{itemize}
+            \item 目的不可达
+            \item 源点抑制
+            \item 超时（TTL=0）
+            \item 参数问题
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{询问报文}
+        \begin{itemize}
+            \item 回送请求/回答（Ping使用）
+            \item 时间戳请求/回答
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{exampleblock}{常见应用}
+        \begin{itemize}
+            \item \textbf{Ping}：发送ICMP回送请求，测试连通性
+            \item \textbf{Traceroute}：利用TTL超时报文，追踪路由路径
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 网络层功能：路由选择（选路）与分组转发（交换）
+        \item IPv4地址：32位点分十进制；分类编址（A/B/C/D/E）；子网划分（借位+子网掩码）；CIDR（IP/前缀）
+        \item NAT：私有IP$\leftrightarrow$公有IP；ARP：IP$\rightarrow$MAC；ICMP：差错报告+询问
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：4-11 路由算法}}
+    \end{center}
+\end{frame}
+\end{document}

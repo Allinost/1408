@@ -1,0 +1,86 @@
+﻿\documentclass[10pt, aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-15 图的基本概念与存储}
+\author{}
+\date{}
+\setbeamertemplate{page number in head/foot}{}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}{本节目标}
+\begin{enumerate}
+\item 掌握图的定义和术语
+\item 理解邻接矩阵和邻接表的存储结构
+\item 能够根据实际需求选择合适的存储结构
+\end{enumerate}
+\end{frame}
+\begin{frame}{图的定义与术语}
+\textbf{图} $G=(V,E)$
+\begin{itemize}
+\item $V$ --- 顶点的非空有限集合
+\item $E$ --- 边的有限集合
+\end{itemize}
+\vspace{0.3em}
+\begin{tabular}{|c|c|}
+\hline 术语 & 定义 \\ \hline
+有向图 & 边有方向（弧） \\ \hline
+无向图 & 边无方向 \\ \hline
+度 & 与顶点相关联的边数 \\ \hline
+入度/出度 & 有向图中指向/指出的边数 \\ \hline
+连通分量 & 无向图中的极大连通子图 \\ \hline
+强连通分量 & 有向图中的极大强连通子图 \\ \hline
+\end{tabular}
+\end{frame}
+\begin{frame}{完全图}
+\textbf{无向完全图} $|E|=n(n-1)/2$
+\vspace{0.3em}
+\textbf{有向完全图} $|E|=n(n-1)$
+\vspace{0.5em}
+\textbf{稀疏图}：边数很少\quad \textbf{稠密图}：边数接近完全图
+\end{frame}
+\begin{frame}{邻接矩阵}
+$n$ 个顶点的 $n\times n$ 方阵，$A[i][j]=1$ 表示存在边
+\vspace{0.3em}
+\textbf{特点}
+\begin{itemize}
+\item 无向图对称，有向图不一定对称
+\item 判边 $O(1)$，空间 $O(n^2)$
+\item 适合稠密图
+\end{itemize}
+顶点 $i$ 的度：无向图 $\to$ 第 $i$ 行之和
+\end{frame}
+\begin{frame}{邻接表}
+顶点表（数组）+ 边表（链表）
+\vspace{0.3em}
+\textbf{特点}
+\begin{itemize}
+\item 空间 $O(n+e)$，适合稀疏图
+\item 判边 $O(\text{degree}(v))$
+\item 遍历邻接顶点更高效
+\end{itemize}
+\vspace{0.3em}
+\begin{tabular}{|c|c|c|}
+\hline 对比 & 邻接矩阵 & 邻接表 \\ \hline
+空间 & $O(n^2)$ & $O(n+e)$ \\ \hline
+判边 & $O(1)$ & $O(\text{degree})$ \\ \hline
+\end{tabular}
+\end{frame}
+\begin{frame}{本节总结}
+\begin{enumerate}
+\item 图分为有向图和无向图
+\item 邻接矩阵空间 $O(n^2)$，适合稠密图，判边 $O(1)$
+\item 邻接表空间 $O(n+e)$，适合稀疏图
+\end{enumerate}
+\vspace{1em}
+\begin{center}
+\textcolor{blue}{\textbf{下节预告：图的遍历}}
+\end{center}
+\end{frame}
+\end{document}

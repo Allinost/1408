@@ -1,0 +1,220 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-6 存储器概述}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握存储器的分类（ROM/RAM、SRAM/DRAM）
+        \item 理解存储器层次结构及其设计原理
+        \item 掌握存储器性能指标（容量、速度、成本）
+        \item 理解局部性原理及其意义
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{存储器分类——按存储介质}
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{类型} & \textbf{介质} & \textbf{特点} & \textbf{用途} \\
+            \hline
+            半导体存储器 & 晶体管/电容 & 速度快、体积小 & 主存、Cache \\
+            \hline
+            磁表面存储器 & 磁介质 & 非易失、容量大 & 硬盘 \\
+            \hline
+            光盘存储器 & 激光 & 非易失、可更换 & 光盘 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{block}{按存取方式分类}
+        \begin{itemize}
+            \item \textbf{RAM (Random Access Memory)}：随机存取，可读可写
+            \item \textbf{ROM (Read Only Memory)}：只读（或可编程）
+            \item \textbf{SAM (Sequential Access Memory)}：顺序存取（磁带）
+            \item \textbf{DAM (Direct Access Memory)}：直接存取（磁盘）
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{SRAM vs DRAM}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{特性} & \textbf{SRAM} & \textbf{DRAM} \\
+            \hline
+            存储原理 & 触发器（6管） & 电容（1管） \\
+            \hline
+            是否需要刷新 & 否 & 是（约64ms） \\
+            \hline
+            存取速度 & 快 & 较慢 \\
+            \hline
+            集成度 & 低 & 高 \\
+            \hline
+            功耗 & 较大 & 较小 \\
+            \hline
+            价格 & 高 & 低 \\
+            \hline
+            用途 & Cache & 主存 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item SRAM：Static RAM，静态——不需要刷新
+        \item DRAM：Dynamic RAM，动态——电容电荷会漏放
+    \end{itemize}
+\end{center}
+\end{frame}
+
+\begin{frame}{存储器分类——按在计算机中的作用}
+    \begin{center}
+        \begin{tabular}{c}
+            \textbf{存储器层次结构} \\
+            \hline
+            寄存器（CPU内部） \\
+            \hline
+            Cache（SRAM，高速缓存） \\
+            \hline
+            主存储器（DRAM，内存） \\
+            \hline
+            辅助存储器（磁盘/SSD） \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 从上到下：速度变慢、容量增大、价格降低
+        \item 每层都是下一层的缓存
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{存储器层次结构}
+    \begin{block}{设计理念}
+        \begin{itemize}
+            \item 理想：大容量 + 高速度 + 低成本——不可能三角
+            \item 解决方案：层次化结构
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{层次} & \textbf{容量} & \textbf{速度} & \textbf{价格/位} \\
+            \hline
+            寄存器 & $\sim$几百B & 1个时钟周期 & 最高 \\
+            \hline
+            Cache & KB$\sim$MB & 几个时钟周期 & 较高 \\
+            \hline
+            主存 & GB & 几十$\sim$几百周期 & 中等 \\
+            \hline
+            磁盘 & TB & ms级 & 极低 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 工作原理：\textbf{局部性原理}使得层次结构有效
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{存储器的性能指标}
+    \begin{enumerate}
+        \item \textbf{存储容量}：
+        \[
+            \text{容量} = \text{存储单元数} \times \text{存储字长}
+        \]
+        \begin{itemize}
+            \item 如：$1K \times 8$位 表示1024个单元，每单元8位
+        \end{itemize}
+        \item \textbf{存取时间}（Access Time）：
+        \begin{itemize}
+            \item 从发出读写命令到完成操作所需的时间
+        \end{itemize}
+        \item \textbf{存储周期}（Memory Cycle Time）：
+        \begin{itemize}
+            \item 两次独立访问之间的最短时间间隔
+            \item 存储周期 $\ge$ 存取时间
+        \end{itemize}
+        \item \textbf{带宽}（Bandwidth）：
+        \[
+            \text{带宽} = \frac{\text{数据位数}}{\text{存储周期}}
+        \]
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{局部性原理}
+    \begin{block}{核心思想}
+        \begin{itemize}
+            \item CPU访问存储器时，呈现\textbf{局部}规律
+        \end{itemize}
+    \end{block}
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item \textbf{时间局部性}（Temporal Locality）：
+        \begin{itemize}
+            \item 刚被访问的单元，不久后还可能被访问
+            \item 例：循环体中的代码
+        \end{itemize}
+        \item \textbf{空间局部性}（Spatial Locality）：
+        \begin{itemize}
+            \item 刚被访问的单元附近的单元也将被访问
+            \item 例：顺序执行的指令、数组遍历
+        \end{itemize}
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{center}
+        \textcolor{blue}{局部性原理是Cache和虚拟存储器能够高效工作的理论基础}
+    \end{center}
+\end{frame}
+
+\begin{frame}{多体交叉存储器}
+    \begin{block}{目的}
+        \begin{itemize}
+            \item 通过多个存储体并行工作提高带宽
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item \textbf{顺序交叉}（高位交叉编址）：
+        \begin{itemize}
+            \item 连续地址在同一模块内，适合扩展容量
+        \end{itemize}
+        \item \textbf{交叉交叉}（低位交叉编址）：
+        \begin{itemize}
+            \item 连续地址分布在相邻模块，适合流水访问
+            \item 理想情况下，$m$体交叉的带宽是单体的$m$倍
+        \end{itemize}
+    \end{enumerate}
+    \vspace{0.3em}
+    \begin{exampleblock}{低位交叉编址示例（4体）}
+        \begin{align*}
+            \text{模块0} &: 0, 4, 8, 12, \cdots \\
+            \text{模块1} &: 1, 5, 9, 13, \cdots \\
+            \text{模块2} &: 2, 6, 10, 14, \cdots \\
+            \text{模块3} &: 3, 7, 11, 15, \cdots
+        \end{align*}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 存储器分类：SRAM（Cache）/DRAM（主存）/磁盘（辅存）
+        \item 层次结构：寄存器 $\to$ Cache $\to$ 主存 $\to$ 辅存
+        \item 性能指标：容量、存取时间、存储周期、带宽
+        \item 局部性原理：时间和空间局部性
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-7 主存储器——SRAM与DRAM、存储芯片扩展}}
+    \end{center}
+\end{frame}
+
+\end{document}

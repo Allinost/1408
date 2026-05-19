@@ -1,0 +1,299 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-10 虚拟存储器}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解虚拟存储器的基本概念与作用
+        \item 掌握分页存储管理（页、页框、页表、地址转换）
+        \item 理解分段存储管理的基本思想
+        \item 了解段页式存储管理
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}[t]{为什么需要虚拟存储器？}
+    \begin{block}{面临的问题}
+        \begin{enumerate}
+            \item \textbf{物理内存有限}：运行程序可能大于物理内存
+            \item \textbf{多道程序}：多个程序同时运行，总需求 > 物理内存
+            \item \textbf{地址空间隔离}：不同程序不应相互干扰
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{虚拟存储器的解决方案}
+        \begin{itemize}
+            \item 给每个程序提供\textbf{独立的虚拟地址空间}
+            \item 运行时再将虚拟地址转换为物理地址
+            \item 部分内容可在磁盘上，需要时调入
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{虚拟地址（VA）} & 程序看到的地址 \\
+            \hline
+            \textbf{物理地址（PA）} & 主存中的真实地址 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{虚拟存储器与Cache的类比}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{Cache} & \textbf{虚拟存储器} \\
+            \hline
+            主存 $\to$ Cache & 磁盘 $\to$ 主存 \\
+            \hline
+            块（Block/Line） & 页（Page） \\
+            \hline
+            标记（Tag） & 页号 \\
+            \hline
+            命中（Hit） & 页命中（Page in Memory） \\
+            \hline
+            缺失（Miss） & 缺页（Page Fault） \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 虚拟存储器是\textbf{主存-磁盘}层次的Cache
+        \item 页大小通常为4KB（比Cache行大得多）
+        \item 缺页处理时间极长（毫秒级）——尽量提高命中率
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{分页存储管理——基本概念}
+    \begin{block}{核心概念}
+        \begin{itemize}
+            \item \textbf{页（Page）}：虚拟地址空间划分的固定大小块
+            \item \textbf{页框（Page Frame）}：物理内存划分的固定大小块
+            \item \textbf{页大小相同}——通常4KB（$2^{12}$）
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{虚拟地址结构}
+        \[
+            \underbrace{\text{虚拟页号（VPN）}}_{\text{高位}} \quad
+            \underbrace{\text{页内偏移（Offset）}}_{\text{低位}}
+        \]
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{例：虚拟地址32位，页大小4KB}
+        \begin{align*}
+            \text{页内偏移} &= \log_2(4K) = 12\text{位} \\
+            \text{虚拟页号} &= 32 - 12 = 20\text{位} \\
+            \text{虚拟地址空间} &= 2^{20} \text{页} = 1M\text{页}
+        \end{align*}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{页表}
+    \begin{block}{页表的作用}
+        \begin{itemize}
+            \item 存储\textbf{虚拟页号到物理页框号的映射关系}
+            \item 每个进程有\textbf{独立的页表}
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{虚拟页号} & \textbf{物理页框号} & \textbf{状态位} \\
+            \hline
+            0 & 5 & 有效 \\
+            \hline
+            1 & -- & 无效（在磁盘上） \\
+            \hline
+            2 & 9 & 有效 \\
+            \hline
+            $\cdots$ & $\cdots$ & $\cdots$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item \textbf{状态位}（存在位）：该页是否在主存中
+        \item 若无效 $\to$ 缺页中断 $\to$ 从磁盘调入
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{地址转换过程——分页}
+    \begin{center}
+        \begin{tabular}{c}
+            CPU给出虚拟地址（VPN + Offset） \\
+            $\downarrow$ \\
+            以VPN为索引访问\textbf{页表} \\
+            $\downarrow$ \\
+            \begin{tabular}{c|c}
+                页表项有效（页在主存） & 页表项无效（缺页） \\
+                $\downarrow$ & $\downarrow$ \\
+                读PPN（物理页框号） & 缺页中断 \\
+                $\downarrow$ & $\downarrow$ \\
+                物理地址 = PPN + Offset & 从磁盘读入页框 \\
+                $\downarrow$ & $\downarrow$ \\
+                访问主存 & 更新页表后重试 \\
+            \end{tabular}
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{center}
+        \textcolor{blue}{每次地址转换都需要查页表——效率是关键}
+    \end{center}
+\end{frame}
+
+\begin{frame}{TLB——快表}
+    \begin{block}{TLB (Translation Lookaside Buffer)}
+        \begin{itemize}
+            \item 为解决页表查询速度慢而引入
+            \item 是页表的\textbf{硬件Cache}（位于CPU内部）
+            \item 存储最近使用的页表项
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{c}
+            CPU给出VPN \\
+            $\downarrow$ \\
+            \begin{tabular}{c|c}
+                TLB命中 & TLB缺失 \\
+                $\downarrow$ & $\downarrow$ \\
+                直接得到PPN & 查页表 \\
+                （1个时钟周期） & $\downarrow$ \\
+                              & 更新TLB \\
+            \end{tabular}
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item TLB通常为全相联或高度组相联
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{分段存储管理}
+    \begin{block}{基本概念}
+        \begin{itemize}
+            \item 按\textbf{逻辑单位}（程序段、数据段、栈段等）划分
+            \item 每段有\textbf{段名/段号}和\textbf{段长}
+            \item 段长可以不固定
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{逻辑地址结构}
+        \[
+            \underbrace{\text{段号}}_{\text{找到段基址}} \quad
+            \underbrace{\text{段内偏移}}_{\text{需小于段长}}
+        \]
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{段表}
+        \begin{center}
+            \begin{tabular}{|c|c|c|}
+                \hline
+                \textbf{段号} & \textbf{段长} & \textbf{段基址} \\
+                \hline
+                0 & 64KB & 0x100000 \\
+                \hline
+                1 & 32KB & 0x200000 \\
+                \hline
+            \end{tabular}
+        \end{center}
+    \end{block}
+\end{frame}
+
+\begin{frame}[t]{分段 vs 分页}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{特性} & \textbf{分页} & \textbf{分段} \\
+            \hline
+            划分依据 & 固定大小（硬件） & 逻辑单位（用户/编译器） \\
+            \hline
+            大小是否固定 & 固定（如4KB） & 不固定 \\
+            \hline
+            地址空间 & 线性一维 & 二维（段号+偏移） \\
+            \hline
+            共享/保护 & 较困难 & 容易（按段） \\
+            \hline
+            碎片问题 & 内部碎片 & 外部碎片 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 分页：关注\textbf{内存利用率}，对程序员透明
+        \item 分段：关注\textbf{逻辑组织}，对程序员可见
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{段页式存储管理}
+    \begin{block}{基本思想——分段+分页的结合}
+        \begin{enumerate}
+            \item 先将程序按逻辑分段（段式管理）
+            \item 每段内再分成固定大小的页（页式管理）
+            \item 物理内存按页框管理
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{逻辑地址结构}
+        \[
+            \underbrace{\text{段号}}_{\text{查段表}} \quad
+            \underbrace{\text{段内页号}}_{\text{查页表}} \quad
+            \underbrace{\text{页内偏移}}_{\text{块内地址}}
+        \]
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{地址转换过程}
+        \begin{itemize}
+            \item 段号 $\to$ 段表 $\to$ 得到该段页表基址
+            \item 段内页号 $\to$ 页表 $\to$ 得到物理页框号
+            \item 页框号 + 页内偏移 $\to$ 物理地址
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{段页式地址转换流程}
+    \begin{center}
+        \begin{tabular}{c}
+            逻辑地址（段号 $|$ 段内页号 $|$ 偏移） \\
+            $\downarrow$ \\
+            查\textbf{段表}：段号 $\to$ 该段页表起始地址 \\
+            $\downarrow$ \\
+            查\textbf{页表}：段内页号 $\to$ 物理页框号 \\
+            $\downarrow$ \\
+            物理地址 = 页框号 $\times$ 页大小 + 偏移 \\
+            $\downarrow$ \\
+            访问主存
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item \textcolor{red}{两次访存查表}（段表+页表）$\to$ 速度慢
+        \item 改进：使用TLB缓存最近使用的段表/页表项
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 虚拟存储器：给每个程序提供独立虚拟地址空间
+        \item 分页：固定大小，通过页表+TLB地址转换
+        \item 分段：按逻辑单位，段表记录基址和段长
+        \item 段页式：分段+分页结合，两次查表
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：模块3 计算机网络——走进计算机网络}}
+    \end{center}
+\end{frame}
+
+\end{document}

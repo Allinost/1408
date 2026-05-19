@@ -1,0 +1,196 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 计算机网络}
+\subtitle{4-4 物理层基础}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解物理层的任务和四大特性
+        \item 掌握信源、信道、信宿和信号分类
+        \item 理解码元、码元速率（波特率）的概念
+        \item 掌握奈奎斯特定理和香农定理
+        \item 掌握信噪比的计算
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{物理层的任务}
+    \begin{block}{物理层的作用}
+        在连接各计算机的传输媒体上传输\textbf{比特流}（0和1），为数据链路层提供透明的比特流传输服务。
+    \end{block}
+    \vspace{0.5em}
+    \textbf{物理层的四大特性}：
+    \begin{enumerate}
+        \item \textbf{机械特性}：接口的形状、尺寸、引脚数等物理规格
+        \item \textbf{电气特性}：电压高低、电流大小等电气参数
+        \item \textbf{功能特性}：各条信号线的用途（数据线、控制线等）
+        \item \textbf{规程特性}：信号线上事件的顺序（时序）
+    \end{enumerate}
+    \vspace{0.3em}
+    \begin{exampleblock}{举例}
+        RJ45接口（网口）的物理尺寸属于机械特性，引脚电压范围属于电气特性。
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{通信基本概念}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{三个基本要素}：
+        \begin{itemize}
+            \item \textbf{信源}：产生和发送数据的源设备
+            \item \textbf{信道}：信号传输的介质通路
+            \item \textbf{信宿}：接收数据的目的设备
+        \end{itemize}
+        \vspace{0.5em}
+        \begin{center}
+            \begin{tikzpicture}[scale=0.5]
+                \node[draw,rectangle,minimum width=1.5cm,minimum height=0.8cm] (s) at (-3,0) {信源};
+                \node[draw,rectangle,minimum width=1.5cm,minimum height=0.8cm] (c) at (0,0) {信道};
+                \node[draw,rectangle,minimum width=1.5cm,minimum height=0.8cm] (d) at (3,0) {信宿};
+                \draw[->,thick] (s)--(c);
+                \draw[->,thick] (c)--(d);
+            \end{tikzpicture}
+        \end{center}
+        \column{0.5\textwidth}
+        \textbf{信号分类}：
+        \begin{itemize}
+            \item \textbf{模拟信号}：连续变化的信号（如声音）
+            \item \textbf{数字信号}：离散的信号（0/1）
+        \end{itemize}
+        \vspace{0.5em}
+        \begin{block}{信道分类}
+            \begin{itemize}
+                \item 单向信道（单工）
+                \item 双向交替信道（半双工）
+                \item 双向同时信道（全双工）
+            \end{itemize}
+        \end{block}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{码元与波特率}
+    \begin{block}{码元（Symbol / Code Element）}
+        信号的基本波形单位。一个码元可以携带多个比特的信息。
+    \end{block}
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{相关概念}：
+        \begin{itemize}
+            \item \textbf{码元速率}（波特率，$Baud$）：每秒传输的码元个数，单位\textbf{Baud}
+            \item \textbf{数据速率}（比特率，$R$）：每秒传输的比特数，单位\textbf{bps}
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{两者关系}：
+        $$R = B \cdot \log_2 V$$
+        \begin{itemize}
+            \item $B$：波特率（Baud）
+            \item $V$：每个码元的状态数
+            \item $R$：数据率（bps）
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{exampleblock}{举例}
+        若 $V=4$（每个码元代表4种状态=2bit），$B=1000$Baud，则 $R = 1000 \times \log_2 4 = 2000$bps。
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{奈奎斯特定理（无噪声）}
+    \begin{block}{定理内容}
+        在\textbf{无噪声}的理想信道中，\textbf{极限码元速率}为 $2W$（Baud），其中 $W$ 是信道的带宽（Hz）。
+    \end{block}
+    \vspace{0.3em}
+    \textbf{公式}：
+    \begin{itemize}
+        \item \textbf{极限码元速率} $= 2W$（Baud）
+        \item \textbf{极限数据速率} $= 2W \log_2 V$（bps）
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{exampleblock}{例题}
+        某信道带宽为 4kHz，使用 16 种状态码元，求极限数据率？\\
+        \textbf{解}：$R_{\max} = 2 \times 4000 \times \log_2 16 = 8000 \times 4 = 32$kbps
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{alertblock}{注意}
+        奈奎斯特定理只考虑\textbf{无噪声}的理想情况，给出了上限。
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{香农定理（有噪声）}
+    \begin{block}{定理内容}
+        在\textbf{有噪声}的实际信道中，极限数据速率受信噪比限制。
+    \end{block}
+    \vspace{0.3em}
+    \textbf{公式}：
+    $$C = W \cdot \log_2(1 + S/N)$$
+    \begin{itemize}
+        \item $C$：极限数据速率（bps）
+        \item $W$：信道带宽（Hz）
+        \item $S/N$：\textbf{信噪比}（信号功率/噪声功率，无量纲）
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{信噪比（dB）换算}
+        $$\text{信噪比(dB)} = 10\log_{10}(S/N)$$
+        \vspace{-0.5em}
+        $$S/N = 10^{\frac{\text{信噪比(dB)}}{10}}$$
+    \end{block}
+\end{frame}
+
+\begin{frame}{信噪比计算示例}
+    \begin{exampleblock}{例题1}
+        已知信噪比为 30dB，带宽为 3kHz，求最大数据率？\\
+        \textbf{解}：
+        \begin{align*}
+            30\text{dB} &= 10\log_{10}(S/N) \\
+            \log_{10}(S/N) &= 3 \\
+            S/N &= 10^3 = 1000 \\
+            C &= 3000 \times \log_2(1 + 1000) \\
+            &\approx 3000 \times \log_2 1001 \approx 3000 \times 9.97 \approx 29.9\text{kbps}
+        \end{align*}
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{exampleblock}{例题2}
+        某信道带宽 4kHz，信噪比 40dB，求极限数据率？\\
+        \textbf{解}：$S/N = 10^{40/10} = 10^4 = 10000$，$C = 4000 \times \log_2(10001) \approx 53.1$kbps
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{奈奎斯特 vs 香农}
+    \begin{table}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{对比项} & \textbf{奈奎斯特定理} & \textbf{香农定理} \\ \hline
+            适用条件 & 无噪声理想信道 & 有噪声实际信道 \\
+            考虑因素 & 带宽 $W$、码元状态 $V$ & 带宽 $W$、信噪比 $S/N$ \\
+            公式 & $2W\log_2 V$ & $W\log_2(1+S/N)$ \\
+            意义 & 限制码元速率 & 限制数据速率 \\
+            应用 & 确定码元状态数 & 确定极限传输速率 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.5em}
+    \begin{block}{考研常考思路}
+        \begin{enumerate}
+            \item 先由香农定理求出极限速率 $C$
+            \item 再由奈奎斯特定理 $C = 2W\log_2 V$ 反推 $V$
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 物理层任务：传输比特流，定义\textbf{机械、电气、功能、规程}四大特性
+        \item 通信三要素：\textbf{信源、信道、信宿}
+        \item 码元速率（Baud）与数据率（bps）关系：$R = B \cdot \log_2 V$
+        \item \textbf{奈奎斯特定理}（无噪）：$R_{\max} = 2W\log_2 V$
+        \item \textbf{香农定理}（有噪）：$C = W\log_2(1+S/N)$
+        \item 信噪比换算：$\text{dB} = 10\log_{10}(S/N)$
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：4-5 传输介质与设备}}
+    \end{center}
+\end{frame}
+\end{document}

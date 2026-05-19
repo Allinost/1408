@@ -1,0 +1,303 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 计算机网络}
+\subtitle{4-8 流量控制协议}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握停止-等待协议的工作原理及信道利用率计算
+        \item 理解GBN后退N帧协议的机制与特点
+        \item 理解SR选择重传协议的机制与特点
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{流量控制概述}
+    \begin{block}{为什么需要流量控制？}
+        发送方发送速率过快，接收方来不及处理，导致数据丢失。
+    \end{block}
+    \vspace{0.5em}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{常见流量控制方法}
+        \begin{itemize}
+            \item 停止-等待协议
+            \item 滑动窗口协议
+            \begin{itemize}
+                \item GBN后退N帧
+                \item SR选择重传
+            \end{itemize}
+        \end{itemize}
+        \column{0.48\textwidth}
+        \textbf{滑动窗口}
+        \begin{itemize}
+            \item 发送窗口：已发送但未确认的帧
+            \item 接收窗口：允许接收的帧
+            \item 窗口大小 = 1 时为停等协议
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{停止-等待协议 --- 工作原理}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth, node distance=1.2cm, auto]
+            \node (A) {发送方};
+            \node[below right=0.8cm and 0.5cm of A] (t1) {时间$t_1$: 发送帧};
+            \node[below right=0.8cm and 0.5cm of t1] (t2) {时间$t_2$: 收到ACK};
+            \node[below right=0.8cm and 0.5cm of t2] (t3) {时间$t_3$: 发送下一帧};
+            \draw[->] (t1) -- node[above]{数据帧} (t2);
+            \draw[->] (t2.south) -- node[above]{ACK} (t1.north);
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.5em}
+    \begin{block}{基本流程}
+        \begin{enumerate}
+            \item 发送方发送一帧，启动定时器
+            \item 接收方收到后发回ACK
+            \item 发送方收到ACK，发送下一帧
+            \item 若超时未收到ACK，则重传
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+\begin{frame}{停止-等待协议 --- 信道利用率}
+    \begin{block}{信道利用率公式}
+        \[
+        U = \frac{T_d}{T_d + \text{RTT} + T_a}
+        \]
+        \begin{itemize}
+            \item $T_d$：发送时延（数据帧从主机到信道的时间）
+            \item $\text{RTT}$：往返时间
+            \item $T_a$：确认帧发送时延（通常远小于$T_d$）
+        \end{itemize}
+    \end{block}
+    \vspace{0.5em}
+    \begin{alertblock}{结论}
+        停止-等待协议的信道利用率极低，因为大部分时间发送方都在等待ACK。
+        \[
+        \text{极端情况：} U \approx \frac{T_d}{\text{RTT}} \ll 1
+        \]
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{停止-等待协议 --- 异常处理}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{情况一：ACK丢失}
+        \begin{itemize}
+            \item 接收方收到重复帧
+            \item 丢弃重复帧，重发ACK
+        \end{itemize}
+        \vspace{0.8em}
+        \begin{center}
+            \begin{tikzpicture}[>=stealth, scale=0.7]
+                \node at (0,0) {A};
+                \node at (2,-0.8) {数据帧};
+                \node at (2,-1.6) {【超时】};
+                \node at (2,-2.4) {数据帧(重传)};
+                \draw[->] (0,0) -- (0,-0.8);
+                \draw[->] (2,-0.8) -- (2,-1.6);
+                \draw[->] (0,-1.6) -- (0,-2.4);
+            \end{tikzpicture}
+        \end{center}
+        \column{0.48\textwidth}
+        \textbf{情况二：数据帧丢失}
+        \begin{itemize}
+            \item 接收方无反应
+            \item 发送方超时重传
+        \end{itemize}
+        \vspace{0.8em}
+        \begin{center}
+            \begin{tikzpicture}[>=stealth, scale=0.7]
+                \node at (0,0) {A};
+                \node at (2,-0.8) {数据帧};
+                \node at (2,-1.6) {【丢失】};
+                \node at (2,-2.4) {【超时重传】};
+                \draw[->] (0,0) -- (0,-0.8);
+            \end{tikzpicture}
+        \end{center}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{GBN后退N帧协议 --- 工作原理}
+    \begin{block}{核心特点}
+        \begin{itemize}
+            \item \textbf{发送窗口} $> 1$（可连续发送多帧）
+            \item \textbf{接收窗口} $= 1$（只按顺序接收）
+            \item \textbf{累计确认}：收到ACK$n$ 表示 $n$ 及之前所有帧已正确接收
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth, node distance=0.6cm]
+            \footnotesize
+            \node[draw, minimum width=6cm, minimum height=0.6cm] (w) {};
+            \foreach \x/\label in {0/0,1/1,2/2,3/3,4/4,5/5,6/6,7/7} {
+                \node[draw, minimum width=0.6cm, minimum height=0.6cm, fill=blue!20] at (\x*0.75+0.375,0) {\label};
+            }
+            \node[above=0.2cm of w, blue] {发送窗口};
+            \node[below=0.2cm of w] {已发送并确认 \hspace{2em} 已发送等待确认 \hspace{2em} 待发送};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.5em}
+    \begin{alertblock}{出错处理}
+        一旦发现某帧出错或丢失，从该帧开始\textbf{全部重传}（后退N步）！
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{GBN协议 --- 示例}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[align=center] at (0,2) {\textbf{发送方}};
+            \node[align=center] at (4,2) {\textbf{接收方}};
+            \draw[->] (0.8,1.5) -- node[above]{0} (3.2,1.5);
+            \draw[->] (0.8,1.0) -- node[above]{1} (3.2,1.0);
+            \draw[->] (0.8,0.5) -- node[above]{2} (3.2,0.5);
+            \draw[->] (0.8,0.0) -- node[above]{3} (3.2,0.0);
+            \draw[->] (3.2,-0.5) -- node[above]{ACK1} (0.8,-0.5);
+            \draw[->] (0.8,-1.0) -- node[above]{1(重传)} (3.2,-1.0);
+            \draw[->] (0.8,-1.5) -- node[above]{2(重传)} (3.2,-1.5);
+            \draw[->,red,thick] (3.0,0.3) -- (3.0,-0.3);
+            \node[red,right] at (3.2,0) {帧2出错};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 接收方收到0、1后交给上层
+        \item 帧2出错 → 丢弃帧2及后续所有帧
+        \item 发送方收到ACK1后，从帧2开始全部重传
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{GBN协议 --- 发送方与接收方}
+    \begin{columns}[t]
+        \column{0.5\textwidth}
+        \textbf{发送方}
+        \begin{enumerate}
+            \item 上層调用发送数据
+            \item 窗口未满则发送，窗口满则拒绝
+            \item 收到ACK$n$，窗口后移到$n$
+            \item 超时事件：重传所有已发送但未确认的帧
+        \end{enumerate}
+        \column{0.5\textwidth}
+        \textbf{接收方}
+        \begin{enumerate}
+            \item 只接收顺序到达的帧
+            \item 收到期望帧$n$，交付上层，发送ACK$n$
+            \item 收到乱序帧（非期望帧），直接丢弃
+            \item 重发最近收到的有序帧的ACK
+        \end{enumerate}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{block}{窗口大小限制}
+        若序号为$k$比特，则发送窗口大小 $W_{\text{max}} \le 2^k - 1$
+    \end{block}
+\end{frame}
+
+\begin{frame}{SR选择重传协议 --- 工作原理}
+    \begin{block}{核心特点}
+        \begin{itemize}
+            \item \textbf{发送窗口} $> 1$
+            \item \textbf{接收窗口} $> 1$（可缓存乱序到达的帧）
+            \item \textbf{分别确认}：每个帧单独确认，非累计确认
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw, minimum width=6cm, minimum height=0.6cm] (sw) {};
+            \node[above=0.1cm of sw] {\textbf{发送窗口}};
+            \foreach \x/\label in {0/0,1/1,2/2,3/3,4/4,5/5,6/6,7/7} {
+                \node[draw, minimum width=0.6cm, minimum height=0.6cm, fill=blue!20] at (\x*0.75+0.375,0) {\label};
+            }
+            \node[draw, minimum width=6cm, minimum height=0.6cm] (rw) at (0,-1.5) {};
+            \node[above=0.1cm of rw] {\textbf{接收窗口}};
+            \foreach \x/\label in {0/0,1/1,2/2,3/3,4/4,5/5,6/6,7/7} {
+                \node[draw, minimum width=0.6cm, minimum height=0.6cm, fill=green!20] at (\x*0.75+0.375,-1.5) {\label};
+            }
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{alertblock}{与GBN的关键区别}
+        SR协议\textbf{只重传出错帧}，接收方缓存乱序帧，按序交付上层。
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{SR协议 --- 示例}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[align=center] at (0,2.5) {\textbf{发送方}};
+            \node[align=center] at (4,2.5) {\textbf{接收方}};
+            \draw[->] (0.8,2.0) -- node[above]{0} (3.2,2.0);
+            \draw[->] (0.8,1.5) -- node[above]{1} (3.2,1.5);
+            \draw[->] (0.8,1.0) -- node[above]{2} (3.2,1.0);
+            \draw[->] (0.8,0.5) -- node[above]{3} (3.2,0.5);
+            \draw[->] (3.2,0.0) -- node[above]{ACK0} (0.8,0.0);
+            \draw[->] (3.2,-0.5) -- node[above]{ACK1} (0.8,-0.5);
+            \draw[->] (3.2,-1.0) -- node[above]{ACK3} (0.8,-1.0);
+            \draw[->] (0.8,-1.5) -- node[above]{2(重传)} (3.2,-1.5);
+            \draw[->] (3.2,-2.0) -- node[above]{ACK2} (0.8,-2.0);
+            \draw[->,red,thick] (3.0,1.2) -- (3.0,0.8);
+            \node[red,right] at (3.2,1.0) {帧2出错};
+            \node[below] at (2,-2.5) {...接收方缓存帧3，待帧2到达后一并交付};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{SR协议 --- 窗口大小限制}
+    \begin{block}{重要结论}
+        若序号为$k$比特，则发送窗口大小需满足：
+        \[
+        W_S + W_R \le 2^k
+        \]
+        通常取 $W_S = W_R = 2^{k-1}$（对称窗口）
+    \end{block}
+    \vspace{0.5em}
+    \begin{exampleblock}{为什么？}
+        防止序号重复问题——接收方无法区分新旧帧使用相同序号。
+        \begin{itemize}
+            \item $W_S > 2^{k-1}$ 时，可能出现序号混淆
+            \item $W_S \le 2^{k-1}$ 时，可保证不会误判
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{三种协议对比}
+    \begin{table}
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{特性} & \textbf{停等} & \textbf{GBN} & \textbf{SR} \\
+            \hline
+            发送窗口 & 1 & $>1$ & $>1$ \\
+            接收窗口 & 1 & 1 & $>1$ \\
+            确认方式 & 单独 & 累计 & 单独 \\
+            出错重传 & 当前帧 & 后退N帧 & 仅出错帧 \\
+            接收方缓存 & 无 & 无 & 需要 \\
+            信道利用率 & 极低 & 高 & 高 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 停等：实现最简单，效率最低
+        \item GBN：接收方简单，出错时重传开销大
+        \item SR：效率最高，但需要缓存和复杂管理
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 停止-等待协议：发送一帧等待ACK，信道利用率$U = \frac{T_d}{T_d + \text{RTT} + T_a}$，支持超时重传
+        \item GBN协议：发送窗口$>1$，接收窗口$=1$，累计确认，出错帧开始全部重传（后退N步）
+        \item SR协议：发送窗口$>1$，接收窗口$>1$，分别确认，只重传出错帧，接收方需缓存乱序帧
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：4-9 介质访问控制}}
+    \end{center}
+\end{frame}
+\end{document}

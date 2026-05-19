@@ -1,0 +1,186 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-10 非连续分配}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解分页存储管理的原理与地址转换过程
+        \item 掌握两级页表解决页表过大问题
+        \item 理解分段存储管理的逻辑划分思想
+        \item 了解段页式存储结合分段与分页
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{分页存储管理基本概念}
+    分页将逻辑空间和物理空间都划分为等大的小块：
+    \begin{description}
+        \item[页（Page）] 逻辑地址空间的等分单位，也称页面
+        \item[页框（Page Frame）] 物理地址空间的等分单位，也称物理块
+    \end{description}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 典型的页大小为 \textbf{4KB}
+        \item 逻辑地址格式：
+    \end{itemize}
+    \[
+    \underbrace{\text{页号（Page Number）}}_{\text{高位}} \quad
+    \underbrace{\text{页内偏移（Offset）}}_{\text{低位}}
+    \]
+    若页大小为 $2^k$，则偏移量占 $k$ 位，剩余高位为页号。
+\end{frame}
+
+\begin{frame}{页表与地址转换}
+    \textbf{页表}：操作系统为每个进程维护的映射表
+    \[
+    \text{页表项}：\text{页号} \rightarrow \text{页框号（物理块号）}
+    \]
+    \vspace{0.5em}
+    \textbf{地址转换过程}：
+    \begin{enumerate}
+        \item CPU 发出逻辑地址 $(P, D)$
+        \item 查页表，将逻辑页号 $P$ 转换为物理页框号 $B$
+        \item 物理地址 = $B \times \text{页大小} + D$
+    \end{enumerate}
+    \vspace{0.5em}
+    硬件支持：\textbf{MMU（内存管理单元）} + \textbf{TLB（快表）}
+    \begin{itemize}
+        \item TLB 存储近期常用的页表项，加速地址转换
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{地址转换示例}
+    \textbf{例}：页大小 4KB（偏移 12 位），逻辑地址 8193
+    
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|c|}
+            \hline
+            逻辑地址 & 8193 \\
+            \hline
+            页号 $P = \lfloor 8193 / 4096 \rfloor$ & 2 \\
+            \hline
+            偏移 $D = 8193 \bmod 4096$ & 1 \\
+            \hline
+            页表查询：页号 2 $\rightarrow$ 页框号 6 \\
+            \hline
+            物理地址 $= 6 \times 4096 + 1$ & 24577 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \[
+    \text{物理地址} = \text{页框号} \times \text{页大小} + \text{页内偏移}
+    \]
+\end{frame}
+
+\begin{frame}{两级页表}
+    单级页表存在的问题：32 位地址空间，页大小 4KB
+    \[
+    \text{页表项数} = \frac{2^{32}}{2^{12}} = 2^{20} = 1,048,576
+    \]
+    每个页表项 4B $\rightarrow$ 页表大小 = 4MB，连续存储开销大。
+    \vspace{0.5em}
+    \textbf{两级页表}：
+    \[
+    \text{逻辑地址} = \underbrace{P_1}_{\text{外层页号}} \quad
+    \underbrace{P_2}_{\text{内层页号}} \quad
+    \underbrace{D}_{\text{偏移}}
+    \]
+    \begin{itemize}
+        \item \textbf{外层页表}：$P_1 \rightarrow$ 内层页表物理块号
+        \item \textbf{内层页表}：$P_2 \rightarrow$ 物理页框号
+        \item 无需所有内层页表常驻内存，按需加载
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{分段存储管理}
+    \textbf{分段}：按程序的逻辑模块划分地址空间
+    \begin{itemize}
+        \item 每段独立编址，有段名/段号
+        \item 逻辑地址：$(S, D)$ --- 段号 + 段内偏移
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{段表}：
+    \[
+    \text{段表项}：\text{段基址} + \text{段长}
+    \]
+    \begin{itemize}
+        \item 段长可变，反映模块的实际大小
+        \item 地址转换：查段表得到段基址，加上偏移得到物理地址
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{分段 vs 分页}：
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{分页} & \textbf{分段} \\
+            \hline
+            系统管理角度 & 用户编程角度 \\
+            页大小固定 & 段长可变 \\
+            无逻辑意义 & 有逻辑意义 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{段页式存储管理}
+    \textbf{段页式}：分段 + 分页的结合
+    \begin{itemize}
+        \item 先分段（逻辑模块划分），每段内再分页
+        \item 每段有自己的页表
+    \end{itemize}
+    \vspace{0.5em}
+    逻辑地址结构：
+    \[
+    \underbrace{S}_{\text{段号}} \quad
+    \underbrace{P}_{\text{页号}} \quad
+    \underbrace{D}_{\text{页内偏移}}
+    \]
+    \vspace{0.5em}
+    地址转换过程：
+    \begin{enumerate}
+        \item 由段号 $S$ 查段表 $\rightarrow$ 该段页表起始地址
+        \item 由页号 $P$ 查该段页表 $\rightarrow$ 物理页框号
+        \item 页框号 $\times$ 页大小 + 偏移 $D$ $\rightarrow$ 物理地址
+    \end{enumerate}
+    优点：兼具分段的逻辑清晰和分页的物理高效。
+\end{frame}
+
+\begin{frame}{三种非连续分配对比}
+    \begin{center}
+        \begin{tabular}{|l|l|l|l|}
+            \hline
+            \textbf{特征} & \textbf{分页} & \textbf{分段} & \textbf{段页式} \\
+            \hline
+            划分依据 & 固定大小 & 逻辑模块 & 逻辑 + 固定 \\
+            地址结构 & 页号+偏移 & 段号+偏移 & 段号+页号+偏移 \\
+            段/页长 & 固定（4KB） & 可变 & 页固定/段可变 \\
+            共享保护 & 困难 & 容易 & 较容易 \\
+            外碎片 & 无 & 有 & 有（段间） \\
+            内碎片 & 有（最后一项） & 无 & 有（页内） \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 分页存储：等分逻辑/物理空间，页表映射，TLB 加速
+        \item 两级页表：用外层+内层页表解决单级页表连续存储过大问题
+        \item 分段存储：按逻辑模块划分，段表记录基址和段长
+        \item 段页式存储：先分段后分页，兼具两者优点
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-11 虚拟内存}}
+    \end{center}
+\end{frame}
+
+\end{document}

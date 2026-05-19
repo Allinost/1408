@@ -1,0 +1,132 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-5 链表进阶}
+\author{}
+\date{}
+
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解循环链表的结构特征及其与单链表的区别
+        \item 理解双向链表的结点结构与插入删除操作
+        \item 能够根据实际需求选择顺序表或链表
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{循环链表}
+    \textbf{特征}：最后一个结点的指针域指向头结点，形成环
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 从任意结点出发可访问所有结点
+        \item 判空条件：$\text{head} \to \text{next} == \text{head}$
+        \item 遍历终止条件：$p == \text{head}$
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{尾指针优化}
+    \begin{itemize}
+        \item 使用尾指针 $\text{rear}$ 标识循环链表
+        \item 头结点：$\text{rear} \to \text{next}$
+        \item 尾结点：$\text{rear}$ 本身
+        \item 可在 $O(1)$ 时间内访问头尾
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{双向链表的结构}
+    \textbf{结点包含三个部分}
+    \begin{itemize}
+        \item 前驱指针 prior
+        \item 数据域 data
+        \item 后继指针 next
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+typedef struct DNode {
+    ElemType data;
+    struct DNode *prior, *next;
+} DNode, *DLinkList;
+    \end{lstlisting}
+    \vspace{0.5em}
+    \begin{block}{优势}
+        支持双向遍历，查找前驱 $O(1)$
+    \end{block}
+\end{frame}
+
+\begin{frame}{双向链表 --- 插入操作}
+    \textbf{在结点 $p$ 之后插入结点 $s$}
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item $s \to \text{next} = p \to \text{next}$
+        \item $p \to \text{next} \to \text{prior} = s$（注意判空）
+        \item $s \to \text{prior} = p$
+        \item $p \to \text{next} = s$
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{alertblock}{注意}
+        若 $p$ 是最后一个结点，$p \to \text{next}$ 为 NULL，步骤 2 跳过
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{双向链表 --- 删除操作}
+    \textbf{删除 $p$ 的后继结点 $q$}
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item $p \to \text{next} = q \to \text{next}$
+        \item $\text{if}(q \to \text{next} \ne \text{NULL}) \; q \to \text{next} \to \text{prior} = p$
+        \item $\text{free}(q)$
+    \end{enumerate}
+    \vspace{0.5em}
+    时间复杂度 $O(1)$
+\end{frame}
+
+\begin{frame}{顺序表与链表对比}
+    \begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{维度} & \textbf{顺序表} & \textbf{链表} \\
+        \hline
+        存储方式 & 连续 & 离散 \\
+        \hline
+        随机访问 & $O(1)$ & $O(n)$ \\
+        \hline
+        插入删除 & $O(n)$ & $O(1)$ \\
+        \hline
+        存储密度 & 1 & $< 1$ \\
+        \hline
+        空间分配 & 预分配 & 动态分配 \\
+        \hline
+    \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 循环链表：尾指针指向头结点，形成环
+        \item 双向链表：prior + next 双向指针
+        \item 插入删除需修改四个指针，注意边界
+        \item 顺序表适合查找密集、规模可预估场景
+        \item 链表适合插入删除密集、规模不确定场景
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：栈}}
+    \end{center}
+\end{frame}
+
+\end{document}

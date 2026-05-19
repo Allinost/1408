@@ -1,0 +1,252 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-7 主存储器}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握SRAM与DRAM的区别
+        \item 理解存储芯片的位扩展与字扩展
+        \item 掌握主存储器与CPU的连接方法
+        \item 了解内存条（SIMM/DIMM）的基本概念
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}[t]{SRAM的存储原理}
+    \begin{block}{基本存储元——6管触发器}
+        \begin{itemize}
+            \item 由6个MOS管构成RS触发器
+            \item 两个交叉耦合的反相器保持0或1状态
+            \item 信息稳定存储在正反馈环路中
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{特点}
+        \begin{itemize}
+            \item \textcolor{red}{不需要刷新}——静态存储
+            \item 存取速度快（纳秒级）
+            \item 集成度低（6管/位），功耗较大
+            \item 价格昂贵——主要用于Cache
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}[t]{DRAM的存储原理}
+    \begin{block}{基本存储元——1管1电容}
+        \begin{itemize}
+            \item 由一个MOS管和一个电容组成
+            \item 电容充电代表1，放电代表0
+            \item 电容会漏电——需要定期刷新
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{刷新方式}
+        \begin{itemize}
+            \item 集中刷新：连续刷完所有行，期间不能访问
+            \item 分散刷新：每读一次就刷新一次
+            \item 异步刷新：在固定间隔刷新一行，轮流进行
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 典型刷新周期：64ms内刷新所有行
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{SRAM vs DRAM 总结}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{对比项} & \textbf{SRAM} & \textbf{DRAM} \\
+            \hline
+            存储元 & 6管触发器 & 1管+电容 \\
+            \hline
+            是否刷新 & 不需要 & 需要（64ms） \\
+            \hline
+            存取速度 & 快（1$\sim$10ns） & 较慢（50$\sim$100ns） \\
+            \hline
+            集成度 & 低 & 高 \\
+            \hline
+            功耗 & 大 & 小 \\
+            \hline
+            价格 & 高 & 低 \\
+            \hline
+            用途 & Cache & 主存 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{存储芯片的基本结构}
+    \begin{center}
+        \begin{tabular}{|c|}
+            \hline
+            地址线 $A_0 \sim A_{k-1}$ \\
+            数据线 $D_0 \sim D_{n-1}$ \\
+            片选信号 $\overline{CS}$ \\
+            读写控制 $\overline{WE}$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 地址线 $k$ 条 $\Rightarrow$ $2^k$ 个存储单元
+        \item 数据线 $n$ 条 $\Rightarrow$ 每单元 $n$ 位
+        \item 芯片容量 = $2^k \times n$ 位
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{exampleblock}{例：$2K \times 8$位芯片}
+        \begin{align*}
+            2K &= 2^{11} \Rightarrow 11\text{条地址线} \\
+            8 &\Rightarrow 8\text{条数据线}
+        \end{align*}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{位扩展}
+    \begin{block}{为什么要位扩展？}
+        \begin{itemize}
+            \item 芯片数据线位数不够时，用多片拼出所需字长
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{例：用 $1K \times 4$ 位芯片构成 $1K \times 8$ 位存储器}
+        \begin{itemize}
+            \item 需要芯片数 = $\dfrac{1K \times 8}{1K \times 4} = 2$ 片
+            \item 连接方式：
+            \begin{itemize}
+                \item 两片地址线\textbf{并联}（共用地址）
+                \item 片选信号\textbf{并联}（同时选中）
+                \item 数据线各接高4位和低4位
+            \end{itemize}
+        \end{itemize}
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{center}
+        \textcolor{blue}{位扩展：地址线并联，数据线分开，同时工作}
+    \end{center}
+\end{frame}
+
+\begin{frame}{字扩展}
+    \begin{block}{为什么要字扩展？}
+        \begin{itemize}
+            \item 芯片容量（地址空间）不够时，用多片增加地址范围
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{例：用 $1K \times 8$ 位芯片构成 $4K \times 8$ 位存储器}
+        \begin{itemize}
+            \item 需要芯片数 = $\dfrac{4K \times 8}{1K \times 8} = 4$ 片
+            \item 连接方式：
+            \begin{itemize}
+                \item 各片数据线\textbf{并联}
+                \item 地址线通过\textbf{片选译码}区分
+                \item 高位地址线接译码器，产生片选信号
+            \end{itemize}
+            \item 地址分配：
+            \begin{itemize}
+                \item 芯片0：$0 \sim 1023$
+                \item 芯片1：$1024 \sim 2047$
+                \item 芯片2：$2048 \sim 3071$
+                \item 芯片3：$3072 \sim 4095$
+            \end{itemize}
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{同时进行位扩展与字扩展}
+    \begin{exampleblock}{例：用 $1K \times 4$ 位芯片构成 $4K \times 8$ 位存储器}
+        \begin{itemize}
+            \item 总位数：$4K \times 8 = 32K$ 位
+            \item 每片位数：$1K \times 4 = 4K$ 位
+            \item 需要芯片数 = $32K / 4K = 8$ 片
+        \end{itemize}
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{ccl}
+            分组： & & 每2片做\textbf{位扩展} $\to$ 1组（$1K \times 8$） \\
+                  & & 共4组做\textbf{字扩展} $\to$ $4K \times 8$ \\
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 组内：地址线并联，片选并联，数据线分高低
+        \item 组间：地址译码片选
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{主存储器与CPU的连接}
+    \begin{block}{需要考虑的问题}
+        \begin{enumerate}
+            \item \textbf{地址线连接}：CPU地址线 $\to$ 芯片地址线
+            \item \textbf{数据线连接}：CPU数据线 $\to$ 芯片数据线
+            \item \textbf{片选译码}：高位地址 $\to$ 译码器 $\to$ 片选
+            \item \textbf{读写控制}：CPU读/写信号 $\to$ 芯片$\overline{WE}$
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{片选译码方式}
+        \begin{itemize}
+            \item \textbf{线选法}：用一根高位地址线直接作为片选
+            \begin{itemize}
+                \item 简单但地址空间不连续，有重叠
+            \end{itemize}
+            \item \textbf{译码法}：用译码器（如3-8译码器）
+            \begin{itemize}
+                \item 地址连续，无地址重叠
+            \end{itemize}
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{内存条（SIMM/DIMM）}
+    \begin{block}{SIMM (Single Inline Memory Module)}
+        \begin{itemize}
+            \item 引脚分布在模块的单侧
+            \item 数据宽度：32位（72线）
+            \item 常用于Pentium之前的计算机
+        \end{itemize}
+    \end{block}
+    \begin{block}{DIMM (Dual Inline Memory Module)}
+        \begin{itemize}
+            \item 引脚分布在模块的两侧（电气独立）
+            \item 数据宽度：64位（168线以上）
+            \item SDRAM时代开始使用，至今仍是主流
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{类型} & \textbf{引脚} & \textbf{数据宽度} \\
+            \hline
+            SIMM & 72 & 32位 \\
+            \hline
+            DIMM & 168+ & 64位 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item SRAM（6管触发器）vs DRAM（1管+电容，需刷新）
+        \item 位扩展（增位数）和字扩展（增容量）
+        \item CPU连接要点：地址线、数据线、片选译码、读写控制
+        \item SIMM（单侧引脚）和DIMM（双侧引脚）
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-8 Cache高速缓存——工作原理与局部性原理}}
+    \end{center}
+\end{frame}
+
+\end{document}

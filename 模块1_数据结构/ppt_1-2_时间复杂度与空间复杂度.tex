@@ -1,0 +1,142 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-2 时间复杂度与空间复杂度}
+\author{}
+\date{}
+
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解算法与程序的区别，掌握算法的五个特征
+        \item 理解时间复杂度的定义与大 O 记号的含义
+        \item 能够分析常见算法的时间复杂度
+        \item 理解空间复杂度的定义及其分析方法
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{算法的基本概念}
+    \textbf{算法}：对特定问题求解步骤的一种描述，是指令的有限序列
+    \vspace{0.5em}
+    \textbf{五个特征}
+    \begin{enumerate}
+        \item \textbf{有穷性}：必须在执行有穷步后结束
+        \item \textbf{确定性}：每条指令有确切含义，相同输入有相同输出
+        \item \textbf{可行性}：操作可以通过已实现的基本运算完成
+        \item \textbf{输入}：零个或多个输入
+        \item \textbf{输出}：一个或多个输出
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{block}{注意}
+        算法 $\neq$ 程序，程序不一定满足有穷性
+    \end{block}
+\end{frame}
+
+\begin{frame}{时间复杂度的定义}
+    \textbf{时间复杂度} $T(n)$
+    \begin{itemize}
+        \item 算法中基本运算的频度
+        \item $n$ 为问题的规模
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{大 O 记号}
+    \[
+    T(n) = O(f(n)) \iff \exists c > 0, n_0 > 0 \text{ s.t. } T(n) \le c\cdot f(n), \forall n \ge n_0
+    \]
+    \vspace{0.5em}
+    \textbf{常见时间复杂度（递增）}
+    \[
+    O(1) < O(\log n) < O(n) < O(n\log n) < O(n^2) < O(2^n) < O(n!)
+    \]
+\end{frame}
+
+\begin{frame}{时间复杂度分析 --- 案例}
+    \textbf{案例一：顺序查找}
+    \begin{itemize}
+        \item 最好：$O(1)$
+        \item 最坏：$O(n)$
+        \item 平均：$O(n)$
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{案例二：两层嵌套循环}
+    \[
+    \sum_{i=1}^{n}\sum_{j=1}^{n} 1 = n^2 \implies O(n^2)
+    \]
+    \vspace{0.5em}
+    \textbf{案例三：二分查找}
+    \[
+    \frac{n}{2^k} = 1 \implies k = \log_2 n \implies O(\log n)
+    \]
+\end{frame}
+
+\begin{frame}{空间复杂度}
+    \textbf{定义}：算法运行时所需的存储空间大小
+    \[
+    S(n) = O(f(n))
+    \]
+    \vspace{0.5em}
+    \textbf{组成部分}
+    \begin{itemize}
+        \item 输入数据所占空间
+        \item 程序本身所占空间
+        \item 辅助变量所占空间（关注重点）
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{常见情况}
+    \begin{itemize}
+        \item 原地工作：$O(1)$
+        \item 递归栈深度为 $n$：$O(n)$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{例题分析}
+    \textbf{例题一}
+    \[
+    \begin{aligned}
+    &\text{for}(i = 1; i \le n; i++) \\
+    &\qquad \text{for}(j = 1; j \le i; j++) \\
+    &\qquad \qquad x\text{++};
+    \end{aligned}
+    \]
+    基本运算次数：$1 + 2 + \cdots + n = n(n+1)/2$
+    \[
+    T(n) = O(n^2)
+    \]
+    \vspace{0.5em}
+    \textbf{例题二：斐波那契递归}
+    \[
+    T(n) = T(n-1) + T(n-2) \implies T(n) = O(2^n)
+    \]
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 算法特征：有穷性、确定性、可行性、输入、输出
+        \item 大 O 表示时间复杂度的数量级
+        \item 常见复杂度：$O(1) < O(\log n) < O(n) < O(n^2) < O(2^n)$
+        \item 空间复杂度衡量辅助存储空间
+        \item 分析步骤：确定问题规模 $\to$ 找出基本运算 $\to$ 建立函数关系 $\to$ 取数量级
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：线性表概念与顺序存储}}
+    \end{center}
+\end{frame}
+
+\end{document}

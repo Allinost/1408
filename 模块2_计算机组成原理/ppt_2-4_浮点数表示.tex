@@ -1,0 +1,242 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-4 浮点数表示}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解浮点数的表示格式（符号位、阶码、尾数）
+        \item 掌握IEEE 754单精度和双精度标准
+        \item 掌握规格化数的判断方法
+        \item 了解浮点数的表示范围与精度
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{为什么需要浮点数？}
+    \begin{itemize}
+        \item 定点数局限性：
+        \begin{itemize}
+            \item 表示范围有限
+            \item 无法同时表示很大和很小的数
+        \end{itemize}
+        \item 科学计数法启发：
+        \[
+            3.14159 \times 10^0,\quad 6.02 \times 10^{23}, \quad 1.6 \times 10^{-19}
+        \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{浮点数的一般形式}
+        \[
+            N = (-1)^S \times M \times R^E
+        \]
+        \begin{itemize}
+            \item $S$：符号位（0正1负）
+            \item $M$：尾数（Mantissa），表示有效数字
+            \item $E$：阶码（Exponent），表示指数
+            \item $R$：基数（隐含，通常为2）
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{浮点数的格式}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{符号位 $S$} & \textbf{阶码 $E$} & \textbf{尾数 $M$} \\
+            \hline
+            1位 & $k$位 & $n$位 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item $S$：最高位，0代表正数，1代表负数
+        \item 阶码 $E$：常用\textbf{移码}表示（偏置常数）
+        \item 尾数 $M$：常用原码或补码表示，决定精度
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{阶码的移码表示}
+        \begin{itemize}
+            \item 移码 = 真值 + 偏置常数
+            \item 偏置常数 = $2^{k-1} - 1$
+            \item 好处：可以比较大小（移码大 $\Leftrightarrow$ 真值大）
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{规格化数}
+    \begin{block}{什么是规格化？}
+        \begin{itemize}
+            \item 尾数的最高位（有效位）为1，使表示唯一
+            \item 对于二进制，规格化尾数满足：
+            \begin{itemize}
+                \item 原码：$1/2 \le |M| < 1$，最高数值位为1
+                \item 补码：$M$ 与符号位相反
+            \end{itemize}
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{规格化示例}
+        \begin{align*}
+            \text{非规格化：} & 0.00101 \times 2^3 \\
+            \text{规格化：} & 0.101 \times 2^1 \quad (\text{尾数左移2位，阶码减2})
+        \end{align*}
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 规格化后尾数\textbf{最高位恒为1}（原码）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{IEEE 754 标准——单精度float}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            符号位(1位) & 阶码(8位) & 尾数(23位) \\
+            \hline
+            $S$ & $E$ & $M$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 总位数：32位
+        \item 偏置常数：$127 = 2^{8-1} - 1$
+        \item 真值公式：
+        \[
+            N = (-1)^S \times 1.M \times 2^{E-127}
+        \]
+        \item IEEE 754规格化尾数的整数部分\textbf{隐含为1}（节省1位精度）
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{特殊值}
+        \begin{itemize}
+            \item $E=255,\; M=0$：$\pm\infty$
+            \item $E=255,\; M \neq 0$：NaN（非数）
+            \item $E=0,\; M=0$：$\pm 0$
+            \item $E=0,\; M \neq 0$：非规格化数
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{IEEE 754 标准——双精度double}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            符号位(1位) & 阶码(11位) & 尾数(52位) \\
+            \hline
+            $S$ & $E$ & $M$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 总位数：64位
+        \item 偏置常数：$1023 = 2^{11-1} - 1$
+        \item 真值公式：
+        \[
+            N = (-1)^S \times 1.M \times 2^{E-1023}
+        \]
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{项目} & \textbf{单精度} & \textbf{双精度} \\
+        \hline
+        总位数 & 32 & 64 \\
+        \hline
+        阶码位数 & 8 & 11 \\
+        \hline
+        尾数位数 & 23 & 52 \\
+        \hline
+        偏置常数 & 127 & 1023 \\
+        \hline
+        最大阶码 & 254 & 2046 \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}[t]{浮点数的表示范围}
+    \begin{block}{单精度float（规格化数）}
+        \begin{itemize}
+            \item 最大正数：$(2 - 2^{-23}) \times 2^{127} \approx 3.4 \times 10^{38}$
+            \item 最小正规格化数：$1.0 \times 2^{-126} \approx 1.2 \times 10^{-38}$
+            \item 最小正非规格化数：$2^{-23} \times 2^{-126} \approx 1.4 \times 10^{-45}$
+        \end{itemize}
+    \end{block}
+    \begin{block}{对称性}
+        \begin{itemize}
+            \item 负数范围与正数范围对称
+            \item 数轴分布：
+        \end{itemize}
+        \[
+            \underbrace{-\infty \leftarrow \text{负溢出}}_{\text{负区域}} \quad
+            \underbrace{0}_{\text{零}} \quad
+            \underbrace{\text{正溢出} \rightarrow +\infty}_{\text{正区域}}
+        \]
+    \end{block}
+\end{frame}
+
+\begin{frame}[t]{浮点数的精度}
+    \begin{block}{单精度float}
+        \begin{itemize}
+            \item 尾数23位 + 隐含1位 $\Rightarrow$ 有效精度约 $2^{-24}$
+            \item 相当于十进制 $24 \times \log_{10}2 \approx 7.2$ 位有效数字
+        \end{itemize}
+    \end{block}
+    \begin{block}{双精度double}
+        \begin{itemize}
+            \item 尾数52位 + 隐含1位 $\Rightarrow$ 有效精度约 $2^{-53}$
+            \item 相当于十进制 $53 \times \log_{10}2 \approx 15.9$ 位有效数字
+        \end{itemize}
+    \end{block}
+    \vspace{0.5em}
+    \begin{alertblock}{注意}
+        \begin{itemize}
+            \item 浮点数在数轴上分布\textbf{不均匀}：越靠近0越密集
+            \item 考研常见考点：规格化判断、偏置常数、隐含1
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{浮点数示例}
+    \begin{exampleblock}{将十进制数 $-12.25$ 转为IEEE 754单精度}
+        \begin{enumerate}
+            \item $(-12.25)_{10} = (-1100.01)_2$
+            \item 规格化：$-1.10001 \times 2^3$
+            \item 符号位 $S = 1$
+            \item 阶码 $E = 3 + 127 = 130 = (1000\;0010)_2$
+            \item 尾数 $M = 1000\;1000\;0000\;0000\;0000\;000$
+        \end{enumerate}
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{block}{最终32位结果}
+        \[
+            1\;1000\;0010\;1000\;1000\;0000\;0000\;0000\;000
+        \]
+        \begin{center}
+            十六进制：\texttt{C1 44 00 00 H}
+        \end{center}
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 浮点数 $= (-1)^S \times M \times 2^E$
+        \item IEEE 754单精度：32位，偏移127，隐含1
+        \item IEEE 754双精度：64位，偏移1023
+        \item 规格化：尾数最高位为1，表示唯一
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-5 ALU算术逻辑单元——加法器、ALU结构}}
+    \end{center}
+\end{frame}
+
+\end{document}

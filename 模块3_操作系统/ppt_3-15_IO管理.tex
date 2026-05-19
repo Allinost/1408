@@ -1,0 +1,247 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-15 I/O管理}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握 I/O 设备的分类
+        \item 理解四种 I/O 控制方式的原理与演进
+        \item 熟悉 I/O 软件层次结构
+        \item 理解缓冲技术的作用与实现方式
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{I/O 设备分类}
+    I/O 设备按数据交换单位分类：
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textbf{类型} & \textbf{特点} & \textbf{示例} \\
+            \hline
+            \textbf{块设备} & 以块为单位传输 & 磁盘、SSD \\
+            & 可寻址，支持随机访问 & USB 闪存 \\
+            & 数据可缓存 & \\
+            \hline
+            \textbf{字符设备} & 以字节为单位传输 & 键盘、鼠标 \\
+            & 不可寻址，只能顺序访问 & 打印机、串口 \\
+            & 无缓存 & \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    其他分类方式：
+    \begin{itemize}
+        \item 按速度：低速（键盘）、中速（打印机）、高速（磁盘）
+        \item 按共享属性：独占设备、共享设备、虚拟设备
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{I/O 控制方式（1）--- 程序查询}
+    \textbf{程序查询方式（Programmed I/O）}
+    \begin{itemize}
+        \item CPU 不断轮询设备状态寄存器
+        \item 设备就绪后 CPU 进行数据交换
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{优点} & \textbf{缺点} \\
+            \hline
+            实现简单 & CPU 利用率极低（忙等） \\
+            软硬件开销小 & CPU 与设备串行工作 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item CPU 在轮询期间不能执行其他任务
+        \item 适用于简单或低速设备
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{I/O 控制方式（2）--- 中断}
+    \textbf{中断驱动方式（Interrupt-driven I/O）}
+    \begin{itemize}
+        \item CPU 发出 I/O 命令后继续执行其他任务
+        \item 设备完成时通过\textbf{中断信号}通知 CPU
+        \item CPU 响应中断，处理数据
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{优点} & \textbf{缺点} \\
+            \hline
+            CPU 与设备并行工作 & 大量中断会消耗 CPU \\
+            提高 CPU 利用率 & 每次中断需保存/恢复现场 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    适用于中低速设备，每次中断传输一个字符/字。
+\end{frame}
+
+\begin{frame}{I/O 控制方式（3）--- DMA}
+    \textbf{DMA（直接存储器访问）}
+    \begin{itemize}
+        \item DMA 控制器直接管理内存与设备间的数据传输
+        \item CPU 只需设置参数，传输完成后 DMA 发中断
+        \item 以\textbf{块}为单位传输，每次传输成块数据
+    \end{itemize}
+    \vspace{0.5em}
+    DMA 传输流程：
+    \[
+    \text{CPU 设置} \rightarrow \text{DMA 传输} \rightarrow \text{DMA 中断}
+    \]
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{优点} & \textbf{缺点} \\
+            \hline
+            大幅减少 CPU 干预 & DMA 控制器硬件成本高 \\
+            适合高速块设备 & 内存总线竞争 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{I/O 控制方式（4）--- 通道}
+    \textbf{通道（Channel）}
+    \begin{itemize}
+        \item 专门执行 I/O 程序的\textbf{专用处理器}
+        \item 有自己的指令系统，可以执行通道程序
+        \item CPU 只需发送 I/O 指令，通道独立完成
+    \end{itemize}
+    \vspace{0.5em}
+    四者对比：
+    \begin{center}
+        \begin{tabular}{|l|c|c|c|}
+            \hline
+            \textbf{方式} & \textbf{CPU 干预} & \textbf{传输单位} & \textbf{速度} \\
+            \hline
+            程序查询 & 最多（轮询） & 字/字节 & 最慢 \\
+            中断 & 每次中断处理 & 字/字节 & 较慢 \\
+            DMA & 开始和结束 & 块 & 快 \\
+            通道 & 开始指令 & 块/组 & 最快 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{I/O 软件层次}
+    I/O 系统分层设计，下层对上层隐藏细节：
+    \vspace{0.5em}
+    \[
+    \begin{array}{c}
+        \text{用户层 I/O（系统调用接口）} \\
+        \updownarrow \\
+        \text{设备独立性软件} \\
+        \updownarrow \\
+        \text{设备驱动程序} \\
+        \updownarrow \\
+        \text{中断处理程序} \\
+        \updownarrow \\
+        \text{硬件设备}
+    \end{array}
+    \]
+    \vspace{0.5em}
+    \begin{description}
+        \item[用户层] 库函数 API，如 \texttt{read()/write()}
+        \item[设备独立性层] 逻辑设备名 $\rightarrow$ 物理设备，缓冲、错误处理
+        \item[设备驱动层] 直接与硬件通信，处理设备特定命令
+        \item[中断处理层] 响应设备中断，唤醒等待进程
+    \end{description}
+\end{frame}
+
+\begin{frame}{缓冲技术}
+    \textbf{缓冲}：在内存中开辟一块区域，暂存 I/O 数据。
+    \vspace{0.5em}
+    作用：
+    \begin{itemize}
+        \item 缓和 CPU 与 I/O 设备的速度不匹配
+        \item 减少 CPU 中断频率
+        \item 解决数据粒度不匹配问题
+    \end{itemize}
+    \vspace{0.5em}
+    缓冲实现方式：
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{类型} & \textbf{说明} \\
+            \hline
+            单缓冲 & 一个缓冲区，处理与输入交替 \\
+            双缓冲 & 两个缓冲区，处理与输入可并行 \\
+            循环缓冲 & 多个缓冲区组成循环队列 \\
+            缓冲池 & 系统管理一组缓冲区供所有设备共享 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{单缓冲与双缓冲}
+    \textbf{单缓冲}
+    \begin{itemize}
+        \item 缓冲区满时用户程序从其中取数据
+        \item 设备下一块数据填入缓冲区，二者交替
+        \item 处理时间 $= \max(C, T) + M$（$T$:输入,$C$:处理,$M$:搬移）
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{双缓冲}
+    \begin{itemize}
+        \item 两个缓冲区交替使用：一个处理，一个输入
+        \item 设备与 CPU 可真正并行工作
+        \item 处理时间 $= \max(C, T)$（忽略搬移时间）
+    \end{itemize}
+    \vspace{0.5em}
+    多缓冲/缓冲池进一步平滑数据传输，提高系统吞吐量。
+\end{frame}
+
+\begin{frame}{SPOOLing 技术简介}
+    \textbf{SPOOLing（假脱机操作）}
+    \begin{itemize}
+        \item 在多道程序环境中利用磁盘模拟独占设备
+        \item 将独占设备改造为\textbf{共享设备}
+    \end{itemize}
+    \vspace{0.5em}
+    核心组成：
+    \begin{itemize}
+        \item 输入/输出井（磁盘上的缓冲区）
+        \item 输入/输出进程
+        \item 输入/输出缓冲区（内存）
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{典型应用}：打印机共享
+    \begin{itemize}
+        \item 用户进程输出 $\rightarrow$ 输出井 $\rightarrow$ 守护进程实际打印
+        \item 用户感觉独占打印机，实际是共享的
+    \end{itemize}
+    \vspace{0.5em}
+    详见 3-16 节讲解。
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item I/O 设备分类：块设备（可寻址）vs 字符设备（不可寻址）
+        \item I/O 控制方式：程序查询 $\rightarrow$ 中断 $\rightarrow$ DMA $\rightarrow$ 通道（CPU 干预递减）
+        \item I/O 软件分层：用户层 $\rightarrow$ 设备独立性层 $\rightarrow$ 驱动层 $\rightarrow$ 中断处理层
+        \item 缓冲技术：单缓冲、双缓冲、循环缓冲、缓冲池，缓和速度不匹配
+        \item SPOOLing 将独占设备改造为共享设备
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-16 SPOOLing技术}}
+    \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,211 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-14 指令执行过程}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握指令执行周期的四个阶段
+        \item 理解取指阶段各寄存器的协同工作
+        \item 掌握译码阶段控制器的工作
+        \item 了解数据通路的基本概念
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{指令执行周期}
+    CPU执行一条指令所需的时间称为\textbf{指令周期}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{取指周期} & \textbf{间址周期} & \textbf{执行周期} & \textbf{中断周期} \\
+            \hline
+            取指令 & 取操作数地址 & 执行操作 & 中断处理 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item \textbf{取指周期}：从主存取指令 $\rightarrow$ IR
+        \item \textbf{间址周期}：取操作数的有效地址（仅间接寻址需要）
+        \item \textbf{执行周期}：运算或数据传送
+        \item \textbf{中断周期}：保存断点、进入中断服务（仅中断需要）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{取指阶段详解}
+    \begin{block}{数据流动路径}
+        \centerline{\textbf{PC $\rightarrow$ MAR $\rightarrow$ 主存 $\rightarrow$ MDR $\rightarrow$ IR}}
+    \end{block}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item 将PC中的地址送入MAR
+            \begin{itemize}
+                \item $\text{MAR} \leftarrow (\text{PC})$
+            \end{itemize}
+        \item 发出读命令，主存根据MAR地址读出指令
+            \begin{itemize}
+                \item $\text{MDR} \leftarrow \text{M[MAR]}$
+            \end{itemize}
+        \item 将MDR中的指令送入IR
+            \begin{itemize}
+                \item $\text{IR} \leftarrow (\text{MDR})$
+            \end{itemize}
+        \item PC自增，指向下一条指令
+            \begin{itemize}
+                \item $\text{PC} \leftarrow (\text{PC}) + 1$
+            \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{译码阶段}
+    \begin{itemize}
+        \item 控制器对\textbf{IR中的操作码}进行译码
+        \item 确定该指令需要执行什么操作
+        \item 生成对应的\textbf{微操作控制信号序列}
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{c}
+            \textbf{指令译码器} \\
+            \hline
+            \texttt{IR[OP]} $\rightarrow$ 
+            \begin{tabular}{c}
+                ADD信号 \\
+                SUB信号 \\
+                MOV信号 \\
+                ... \\
+            \end{tabular}
+            \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 硬布线控制器：译码器输出直接驱动逻辑电路
+        \item 微程序控制器：译码器输出作为微程序入口地址
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{执行阶段 --- ADD指令示例}
+    例：\texttt{ADD R1, [100]} $\Rightarrow$ \texttt{R1 $\leftarrow$ R1 + M[100]}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item 取指阶段结束，IR中存有ADD指令
+        \item 译码阶段识别为ADD操作
+        \item 执行阶段：
+            \begin{enumerate}
+                \item 将地址100送入MAR
+                \item 发出读命令，MDR $\leftarrow$ M[100]
+                \item R1与MDR送入ALU相加
+                \item 结果写回R1
+            \end{enumerate}
+    \end{enumerate}
+    \vspace{0.3em}
+    \begin{block}{注意}
+        不同指令的执行阶段差异很大，乘除法指令可能需要多个时钟周期。
+    \end{block}
+\end{frame}
+
+\begin{frame}{数据通路的概念}
+    \textbf{数据通路}：CPU内部各部件之间传送数据的路径
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{部件} & \textbf{数据来源} & \textbf{数据去向} \\
+            \hline
+            PC  & ALU结果 / 转移地址 & MAR \\
+            MAR & PC / 地址码字段 & 主存地址线 \\
+            MDR & 主存数据线 & IR / ALU / 寄存器 \\
+            IR  & MDR & 译码器 \\
+            ALU & 寄存器 / MDR & 寄存器 / MDR \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 数据通路由\textbf{总线}和\textbf{多路选择器}构成
+        \item 控制信号决定数据通路的走向
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{数据通路示例 --- LOAD指令}
+    \textbf{指令}：\texttt{LOAD R1, [ADDR]}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item \textbf{取指}：PC $\rightarrow$ MAR $\rightarrow$ M $\rightarrow$ MDR $\rightarrow$ IR，PC+1
+        \item \textbf{译码}：解析出LOAD操作，地址码ADDR
+        \item \textbf{执行}：
+            \begin{enumerate}
+                \item IR中的地址ADDR $\rightarrow$ MAR
+                \item 读内存 $\rightarrow$ MDR
+                \item MDR $\rightarrow$ R1
+            \end{enumerate}
+    \end{enumerate}
+    \vspace{0.3em}
+    \begin{center}
+        \textbf{取指数据通路}：\textcolor{blue}{PC $\rightarrow$ MAR $\rightarrow$ 主存 $\rightarrow$ MDR $\rightarrow$ IR} \\
+        \textbf{执行数据通路}：\textcolor{red}{IR[addr] $\rightarrow$ MAR $\rightarrow$ 主存 $\rightarrow$ MDR $\rightarrow$ R1}
+    \end{center}
+\end{frame}
+
+\begin{frame}{数据通路示例 --- STORE指令}
+    \textbf{指令}：\texttt{STORE R1, [ADDR]}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item \textbf{取指}：同上（PC $\rightarrow$ MAR $\rightarrow$ M $\rightarrow$ MDR $\rightarrow$ IR，PC+1）
+        \item \textbf{译码}：解析出STORE操作
+        \item \textbf{执行}：
+            \begin{enumerate}
+                \item IR中的地址ADDR $\rightarrow$ MAR
+                \item R1 $\rightarrow$ MDR
+                \item 写内存：M[MAR] $\leftarrow$ MDR
+            \end{enumerate}
+    \end{enumerate}
+    \vspace{0.3em}
+    \begin{center}
+        \textbf{执行数据通路}：\textcolor{red}{IR[addr] $\rightarrow$ MAR, R1 $\rightarrow$ MDR $\rightarrow$ 主存}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{指令执行时间计算}
+    \begin{itemize}
+        \item 指令周期 = 取指周期 + 间址周期（若有）+ 执行周期 + 中断周期（若有）
+        \item 每个周期可能包含多个时钟周期
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{例}：某CPU主频1GHz，取指需3个时钟周期，执行需5个时钟周期
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 指令周期 = $3 + 5 = 8$ 个时钟周期
+        \item 时间 = $8 \times \dfrac{1}{10^9}\text{s} = 8\text{ns}$
+        \item 每秒执行指令数 $\approx \dfrac{10^9}{8} = 1.25 \times 10^8$ 条
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{考研常考}
+        根据数据通路图判断各阶段所需的时钟周期数，并计算CPI。
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 指令周期含取指、间址、执行、中断四个阶段
+        \item 取指路径：PC $\rightarrow$ MAR $\rightarrow$ 主存 $\rightarrow$ MDR $\rightarrow$ IR
+        \item 译码由控制器根据IR操作码生成控制信号
+        \item 数据通路是CPU各部件之间传送数据的路径
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-15 流水线技术 --- 并行执行指令}}
+    \end{center}
+\end{frame}
+
+\end{document}

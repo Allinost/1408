@@ -1,0 +1,223 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-20 DMA方式}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解DMA方式的基本概念
+        \item 掌握DMA控制器的功能
+        \item 熟悉DMA传输的三个阶段
+        \item 熟练掌握DMA与中断方式的对比
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{DMA方式的基本概念}
+    \textbf{DMA（Direct Memory Access）}：直接存储器访问
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 由专门的\textbf{DMA控制器}管理数据传送
+        \item 数据直接在\textbf{I/O设备与主存}之间传送
+        \item CPU仅在预处理和后处理阶段参与
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{核心思想}
+        将数据传送的控制权交给DMA控制器，CPU解放出来执行其它任务，大幅提高系统效率。
+    \end{block}
+    \vspace{0.3em}
+    \textbf{适用场景}：高速、大批量数据传送（磁盘、显卡、网卡等）
+\end{frame}
+
+\begin{frame}{DMA控制器的功能}
+    \begin{enumerate}
+        \item \textbf{向CPU申请总线控制权}
+            \begin{itemize}
+                \item 通过HRQ（Hold Request）信号请求
+            \end{itemize}
+        \item \textbf{控制地址总线}
+            \begin{itemize}
+                \item 提供主存地址，决定数据读写位置
+            \end{itemize}
+        \item \textbf{控制数据总线}
+            \begin{itemize}
+                \item 控制数据在I/O与主存之间流动
+            \end{itemize}
+        \item \textbf{计数控制}
+            \begin{itemize}
+                \item 记录已传送的数据字数
+                \item 传送完毕后告诉CPU
+            \end{itemize}
+        \item \textbf{发出读写控制信号}
+            \begin{itemize}
+                \item 对主存和I/O设备发出读/写命令
+            \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{DMA控制器的内部寄存器}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{寄存器} & \textbf{功能} \\
+            \hline
+            AR（地址寄存器） & 存放主存读写地址 \\
+            WC（字计数器） & 记录待传送字数 \\
+            BR（数据缓冲寄存器） & 暂存数据 \\
+            CR（命令/控制寄存器） & 存放控制命令 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item AR初始指向数据缓冲区首地址，每传送一次自动+1
+        \item WC初始为传送总字数，每传送一次-1，减到0表示完成
+        \item DMA完成后发中断通知CPU
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{DMA传输过程 --- 预处理}
+    \textbf{第一阶段：预处理（CPU负责）}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item CPU 向 DMA 控制器写入控制信息
+            \begin{itemize}
+                \item 数据传送方向（I/O $\rightarrow$ 主存 或 主存 $\rightarrow$ I/O）
+            \end{itemize}
+        \item 设置 DMA 的地址寄存器 AR
+            \begin{itemize}
+                \item 填入主存缓冲区首地址
+            \end{itemize}
+        \item 设置 DMA 的字计数器 WC
+            \begin{itemize}
+                \item 填入传送数据总字数
+            \end{itemize}
+        \item 启动 I/O 设备开始工作
+            \begin{itemize}
+                \item 设备准备好后通知 DMA 控制器
+            \end{itemize}
+    \end{enumerate}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 预处理完成后，CPU 可继续执行其它程序
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{DMA传输过程 --- 数据传送}
+    \textbf{第二阶段：数据传送（DMA控制器负责）}
+    \vspace{0.3em}
+    \textbf{DMA 与 CPU 使用总线的方式}：
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item \textbf{停止CPU访存}
+            \begin{itemize}
+                \item DMA占用总线直到传送结束
+                \item 适合高速设备批量传输
+            \end{itemize}
+        \item \textbf{周期挪用（周期窃取）}
+            \begin{itemize}
+                \item DMA在CPU不占用总线时窃取一个总线周期
+                \item 不停止CPU，效率高（最常用）
+            \end{itemize}
+        \item \textbf{交替访存}
+            \begin{itemize}
+                \item CPU与DMA轮流使用总线
+                \item 适用于CPU与DMA速度匹配的场景
+            \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{DMA传输过程 --- 后处理}
+    \textbf{第三阶段：后处理（CPU负责）}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item 字计数器 WC 减到 0，DMA 传送完成
+        \item DMA 控制器向 CPU 发送\textbf{中断请求}
+        \item CPU 响应中断，执行中断服务程序
+        \item 检查传送是否正确（校验）
+        \item 处理后续操作（如通知应用程序数据已就绪）
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{block}{DMA与中断的关系}
+        DMA在数据传送过程中\textbf{不需要CPU参与}，传送完成后\textbf{才发中断}通知CPU。
+        \begin{itemize}
+            \item 中断次数 = 1（仅传送结束）
+            \item 而程序查询/中断每传送一个字都要CPU介入
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{DMA vs 中断 --- 详细对比}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{对比项} & \textbf{中断方式} & \textbf{DMA方式} \\
+            \hline
+            数据传送主体 & CPU & DMA控制器 \\
+            传送单位 & 字 / 字节 & 数据块（连续多个字） \\
+            中断频率 & 每次传送都中断 & 仅传送结束中断一次 \\
+            CPU参与 & 每步都需CPU & 仅预处理和后处理 \\
+            并行性 & CPU与I/O部分并行 & CPU与I/O高度并行 \\
+            速度 & 较慢 & 快（适合高速设备） \\
+            硬件成本 & 较低 & 较高（需DMA控制器） \\
+            适用设备 & 中低速设备 & 高速块设备 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{DMA与中断的适用场景}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{场景} & \textbf{推荐方式} & \textbf{理由} \\
+            \hline
+            键盘输入一个字符 & 中断方式 & 数据量小，速度慢 \\
+            打印机打印一行 & 中断方式 & 中速、数据量不大 \\
+            磁盘读写 1MB 数据 & DMA方式 & 高速、大批量 \\
+            网卡接收数据包 & DMA方式 & 高速、实时 \\
+            CPU除零异常 & 内部中断 & 需立即处理 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{block}{408常考题型}
+        选择题：判断某场景适合哪种控制方式 \\
+        论述题：对比中断与DMA的工作过程与性能差异
+    \end{block}
+\end{frame}
+
+\begin{frame}{DMA方式总结}
+    \begin{itemize}
+        \item DMA是\textbf{硬件方式}实现I/O与主存直接数据传送
+        \item DMA控制器接管总线控制权，完成数据传送
+        \item 三个阶段：预处理（CPU）$\rightarrow$ 数据传送（DMA）$\rightarrow$ 后处理（CPU）
+        \item 周期挪用是DMA访问总线的最常用方式
+        \item DMA传送结束后发一次中断通知CPU
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{核心区别记忆口诀}
+        "中断：传一个字断一次；DMA：传一串断一次"
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item DMA由专用控制器负责数据传送，CPU解放出来
+        \item DMA控制器内部有AR、WC、BR、CR等寄存器
+        \item DMA传输三阶段：预处理、数据传送、后处理
+        \item DMA适合高速大批量数据传送，中断适合中低速逐字传送
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{至此模块2全部结束，请进入模块3的学习！}}
+    \end{center}
+\end{frame}
+
+\end{document}

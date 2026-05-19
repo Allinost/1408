@@ -1,0 +1,224 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-11 虚拟内存}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解虚拟内存的概念与请求分页原理
+        \item 掌握缺页中断的处理流程
+        \item 熟练掌握三种页面置换算法：OPT、FIFO、LRU
+        \item 理解页面分配策略与抖动现象
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{虚拟内存概念}
+    \textbf{虚拟内存}：允许程序在物理内存小于逻辑地址空间的情况下运行。
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 程序只需装入当前需要的部分即可运行
+        \item 其他部分按需从磁盘调入
+        \item 基于\textbf{局部性原理}：
+    \end{itemize}
+    \begin{description}
+        \item[时间局部性] 刚访问过的数据可能很快再次访问
+        \item[空间局部性] 刚访问过的数据附近的数据可能很快被访问
+    \end{description}
+    \vspace{0.5em}
+    虚拟内存的实现基础：\textbf{请求分页存储管理}。
+\end{frame}
+
+\begin{frame}{请求分页}
+    \textbf{请求分页} = 分页管理 + 请求调页 + 页面置换
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 程序运行时只装入部分页
+        \item 访问的页不在内存时，由操作系统调入
+        \item 内存已满时，置换出某些页
+    \end{itemize}
+    \vspace{0.5em}
+    页表项新增字段：
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            页框号 & \textbf{存在位 P} & 访问位 A & 修改位 M \\
+            \hline
+            物理块号 & 1:在内存, 0:在磁盘 & 是否被访问 & 是否被修改 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \begin{itemize}
+        \item \textbf{存在位 P}：标识该页是否在内存中
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{缺页中断}
+    访问某页时，若存在位 $P=0$，则发生\textbf{缺页中断}：
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item CPU 访问逻辑地址，MMU 查页表发现 $P=0$
+        \item 产生缺页中断，进入内核态
+        \item 检查内存是否有空闲块
+            \begin{itemize}
+                \item 有空闲块 $\rightarrow$ 直接从磁盘调入
+                \item 无空闲块 $\rightarrow$ 执行页面置换算法换出一页
+            \end{itemize}
+        \item 修改页表（存在位置 1，更新页框号）
+        \item 重新执行被中断的指令
+    \end{enumerate}
+    \vspace{0.5em}
+    缺页中断与普通中断的区别：\textbf{在指令执行期间产生且可恢复}。
+\end{frame}
+
+\begin{frame}{页面置换算法概述}
+    内存已满且需要调入新页时，必须选择换出哪个页面。
+    \vspace{0.5em}
+    三种经典算法：
+    \begin{center}
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textbf{算法} & \textbf{策略} & \textbf{特点} \\
+            \hline
+            OPT & 置换将来最远使用的页 & 理论最优，无法实现 \\
+            FIFO & 置换最早进入的页 & 实现简单，可能有 Belady 异常 \\
+            LRU & 置换最久未访问的页 & 近似 OPT，硬件开销大 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{OPT --- 最佳置换算法}
+    \textbf{OPT（Optimal Page Replacement）}
+    \begin{itemize}
+        \item 选择\textbf{未来最长时间内不再被访问}的页面置换
+        \item 或选择将来最远才被使用的页面置换
+        \item 缺页率最低，理论最优
+        \item 但无法预知未来，\textbf{不能实际实现}
+        \item 作为衡量其他算法性能的参照标准
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{例}：引用串 7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2，内存 3 块
+    \begin{itemize}
+        \item OPT 共 6 次缺页，缺页率 $\frac{6}{13}$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{FIFO --- 先进先出置换算法}
+    \textbf{FIFO（First In First Out）}
+    \begin{itemize}
+        \item 置换在内存中驻留时间\textbf{最长}的页面
+        \item 实现简单：维护一个队列，新页入队尾，队首被置换
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{Belady 异常}：
+    \begin{itemize}
+        \item 一般情况下，增加物理块数应减少缺页
+        \item FIFO 中可能出现\textbf{物理块增多，缺页反而增加}的反常现象
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{例}：引用串 1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5
+    \begin{itemize}
+        \item 3 块：9 次缺页；4 块：10 次缺页（Belady 异常！）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{LRU --- 最近最少使用置换算法}
+    \textbf{LRU（Least Recently Used）}
+    \begin{itemize}
+        \item 置换\textbf{最长时间未被访问}的页面
+        \item 基于局部性原理：最近未使用的将来也不太可能使用
+        \item 性能接近 OPT，可实际实现
+    \end{itemize}
+    \vspace{0.5em}
+    LRU 的两种实现方式：
+    \begin{enumerate}
+        \item \textbf{计数器法}：每个页表项记录访问时间，置换最小的
+        \item \textbf{栈实现}：被访问的页移到栈顶，栈底为置换候选
+    \end{enumerate}
+    \vspace{0.5em}
+    注意：LRU 需要硬件支持，开销较大。实际系统常用\textbf{近似 LRU（如 Clock 算法）}。
+\end{frame}
+
+\begin{frame}{三种算法对比---缺页计算示例}
+    引用串：7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2（内存 3 块）
+
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|c|c|}
+            \hline
+            \textbf{算法} & \textbf{缺页次数} & \textbf{缺页率} \\
+            \hline
+            OPT & 6 & 46.2\% \\
+            FIFO & 9 & 69.2\% \\
+            LRU & 8 & 61.5\% \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item OPT 不会发生 Belady 异常
+        \item FIFO 可能发生 Belady 异常
+        \item LRU 不会发生 Belady 异常
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{页面分配策略}
+    \begin{description}
+        \item[固定分配局部置换]
+            \begin{itemize}
+                \item 每个进程分配固定数量的物理块
+                \item 缺页时只能置换自己的页
+            \end{itemize}
+        \item[可变分配全局置换]
+            \begin{itemize}
+                \item 系统维护一个空闲物理块池
+                \item 缺页时可从池中取，也可置换任何进程的页
+            \end{itemize}
+        \item[可变分配局部置换]
+            \begin{itemize}
+                \item 每个进程分配可变数量的物理块
+                \item 缺页时置换自己的页，缺页率高时增加分配
+            \end{itemize}
+    \end{description}
+\end{frame}
+
+\begin{frame}{抖动与工作集}
+    \textbf{抖动（Thrashing）}
+    \begin{itemize}
+        \item CPU 大部分时间用于页面置换，而非执行指令
+        \item 进程频繁缺页，系统吞吐量急剧下降
+        \item 原因是物理块分配过少，无法容纳程序的工作集
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{工作集（Working Set）}
+    \begin{itemize}
+        \item 进程在一段时间内频繁访问的页面集合
+        \item 若分配的物理块数 $<$ 工作集大小 $\rightarrow$ 抖动
+        \item 操作系统应确保每个进程的物理块 $\geq$ 工作集大小
+    \end{itemize}
+    \vspace{0.5em}
+    防止抖动的策略：工作集模型、缺页频度控制。
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 虚拟内存允许程序运行于小于其逻辑空间的物理内存中
+        \item 请求分页基于局部性原理，缺页时产生缺页中断
+        \item 三种置换算法：OPT（理论最优）、FIFO（有 Belady 异常）、LRU（近似 OPT）
+        \item 页面分配策略：固定/可变分配，局部/全局置换
+        \item 抖动因分配不足引起，需保证工作集大小
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-12 文件系统概述}}
+    \end{center}
+\end{frame}
+
+\end{document}

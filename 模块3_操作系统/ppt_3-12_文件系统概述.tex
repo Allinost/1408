@@ -1,0 +1,191 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-12 文件系统概述}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解文件的概念与属性
+        \item 掌握文件的两种逻辑结构
+        \item 熟悉文件目录与 FCB 的作用
+        \item 掌握三种目录结构及特点
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{文件的概念}
+    \textbf{文件}：按文件名标识和访问的信息集合。
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 用户通过文件名访问，无需关心物理存储位置
+        \item 操作系统负责将文件名映射到具体的磁盘位置
+    \end{itemize}
+    \vspace{0.5em}
+    文件的\textbf{属性}：
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            名称 & 用户可读的文件标识 \\
+            标识符 & OS 内部唯一标识（如 inode 编号） \\
+            类型 & 普通文件、目录文件、设备文件等 \\
+            位置 & 文件在磁盘上的存储路径 \\
+            大小 & 文件当前大小（字节数） \\
+            保护 & 访问权限控制（rwx） \\
+            时间戳 & 创建、修改、访问时间 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{文件的逻辑结构}
+    从用户视角看文件的组织方式：
+    \vspace{0.5em}
+    \begin{description}
+        \item[无结构文件（流式文件）]
+            \begin{itemize}
+                \item 文件由字节流构成，无内部结构
+                \item 用户根据需要解释字节含义
+                \item 例如：\texttt{.txt} 文本文件、可执行文件
+            \end{itemize}
+        \item[有结构文件（记录式文件）]
+            \begin{itemize}
+                \item 文件由一组逻辑记录组成
+                \item \textbf{定长记录}：每条记录长度相同，随机访问方便
+                \item \textbf{变长记录}：每条记录长度不同，节省空间
+                \item 例如：数据库文件
+            \end{itemize}
+    \end{description}
+\end{frame}
+
+\begin{frame}{文件目录与 FCB}
+    \textbf{文件目录}：用于实现"按名存取"的数据结构。
+    \vspace{0.5em}
+    \textbf{FCB（文件控制块）}--- 目录中的基本元素：
+    \begin{itemize}
+        \item 包含文件的所有元数据信息
+        \item 操作系统通过 FCB 管理文件
+    \end{itemize}
+    \vspace{0.5em}
+    FCB 通常包含：
+    \[
+    \text{FCB} = \{ \text{文件名}, \text{类型}, \text{位置}, \text{大小}, \text{保护}, \text{时间}, \dots \}
+    \]
+    \vspace{0.5em}
+    在 Unix/Linux 中，FCB 称为 \textbf{inode（索引节点）}，文件名与 inode 分离。
+\end{frame}
+
+\begin{frame}{目录结构---单级目录}
+    \textbf{单级目录}
+    \begin{itemize}
+        \item 所有文件放在同一个目录中
+        \item 结构最简单
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{优点} & \textbf{缺点} \\
+            \hline
+            $\bullet$ 实现简单 & $\bullet$ \textbf{重名问题}：不同用户不能有同名文件 \\
+            $\bullet$ 查找快速 & $\bullet$ \textbf{共享困难} \\
+            & $\bullet$ 文件数量多时管理混乱 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    适用于单用户系统，不适合多用户环境。
+\end{frame}
+
+\begin{frame}{目录结构---两级目录}
+    \textbf{两级目录}
+    \begin{itemize}
+        \item \textbf{主目录（MFD）}：记录各用户目录的位置
+        \item \textbf{用户目录（UFD）}：各用户的私有文件目录
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{优点} & \textbf{缺点} \\
+            \hline
+            $\bullet$ 解决重名问题 & $\bullet$ 用户间文件共享困难 \\
+            $\bullet$ 用户隔离，安全性好 & $\bullet$ 不支持子目录 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    文件路径：\texttt{/用户名/文件名}
+\end{frame}
+
+\begin{frame}{目录结构---树形目录}
+    \textbf{树形目录} --- 现代 OS 的通用结构
+    \begin{itemize}
+        \item 目录可以包含子目录和文件，形成树形层次
+        \item 每个文件有唯一的\textbf{路径名}
+    \end{itemize}
+    \vspace{0.5em}
+    路径表示：
+    \begin{description}
+        \item[绝对路径] 从根目录开始的完整路径
+        \item[相对路径] 从当前目录开始的路径
+    \end{description}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{优点} & \textbf{缺点} \\
+            \hline
+            $\bullet$ 层次清晰 & $\bullet$ 路径名可能很长 \\
+            $\bullet$ 利于文件分类 & $\bullet$ 访问文件可能需要多次磁盘 I/O \\
+            $\bullet$ 支持用户自定义组织 & \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{文件操作}
+    OS 提供给用户的基本文件操作：
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{操作} & \textbf{说明} \\
+            \hline
+            创建 & 分配 FCB，将文件加入目录 \\
+            打开 & 将 FCB 复制到内存打开文件表 \\
+            读 & 从指定位置读取数据到用户缓冲区 \\
+            写 & 将用户缓冲区数据写入文件指定位置 \\
+            关闭 & 删除内存中的 FCB 副本，回写更新 \\
+            删除 & 回收数据块，从目录中移除 FCB 项 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \textbf{打开文件表}：
+    \begin{itemize}
+        \item 系统级打开文件表（整个 OS 一张）
+        \item 进程级打开文件表（每个进程一张，指向系统表）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 文件是按名访问的信息集合，包含名称、位置、保护等属性
+        \item 逻辑结构：无结构流式文件 vs 有结构记录式文件（定长/变长）
+        \item FCB（文件控制块）存储元数据，目录管理按名存取
+        \item 目录结构：单级（有重名问题）、两级（用户隔离）、树形（层次清晰）
+        \item 文件操作：创建、打开、读、写、关闭、删除
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-13 文件物理结构}}
+    \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,191 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 导学篇}
+\subtitle{0-4 C语言速成（上）}
+\author{}
+\date{}
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握 C 语言的基本语法结构
+        \item 理解变量、常量的概念与基本数据类型
+        \item 掌握三大控制结构：顺序、选择、循环
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{C 语言程序结构}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+#include <stdio.h>
+
+int main() {
+    printf("Hello, World!\n");
+    return 0;
+}
+    \end{lstlisting}
+    \vspace{0.3em}
+    \textbf{组成部分}
+    \begin{itemize}
+        \item 预处理指令：\#include
+        \item 主函数：int main()
+        \item 函数体：变量定义 + 语句
+        \item return 语句退出程序
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{基本数据类型}
+    \begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{类型} & \textbf{关键字} & \textbf{字节} \\ \hline
+        整型 & int & 4 \\ \hline
+        字符型 & char & 1 \\ \hline
+        单精度浮点 & float & 4 \\ \hline
+        双精度浮点 & double & 8 \\ \hline
+        无值型 & void & --- \\ \hline
+    \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \textbf{声明示例}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+int age = 20;
+char grade = 'A';
+double price = 99.99;
+const double PI = 3.14159;
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{运算符}
+    \textbf{算术运算符}
+    \[
+    +,\; -,\; \times,\; \div,\; \%
+    \]
+    \vspace{0.3em}
+    \textbf{自增自减}
+    \[
+    i++ \text{（先使用后自增）},\; ++i \text{（先自增后使用）}
+    \]
+    \vspace{0.3em}
+    \textbf{关系运算符}
+    \[
+    >,\; <,\; >=\; <=\; ==\; !=
+    \]
+    \vspace{0.3em}
+    \textbf{逻辑运算符}
+    \[
+    \&\& \text{（与）},\; || \text{（或）},\; ! \text{（非）}
+    \]
+\end{frame}
+
+\begin{frame}{顺序结构}
+    \textbf{printf --- 格式化输出}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+int a = 10;
+printf("a = %d\n", a);
+    \end{lstlisting}
+    \vspace{0.3em}
+    \textbf{scanf --- 格式化输入}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+int b;
+scanf("%d", &b);
+    \end{lstlisting}
+    \vspace{0.3em}
+    \begin{tabular}{|c|c|}
+        \hline \textbf{格式符} & \textbf{含义} \\ \hline
+        \%d & 整型 \\ \hline
+        \%c & 字符型 \\ \hline
+        \%f & 浮点型 \\ \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}[fragile]{选择结构 --- if}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+if (score >= 60) {
+    printf("Pass\n");
+} else {
+    printf("Fail\n");
+}
+    \end{lstlisting}
+    \vspace{0.3em}
+    \textbf{多分支}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+if (score >= 90)      grade = 'A';
+else if (score >= 80) grade = 'B';
+else if (score >= 70) grade = 'C';
+else if (score >= 60) grade = 'D';
+else                  grade = 'F';
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{选择结构 --- switch}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+switch (op) {
+    case '+': result = a + b; break;
+    case '-': result = a - b; break;
+    case '*': result = a * b; break;
+    case '/': result = a / b; break;
+    default: printf("Invalid\n");
+}
+    \end{lstlisting}
+    \vspace{0.3em}
+    注意：每个 case 后需要 break，否则会发生穿透
+\end{frame}
+
+\begin{frame}[fragile]{循环结构}
+    \textbf{for 循环}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+for (int i = 0; i < 10; i++) {
+    printf("%d ", i);
+}
+    \end{lstlisting}
+    \vspace{0.3em}
+    \textbf{while 循环}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+int i = 0;
+while (i < 10) {
+    printf("%d ", i++);
+}
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{do-while 循环与循环控制}
+    \textbf{do-while}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+int i = 0;
+do {
+    printf("%d ", i++);
+} while (i < 10);
+    \end{lstlisting}
+    \vspace{0.3em}
+    \textbf{break / continue}
+    \begin{itemize}
+        \item break --- 跳出当前循环
+        \item continue --- 跳过本次循环剩余部分
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item C 程序结构：预处理 $\to$ main 函数 $\to$ 函数体
+        \item 数据类型：int, char, float, double, void
+        \item 控制结构：顺序、选择 (if/switch)、循环 (for/while/do-while)
+        \item C 语言是数据结构算法描述的主要语言
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{导学篇结束，下节开始数据结构模块！}}
+    \end{center}
+\end{frame}
+
+\end{document}

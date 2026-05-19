@@ -1,0 +1,336 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 计算机网络}
+\subtitle{4-14 应用层协议}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握DNS域名系统的层次结构和查询方式
+        \item 理解HTTP协议的特点、请求方法和状态码
+        \item 理解FTP、SMTP、POP3、IMAP等应用层协议
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{应用层概述}
+    \begin{block}{应用层的作用}
+        为应用程序提供网络通信服务，是用户与网络的接口。
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,minimum width=10cm,minimum height=0.6cm,fill=blue!20] at (0,0) {\textbf{应用层协议}};
+            \foreach \x/\name in {-4.2/DNS, -2.4/HTTP, -0.6/FTP, 1.2/SMTP, 3/POP3, 4.6/Telnet} {
+                \node at (\x,-0.8) {\name};
+            }
+            \foreach \x/\name in {-4.2/DNS, -2.4/HTTP, -0.6/FTP, 1.2/SMTP, 3/POP3, 4.6/Telnet} {
+                \draw[->] (\x,-0.5) -- (\x,-0.2);
+            }
+            \node[draw,minimum width=10cm,minimum height=0.6cm,fill=red!20] at (0,-1.6) {传输层（TCP/UDP）};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 应用层协议定义了应用进程间通信的规则
+        \item 每个应用层协议通常对应一个标准端口号
+        \item C/S模式：客户端主动请求，服务器被动响应
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{DNS域名系统}
+    \begin{block}{功能}
+        将人类易记的域名（如 www.example.com）解析为IP地址。
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node (root) at (0,2) {根域名服务器};
+            \node (top) at (-2.5,0.8) {.com顶级域};
+            \node (top2) at (2.5,0.8) {.cn顶级域};
+            \node (sec) at (-2.5,-0.8) {example.com};
+            \node (host) at (-2.5,-2) {www.example.com};
+            \draw (root) -- (top);
+            \draw (root) -- (top2);
+            \draw (top) -- (sec);
+            \draw (sec) -- (host);
+            \node[right] at (0,2.4) {根域（.）};
+            \node[right] at (-2.5,1.2) {顶级域（TLD）};
+            \node[right] at (-2.5,-0.4) {二级域};
+            \node[right] at (-2.5,-1.6) {子域};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 层次树形结构：根域 $\rightarrow$ 顶级域 $\rightarrow$ 二级域 $\rightarrow$ 子域
+        \item 域名服务器层次对应域名层次
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{DNS查询方式}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{递归查询}
+        \begin{enumerate}
+            \item 主机问本地DNS服务器
+            \item 本地DNS替主机逐级查询
+            \item 最终返回结果给主机
+        \end{enumerate}
+        \vspace{0.3em}
+        \begin{center}
+            \begin{tikzpicture}[>=stealth, scale=0.6]
+                \node (h) {主机};
+                \node[right=1.2cm of h] (l) {本地DNS};
+                \node[right=1.2cm of l] (r) {根DNS};
+                \node[right=1.2cm of r] (t) {顶级DNS};
+                \draw[->] (h) -- (l);
+                \draw[->] (l) -- (r);
+                \draw[->] (r) -- (t);
+                \draw[->] (t) -- (r);
+                \draw[->] (r) -- (l);
+                \draw[->] (l) -- (h);
+            \end{tikzpicture}
+        \end{center}
+        \column{0.48\textwidth}
+        \textbf{迭代查询}
+        \begin{enumerate}
+            \item 主机问本地DNS服务器
+            \item 本地DNS依次问各级DNS
+            \item 各级DNS告诉"去问谁"
+            \item 最后回复结果
+        \end{enumerate}
+        \vspace{0.3em}
+        \begin{center}
+            \begin{tikzpicture}[>=stealth, scale=0.6]
+                \node (h) {主机};
+                \node[right=1.2cm of h] (l) {本地DNS};
+                \node[right=1.2cm of l] (r) {根DNS};
+                \node[above right=0.5cm and 0.5cm of r] (t) {顶级DNS};
+                \draw[->] (h) -- (l);
+                \draw[->] (l) -- (r);
+                \draw[->,dashed] (r) -- (l);
+                \draw[->] (l) -- (t);
+                \draw[->,dashed] (t) -- (l);
+                \draw[->] (l) -- (h);
+            \end{tikzpicture}
+        \end{center}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 递归：查询负担在DNS服务器，结果直接返回
+        \item 迭代："你问他，他再告诉你"依次询问
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{HTTP协议}
+    \begin{block}{HTTP (HyperText Transfer Protocol)}
+        超文本传输协议，基于C/S模式，默认端口80。
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,minimum width=2cm,minimum height=1cm,fill=blue!20] (c) {客户端};
+            \node[draw,minimum width=2cm,minimum height=1cm,fill=green!20,right=3cm of c] (s) {服务器};
+            \draw[<->,thick] (c) -- node[above]{HTTP请求/响应} (s);
+            \node at (0,-0.8) {浏览器};
+            \node at (5,-0.8) {Web服务器};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.5em}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{持久连接}
+        \begin{itemize}
+            \item Keep-Alive
+            \item 多个请求共用一个TCP
+            \item 减少连接开销
+            \item HTTP/1.1默认
+        \end{itemize}
+        \column{0.48\textwidth}
+        \textbf{非持久连接}
+        \begin{itemize}
+            \item 每个请求新建TCP
+            \item 开销大，效率低
+            \item HTTP/1.0默认
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{HTTP请求方法与状态码}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{常见请求方法}
+        \begin{itemize}
+            \item \textbf{GET}：请求资源
+            \item \textbf{POST}：提交数据
+            \item \textbf{HEAD}：获取响应头
+            \item \textbf{PUT}：上传资源
+            \item \textbf{DELETE}：删除资源
+            \item \textbf{OPTIONS}：查询支持方法
+        \end{itemize}
+        \column{0.48\textwidth}
+        \textbf{状态码分类}
+        \begin{itemize}
+            \item \textbf{1xx}：信息（100 Continue）
+            \item \textbf{2xx}：成功（200 OK）
+            \item \textbf{3xx}：重定向
+            \begin{itemize}
+                \item 301 永久重定向
+                \item 302 临时重定向
+            \end{itemize}
+            \item \textbf{4xx}：客户端错误
+            \begin{itemize}
+                \item 403 Forbidden
+                \item \textbf{404 Not Found}
+            \end{itemize}
+            \item \textbf{5xx}：服务器错误（500）
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{FTP文件传输协议}
+    \begin{block}{FTP (File Transfer Protocol)}
+        用于文件的上传和下载，默认端口21（控制连接）+ 20（数据连接）。
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,minimum width=2cm,minimum height=1cm,fill=blue!20] (c) {FTP客户端};
+            \node[draw,minimum width=2cm,minimum height=1cm,fill=green!20,right=3cm of c] (s) {FTP服务器};
+            \draw[->,thick] (c) -- node[above]{控制连接(21)}(s);
+            \draw[<->,thick] (c) to[out=-30,in=210] node[below]{数据连接(20)}(s);
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{主动模式}
+        \begin{itemize}
+            \item 客户端随机端口N
+            \item 服务器用20连接客户端N+1
+            \item 服务器主动连接客户端
+        \end{itemize}
+        \column{0.48\textwidth}
+        \textbf{被动模式}
+        \begin{itemize}
+            \item 客户端发PASV命令
+            \item 服务器开放随机端口
+            \item 客户端主动连接服务器
+            \item 可穿透防火墙
+        \end{itemize}
+    \end{columns}
+    \vspace{0.3em}
+    \begin{alertblock}{特点}
+        \textbf{带外控制}：控制连接和数据连接分离（FTP独有）。
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{电子邮件协议}
+    \begin{block}{电子邮件系统组成}
+        用户代理 + 邮件服务器 + 邮件协议
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node (c1) {发件人};
+            \node[right=1.5cm of c1] (s1) {发送方邮件服务器};
+            \node[right=1.5cm of s1] (s2) {接收方邮件服务器};
+            \node[right=1.5cm of s2] (c2) {收件人};
+            \draw[->] (c1) -- node[above]{SMTP} (s1);
+            \draw[->] (s1) -- node[above]{SMTP} (s2);
+            \draw[->] (s2) -- node[above]{POP3/IMAP} (c2);
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.5em}
+    \begin{columns}[t]
+        \column{0.33\textwidth}
+        \textbf{SMTP}
+        \begin{itemize}
+            \item 发送邮件
+            \item TCP 25
+            \item 推协议
+        \end{itemize}
+        \column{0.33\textwidth}
+        \textbf{POP3}
+        \begin{itemize}
+            \item 接收邮件
+            \item TCP 110
+            \item 下载后可选删除
+        \end{itemize}
+        \column{0.33\textwidth}
+        \textbf{IMAP}
+        \begin{itemize}
+            \item 接收邮件
+            \item TCP 143
+            \item 服务器管理邮件
+            \item 支持多设备同步
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{应用层协议总结}
+    \begin{table}
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{协议} & \textbf{功能} & \textbf{端口} & \textbf{传输层} \\
+            \hline
+            DNS & 域名$\rightarrow$IP & 53 & UDP/TCP \\
+            HTTP & 超文本传输 & 80 & TCP \\
+            HTTPS & 加密HTTP & 443 & TCP \\
+            FTP & 文件传输 & 21/20 & TCP \\
+            SMTP & 邮件发送 & 25 & TCP \\
+            POP3 & 邮件接收 & 110 & TCP \\
+            IMAP & 邮件接收(高级) & 143 & TCP \\
+            Telnet & 远程登录 & 23 & TCP \\
+            SSH & 安全远程登录 & 22 & TCP \\
+            DHCP & 动态IP配置 & 67/68 & UDP \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.5em}
+    \begin{exampleblock}{记忆技巧}
+        \begin{itemize}
+            \item TCP：需要可靠传输的应用（HTTP/FTP/Email/Telnet）
+            \item UDP：简单查询或实时应用（DNS/DHCP）
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{模块4 知识体系总览}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,fill=red!20,minimum width=6cm,minimum height=0.8cm] at (0,2.5) {\textbf{计算机网络}};
+            \node[draw,fill=blue!10,minimum width=2.8cm,minimum height=0.6cm] at (-3,1.2) {应用层};
+            \node[draw,fill=blue!10,minimum width=2.8cm,minimum height=0.6cm] at (0,1.2) {传输层};
+            \node[draw,fill=blue!10,minimum width=2.8cm,minimum height=0.6cm] at (3,1.2) {网络层};
+            \node[draw,fill=green!10,minimum width=2.8cm,minimum height=0.6cm] at (-1.5,0) {数据链路层};
+            \node[draw,fill=green!10,minimum width=2.8cm,minimum height=0.6cm] at (1.5,0) {物理层};
+            \draw (2.5,2.5) -- (3,2.5);
+            \draw (0,2.5) -- (0,1.8);
+            \draw (-3,2.5) -- (-3,1.8);
+            \draw (-3,0.9) -- (-1.5,0.6);
+            \draw (3,0.9) -- (1.5,0.6);
+            \node[below] at (0,-0.5) {4-8 流量控制 \quad 4-9 介质访问控制};
+            \node[below] at (0,-1.0) {4-10 网络层与IP \quad 4-11 路由算法};
+            \node[below] at (0,-1.5) {4-12 传输层 \quad 4-13 TCP};
+            \node[below] at (0,-2.0) {4-14 应用层协议};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item DNS：层次树形命名，递归查询和迭代查询
+        \item HTTP：C/S模式，持久/非持久连接，GET/POST等方法，1xx-5xx状态码
+        \item FTP：21控制+20数据（带外），主动/被动模式
+        \item SMTP（发送25）、POP3（接收110）、IMAP（接收143）
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{恭喜完成模块4全部内容！建议系统复习，融会贯通。}}
+    \end{center}
+\end{frame}
+\end{document}

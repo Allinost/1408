@@ -1,0 +1,137 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-14 哈夫曼树与并查集}
+\author{}
+\date{}
+
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解带权路径长度 WPL 的定义，掌握哈夫曼树的构造算法
+        \item 理解哈夫曼编码的原理
+        \item 理解并查集的基本概念和核心操作
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{哈夫曼树的基本概念}
+    \textbf{路径长度}：路径上的分支数目
+    \vspace{0.3em}
+    \textbf{结点的带权路径长度}
+    \[
+    \text{路径长度} \times \text{结点的权}
+    \]
+    \vspace{0.3em}
+    \textbf{树的带权路径长度（WPL）}
+    \[
+    \text{WPL} = \sum_{i=1}^{n} w_i \times l_i
+    \]
+    \vspace{0.3em}
+    \textbf{哈夫曼树}：WPL 最小的二叉树（最优二叉树）
+    \vspace{0.3em}
+    \begin{block}{特点}
+        权值越大的叶结点离根越近
+    \end{block}
+\end{frame}
+
+\begin{frame}{哈夫曼树构造算法}
+    \textbf{给定 $n$ 个权值 $\{w_1, w_2, \ldots, w_n\}$}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item 每个权值视为一棵只有根结点的二叉树
+        \item 选择两棵权值最小的树合并
+        \item 新根权值 $=$ 两子树根权值之和
+        \item 删除这两棵树，加入新树
+        \item 重复步骤 2-4 直到只剩一棵树
+    \end{enumerate}
+    \vspace{0.3em}
+    $n$ 个叶结点的哈夫曼树共有 $2n - 1$ 个结点
+\end{frame}
+
+\begin{frame}{哈夫曼编码}
+    \textbf{可变长度前缀编码}
+    \vspace{0.3em}
+    \textbf{生成方法}
+    \begin{itemize}
+        \item 字符频率作为叶结点权值
+        \item 构造哈夫曼树
+        \item 左分支编码 0，右分支编码 1
+        \item 路径上的 0/1 序列即为编码
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{特征}
+    \begin{itemize}
+        \item 前缀编码：无歧义
+        \item 频率越高的字符编码越短
+        \item 平均编码长度最小
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{应用}：ZIP 压缩、JPEG 图像压缩
+\end{frame}
+
+\begin{frame}{并查集}
+    \textbf{处理不相交集合的合并与查询}
+    \vspace{0.3em}
+    \textbf{两个核心操作}
+    \begin{itemize}
+        \item \textbf{Find}：确定元素所属集合（返回根结点）
+        \item \textbf{Union}：合并两个集合
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{存储结构}：双亲表示法的树
+    \[
+    \text{parent}[i] = 
+    \begin{cases}
+    i, & i \text{ 为根}\\
+    \text{parent}, & \text{其他}
+    \end{cases}
+    \]
+\end{frame}
+
+\begin{frame}{并查集的优化}
+    \textbf{按秩合并}
+    \begin{itemize}
+        \item 高度小的树合并到高度大的树
+        \item 避免树高度增长
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{路径压缩}
+    \begin{itemize}
+        \item Find 操作中将路径上所有结点直接指向根
+        \item 后续查找 $O(1)$
+    \end{itemize}
+    \vspace{0.3em}
+    优化后时间复杂度 $O(\alpha(n))$，$\alpha(n)$ 为阿克曼反函数
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 哈夫曼树：WPL 最小的二叉树
+        \item 构造：每次合并权值最小的两棵树
+        \item 哈夫曼编码：最优前缀编码，用于数据压缩
+        \item 并查集：Find + Union 两个操作
+        \item 优化：路径压缩 + 按秩合并 $\to O(\alpha(n))$
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：图的基本概念与存储}}
+    \end{center}
+\end{frame}
+
+\end{document}

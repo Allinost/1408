@@ -1,0 +1,141 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-11 二叉树的遍历}
+\author{}
+\date{}
+
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解先序、中序、后序遍历的递归定义与访问顺序
+        \item 掌握非递归遍历算法的实现
+        \item 掌握层序遍历的队列实现，能根据遍历序列还原二叉树
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{递归遍历}
+    \textbf{先序遍历（根左右）}
+    \[
+    \text{根} \to \text{左子树} \to \text{右子树}
+    \]
+    \textbf{中序遍历（左根右）}
+    \[
+    \text{左子树} \to \text{根} \to \text{右子树}
+    \]
+    \textbf{后序遍历（左右根）}
+    \[
+    \text{左子树} \to \text{右子树} \to \text{根}
+    \]
+    \vspace{0.5em}
+    \begin{block}{核心区别}
+        根结点的访问时机决定遍历方式名称
+    \end{block}
+\end{frame}
+
+\begin{frame}{递归算法实现}
+    \textbf{先序遍历}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+void PreOrder(BiTree T) {
+    if(T != NULL) {
+        visit(T);
+        PreOrder(T->lchild);
+        PreOrder(T->rchild);
+    }
+}
+    \end{lstlisting}
+    \vspace{0.3em}
+    \textbf{中序和后序仅调整 visit 位置}
+    \vspace{0.3em}
+    时间复杂度 $O(n)$，空间复杂度 $O(h)$
+\end{frame}
+
+\begin{frame}{非递归遍历 --- 先序}
+    \textbf{使用栈模拟}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item 根结点入栈
+        \item 出栈 $p$，访问 $p$
+        \item 右孩子入栈（先右后左，保证左先出）
+        \item 左孩子入栈
+        \item 重复直到栈空
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{非递归遍历 --- 中序}
+    \textbf{使用栈模拟}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item $p$ 指向根
+        \item 若 $p$ 非空，$p$ 入栈，$p = p \to \text{lchild}$
+        \item 若 $p$ 为空且栈非空，出栈 $p$，访问 $p$
+        \item $p = p \to \text{rchild}$
+        \item 重复直到栈空且 $p$ 为空
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{层序遍历}
+    \textbf{使用队列}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item 根结点入队
+        \item 出队 $p$，访问 $p$
+        \item 左孩子入队
+        \item 右孩子入队
+        \item 重复直到队空
+    \end{enumerate}
+    \vspace{0.5em}
+    \textbf{时间复杂度} $O(n)$，\textbf{空间复杂度} $O(n)$
+    \vspace{0.3em}
+    \textbf{应用}：求最大宽度、判断完全二叉树
+\end{frame}
+
+\begin{frame}{由遍历序列还原二叉树}
+    \textbf{先序 + 中序 $\implies$ 唯一二叉树}
+    \vspace{0.3em}
+    \textbf{原理}
+    \begin{enumerate}
+        \item 先序第一个为根
+        \item 中序中根左边为左子树，右边为右子树
+        \item 递归构建
+    \end{enumerate}
+    \vspace{0.3em}
+    \textbf{例题}
+    \begin{itemize}
+        \item 先序：A B D E C F
+        \item 中序：D B E A F C
+    \end{itemize}
+    根 A，左子树 (B D E) / (D B E)，右子树 (C F) / (F C)
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 先序（根左右）、中序（左根右）、后序（左右根）
+        \item 递归遍历 $O(n)$ 时间，$O(h)$ 空间
+        \item 非递归遍历用栈模拟递归
+        \item 层序遍历用队列实现
+        \item 先序/后序 + 中序可唯一还原二叉树
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：线索二叉树}}
+    \end{center}
+\end{frame}
+
+\end{document}

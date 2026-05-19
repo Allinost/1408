@@ -1,0 +1,224 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-5 ALU算术逻辑单元}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握一位全加器的逻辑表达式
+        \item 理解串行加法器与并行加法器的区别
+        \item 了解ALU的基本功能与结构
+        \item 理解乘除法的硬件实现思路
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{一位全加器}
+    \begin{block}{功能}
+        \begin{itemize}
+            \item 三个输入：$A_i$（加数）、$B_i$（加数）、$C_{i-1}$（低位进位）
+            \item 两个输出：$S_i$（和）、$C_i$（进位）
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{逻辑表达式}
+        \begin{align*}
+            S_i &= A_i \oplus B_i \oplus C_{i-1} \\
+            C_i &= A_i B_i + (A_i \oplus B_i) C_{i-1} \\
+                &= A_i B_i + A_i C_{i-1} + B_i C_{i-1}
+        \end{align*}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{|ccc|c|c|}
+            \hline
+            $A_i$ & $B_i$ & $C_{i-1}$ & $S_i$ & $C_i$ \\
+            \hline
+            0 & 0 & 0 & 0 & 0 \\
+            0 & 0 & 1 & 1 & 0 \\
+            0 & 1 & 0 & 1 & 0 \\
+            0 & 1 & 1 & 0 & 1 \\
+            1 & 0 & 0 & 1 & 0 \\
+            1 & 0 & 1 & 0 & 1 \\
+            1 & 1 & 0 & 0 & 1 \\
+            1 & 1 & 1 & 1 & 1 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{加法器——串行与并行}
+    \begin{block}{串行加法器}
+        \begin{itemize}
+            \item 只有一个一位全加器，逐位串行运算
+            \item 需要移位寄存器，每时钟周期计算1位
+            \item \textcolor{red}{速度慢}，但硬件量小
+        \end{itemize}
+    \end{block}
+    \begin{block}{并行加法器}
+        \begin{itemize}
+            \item 使用$n$个全加器同时计算所有位
+            \item 主要瓶颈：进位传递延迟
+            \item 进位传递路径越长，速度越慢
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \textcolor{blue}{提高加法器速度的关键：减少进位传递时间}
+    \end{center}
+\end{frame}
+
+\begin{frame}{串行进位加法器（Ripple Carry Adder）}
+    \begin{center}
+        \begin{tabular}{cccc}
+            高位 & $\cdots$ & & 低位 \\
+            \hline
+            $A_{n-1}B_{n-1}$ & $\cdots$ & $A_1B_1$ & $A_0B_0$ \\
+            $\downarrow$ & & $\downarrow$ & $\downarrow$ \\
+            FA$_{n-1}$ & $\cdots$ & FA$_1$ & FA$_0$ \\
+            $\downarrow$ & & $\downarrow$ & $\downarrow$ \\
+            $S_{n-1}$ & $\cdots$ & $S_1$ & $S_0$ \\
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 进位逐级传递：$C_0 \to C_1 \to \cdots \to C_{n-1}$
+        \item 总延迟 $\approx n \times T_f$（$T_f$为FA进位延迟）
+        \item $n$较大时速度极慢
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{并行进位加法器（Carry Lookahead Adder）}
+    \begin{block}{加速原理——提前计算进位}
+        \begin{align*}
+            C_i &= A_iB_i + (A_i \oplus B_i)C_{i-1} \\
+                &= G_i + P_i C_{i-1} \quad (\text{进位生成/传播})
+        \end{align*}
+        \begin{itemize}
+            \item 进位生成：$G_i = A_iB_i$
+            \item 进位传播：$P_i = A_i \oplus B_i$
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{4位CLA进位链}
+        \begin{align*}
+            C_0 &= G_0 + P_0 C_{-1} \\
+            C_1 &= G_1 + P_1 G_0 + P_1 P_0 C_{-1} \\
+            C_2 &= G_2 + P_2 G_1 + P_2 P_1 G_0 + P_2 P_1 P_0 C_{-1}
+        \end{align*}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}[t]{ALU的功能与基本结构}
+    \begin{block}{ALU (Arithmetic Logic Unit)}
+        \begin{itemize}
+            \item 核心功能：执行\textbf{算术运算}和\textbf{逻辑运算}
+            \item 输入：两个$n$位操作数 + 控制信号
+            \item 输出：$n$位运算结果 + 标志位
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{类别} & \textbf{典型操作} \\
+        \hline
+        算术运算 & ADD, SUB, MUL, DIV, 加1, 取补 \\
+        \hline
+        逻辑运算 & AND, OR, NOR, XOR, 取反 \\
+        \hline
+        移位操作 & 左移、右移（逻辑/算术） \\
+        \hline
+        比较操作 & 相等判断、大小比较 \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{c}
+            ALU核心部件：加法器 + 逻辑运算单元 + 移位器
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{ALU的标志位}
+    \begin{block}{常用标志位}
+        \begin{enumerate}
+            \item \textbf{ZF（零标志）}：运算结果为0时置1
+            \item \textbf{OF（溢出标志）}：有符号数溢出时置1
+            \item \textbf{CF（进位/借位标志）}：无符号数进/借位时置1
+            \item \textbf{SF（符号标志）}：结果最高位（符号位）
+            \item \textbf{PF（奇偶标志）}：结果中1的个数为偶数时置1
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 标志位存储在\textbf{程序状态字寄存器（PSWR）}中
+        \item 影响后续的\textbf{条件转移指令}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{乘法的硬件实现思路}
+    \begin{block}{加法器阵列实现}
+        \begin{itemize}
+            \item 将乘法转化为多步加法+移位
+            \item 硬件结构：加法器 + 被乘数寄存器 + 乘数寄存器 + 部分积寄存器
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item 初始部分积 = 0
+        \item 判断乘数最低位：
+        \begin{itemize}
+            \item 为1：部分积 $+$ 被乘数
+            \item 为0：部分积 $+$ 0
+        \end{itemize}
+        \item 部分积和乘数右移一位
+        \item 重复 $n$ 次
+    \end{enumerate}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 更快的方案：Booth算法、Wallace树
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{除法的硬件实现思路}
+    \begin{block}{加减交替法（不恢复余数法）}
+        \begin{itemize}
+            \item 硬件结构：加法器 + 被除数寄存器 + 除数寄存器 + 商寄存器
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item 初始：余数 $\leftarrow$ 被除数
+        \item 余数 $= 0$？商0，结束
+        \item 余数左移一位，减去除数
+        \item 结果为正 $\to$ 商1，继续左移减法数
+        \item 结果为负 $\to$ 商0，加除数恢复，左移
+        \item 重复 $n$ 次
+    \end{enumerate}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 加减交替法省去恢复余数步骤
+        \item 每步做：余数$\times 2 \pm$除数（取决于上次商值）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 全加器：$S_i = A_i \oplus B_i \oplus C_{i-1}$, $C_i = A_iB_i + (A_i\oplus B_i)C_{i-1}$
+        \item CLA加法器通过提前计算进位提高速度
+        \item ALU执行算术/逻辑运算，输出结果和标志位
+        \item 乘除法硬件核心：加法器 + 移位
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-6 存储器概述——分类、层次结构、局部性原理}}
+    \end{center}
+\end{frame}
+
+\end{document}

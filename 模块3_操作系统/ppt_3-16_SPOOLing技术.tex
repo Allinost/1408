@@ -1,0 +1,202 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-16 SPOOLing技术}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解 SPOOLing 技术的核心概念与思想
+        \item 掌握 SPOOLing 系统的组成结构
+        \item 理解打印机 SPOOLing 的完整工作流程
+        \item 理解虚拟设备技术的含义
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{SPOOLing 的基本概念}
+    \textbf{SPOOLing} = Simultaneous Peripheral Operation On-Line
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 中文：\textbf{假脱机操作}
+        \item 在多道程序环境下，利用磁盘作为缓冲
+        \item 将\textbf{独占设备}改造为\textbf{共享设备}
+    \end{itemize}
+    \vspace{0.5em}
+    核心思想：
+    \[
+    \boxed{\text{用磁盘的高速缓冲区模拟低速独占设备}}
+    \]
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 用户进程不需要直接操作物理设备
+        \item 所有 I/O 请求先写入磁盘，再由 OS 统一调度
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{SPOOLing 系统的组成}
+    SPOOLing 系统由四部分组成：
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{组件} & \textbf{功能} \\
+            \hline
+            输入井 & 磁盘区域，暂存输入数据 \\
+            输出井 & 磁盘区域，暂存输出数据 \\
+            输入进程 & 负责从设备读入数据到输入井 \\
+            输出进程 & 负责从输出井写出数据到设备 \\
+            输入缓冲区 & 内存缓冲区，缓和设备与磁盘速度差 \\
+            输出缓冲区 & 内存缓冲区，缓和磁盘与设备速度差 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    输入井和输出井是磁盘上的\textbf{专用存储区域}。
+\end{frame}
+
+\begin{frame}{SPOOLing 系统结构图}
+    \[
+    \begin{array}{c}
+        \text{用户进程 1} \quad \text{用户进程 2} \quad \text{用户进程 3} \\
+        \downarrow \qquad \downarrow \qquad \downarrow \\
+        \boxed{\text{输入缓冲区}} \qquad \boxed{\text{输出缓冲区}} \\
+        \downarrow \qquad \downarrow \\
+        \boxed{\text{输入井}} \qquad \boxed{\text{输出井}} \\
+        \downarrow \qquad \downarrow \\
+        \boxed{\text{输入进程}} \qquad \boxed{\text{输出进程}} \\
+        \downarrow \qquad \downarrow \\
+        \text{输入设备} \qquad \text{输出设备}
+    \end{array}
+    \]
+    \vspace{0.5em}
+    用户进程通过 SPOOLing 系统间接访问设备，无需直接操作硬件。
+\end{frame}
+
+\begin{frame}{打印机 SPOOLing 案例}
+    打印机是典型的\textbf{独占设备}：
+    \begin{itemize}
+        \item 同一时刻只能由一个进程使用
+        \item 多进程直接打印会导致输出混杂
+    \end{itemize}
+    \vspace{0.5em}
+    SPOOLing 解决方案：
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item 用户进程调用 \texttt{print()}，系统将数据写入\textbf{输出井}
+        \item 系统为该打印请求创建\textbf{打印请求表}并挂入队列
+        \item 用户进程立即返回，感觉"打印完成"
+        \item \textbf{打印机守护进程}从队列中取出请求
+        \item 从输出井读取数据，送往实际打印机
+    \end{enumerate}
+    \vspace{0.5em}
+    结果：用户进程互不阻塞，打印机被高效共享。
+\end{frame}
+
+\begin{frame}{打印机 SPOOLing 示意图}
+    传统方式（无 SPOOLing）：
+    \[
+    \text{进程A} \rightarrow \boxed{\text{打印机}} \leftarrow \text{进程B}
+    \]
+    一方占用，另一方阻塞等待。
+    \vspace{0.5em}
+    SPOOLing 方式：
+    \[
+    \text{进程A} \rightarrow \boxed{\text{输出井}} \searrow
+    \]
+    \[
+    \text{进程B} \rightarrow \boxed{\text{输出井}} \rightarrow
+    \boxed{\text{守护进程}} \rightarrow \boxed{\text{打印机}}
+    \]
+    \[
+    \text{进程C} \rightarrow \boxed{\text{输出井}} \nearrow
+    \]
+    \vspace{0.5em}
+    多个进程可同时向输出井写数据，互不阻塞。
+\end{frame}
+
+\begin{frame}{SPOOLing 的特点}
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{特性} & \textbf{说明} \\
+            \hline
+            设备共享 & 将独占设备改造为共享设备 \\
+            虚拟化 & 一台物理设备对应多个虚拟设备 \\
+            并行性 & 多进程 I/O 可并行进行 \\
+            速度匹配 & 磁盘高速缓冲缓和速度差异 \\
+            用户透明 & 用户感知不到 SPOOLing 的存在 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    核心价值：
+    \[
+    \boxed{\text{物理独占} \rightarrow \text{逻辑共享}}
+    \]
+\end{frame}
+
+\begin{frame}{虚拟设备技术}
+    \textbf{虚拟设备}：通过 SPOOLing 技术，一台物理 I/O 设备可对应多个虚拟设备。
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 每个用户进程认为自己独占一台设备
+        \item 实际上多进程共享同一台物理设备
+        \item OS 负责调度，确保互不干扰
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|l|l|}
+            \hline
+            & \textbf{独占设备} & \textbf{共享设备} \\
+            \hline
+            同时使用 & 仅一个进程 & 多个进程 \\
+            典型代表 & 打印机、磁带机 & 磁盘、SSD \\
+            分配方式 & 静态分配 & 动态分配 \\
+            SPOOLing 后 & $\rightarrow$ 虚拟共享 & --- \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    SPOOLing 是虚拟设备技术的典型实现。
+\end{frame}
+
+\begin{frame}{SPOOLing 使用场景}
+    SPOOLing 适用于\textbf{低速独占设备}：
+    \vspace{0.5em}
+    \begin{description}
+        \item[打印机] 最常见的 SPOOLing 应用
+        \item[终端输入] 预先将输入数据读入输入井
+        \item[网络打印] 远程打印服务
+        \item[批处理系统] 早期 SPOOLing 起源于批处理
+    \end{description}
+    \vspace{0.5em}
+    \textbf{不适用}的场景：
+    \begin{itemize}
+        \item 高速设备（磁盘本身已是共享设备）
+        \item 实时设备（需立即响应，不能缓冲延迟）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item SPOOLing = 假脱机操作，用磁盘模拟独占设备
+        \item 系统组成：输入/输出井（磁盘）+ 输入/输出进程 + 缓冲区
+        \item 打印机 SPOOLing：输出井暂存 $\rightarrow$ 守护进程实际打印
+        \item 将独占设备改造为共享设备（虚拟设备技术）
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{恭喜！操作系统模块全部学习完毕！}}
+    \end{center}
+    \begin{center}
+        \textcolor{red!80!black}{\textbf{下一阶段：进入习题训练与真题实战！}}
+    \end{center}
+\end{frame}
+
+\end{document}

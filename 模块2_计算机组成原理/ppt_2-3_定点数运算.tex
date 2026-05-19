@@ -1,0 +1,202 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-3 定点数运算}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握补码加减法的运算规则
+        \item 掌握溢出判断的两种方法
+        \item 了解定点乘法与除法的基本原理
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{补码加减法运算规则}
+    \begin{block}{加法公式}
+        \[
+            [A + B]_{\text{补}} = [A]_{\text{补}} + [B]_{\text{补}} \pmod{2^n}
+        \]
+    \end{block}
+    \begin{block}{减法公式}
+        \[
+            [A - B]_{\text{补}} = [A]_{\text{补}} + [-B]_{\text{补}} \pmod{2^n}
+        \]
+        \begin{itemize}
+            \item $[-B]_{\text{补}}$ 的求法：$[B]_{\text{补}}$ 连同符号位取反再加1
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{alertblock}{注意事项}
+        \begin{itemize}
+            \item 符号位直接参与运算
+            \item 最终结果也在补码范围内，自然得到正确符号
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{补码加减法示例}
+    \begin{exampleblock}{例1：$A = 3, B = 4$，求 $A + B$}
+        \begin{align*}
+            [3]_{\text{补}} &= 0011 \\
+            [4]_{\text{补}} &= 0100 \\
+            \text{相加} &= 0111 = (+7)
+        \end{align*}
+    \end{exampleblock}
+    \begin{exampleblock}{例2：$A = 3, B = -5$，求 $A - B = A + (-(-5)) = A + 5$}
+        \begin{align*}
+            [3]_{\text{补}} &= 0011 \\
+            [5]_{\text{补}} &= 0101 \\
+            \text{相加} &= 1000 = (-8) \quad \text{\textcolor{red}{溢出！}}
+        \end{align*}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{溢出概念}
+    \begin{block}{什么是溢出？}
+        \begin{itemize}
+            \item 运算结果超出了计算机所能表示的数值范围
+            \item 两个\textbf{同号}数相加，或两个\textbf{异号}数相减时可能发生
+            \item 溢出 ≠ 进位
+        \end{itemize}
+    \end{block}
+    \vspace{0.5em}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{情况} & \textbf{是否会溢出} \\
+        \hline
+        正 + 正 & 可能（结果超出最大正数） \\
+        \hline
+        负 + 负 & 可能（结果超出最小负数） \\
+        \hline
+        正 + 负 & 不可能 \\
+        \hline
+        正 - 负 & 可能（相当于正+正） \\
+        \hline
+        负 - 正 & 可能（相当于负+负） \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{溢出判断方法（1）——双符号位法}
+    \begin{block}{原理}
+        \begin{itemize}
+            \item 运算时使用\textbf{两个符号位}（变形补码）
+            \item $S_1S_2$：$00$ = 正数，$11$ = 负数
+            \item 结果符号位 $S_1S_2$：
+            \begin{itemize}
+                \item $00$ 或 $11$：无溢出
+                \item $01$：\textcolor{red}{正溢出}
+                \item $10$：\textcolor{red}{负溢出}
+            \end{itemize}
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{例：$3 + 5$ 是否溢出？}
+        \begin{align*}
+            [3]_{\text{补}} &= 00\;0011 \\
+            [5]_{\text{补}} &= 00\;0101 \\
+            \text{相加} &= 00\;1000 = (+8) \to \text{无溢出}
+        \end{align*}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{溢出判断方法（2）——单符号位+进位法}
+    \begin{block}{原理}
+        \begin{itemize}
+            \item 比较符号位进位 $C_s$ 与最高数位进位 $C_1$
+            \item 若 $C_s \oplus C_1 = 1$，则溢出
+            \item 若 $C_s \oplus C_1 = 0$，则无溢出
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{例：$8$位补码 $A=120, B=30$，求 $A+B$}
+        \begin{align*}
+            [120]_{\text{补}} &= 0111\;1000 \\
+            [30]_{\text{补}}  &= 0001\;1110 \\
+            \text{相加} &= 1001\;0110 = (-106) \\
+            C_s = 0,\; C_1 = 1 \implies C_s \oplus C_1 = 1 \implies \text{溢出}
+        \end{align*}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{定点乘法——基本思路}
+    \begin{block}{笔算乘法的启发}
+        \begin{itemize}
+            \item 类比十进制竖式乘法
+            \item 每次检查乘数最低位：是1则加被乘数，是0则加0
+            \item 每步将被乘数左移一位
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{例：$1101 \times 1011$}
+        \begin{align*}
+            & 1101 \\
+            \times\; & 1011 \\
+            \hline
+            & 1101 \quad (\text{乘数最低位}=1) \\
+            & 1101\;0 \quad (\text{左移一次，次低位}=1) \\
+            & 0000\;00 \quad (\text{左移两次，位}=0) \\
+            +\; & 1101\;000 \quad (\text{左移三次，最高位}=1) \\
+            \hline
+            & 1000\;1111
+        \end{align*}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{原码一位乘法}
+    \begin{block}{算法步骤}
+        \begin{enumerate}
+            \item 符号位单独处理：$S_f = X_s \oplus Y_s$
+            \item 数值部分为绝对值相乘
+            \item 每步：乘数最低位 $\to$ 决定加被乘数或0 $\to$ 部分积右移
+            \item 重复 $n$ 次
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 注意：原码乘法需要 $n$ 次加法和 $n$ 次右移
+        \item 补码乘法（Booth算法）可统一处理符号位
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{定点除法——基本思路}
+    \begin{block}{笔算除法的启发}
+        \begin{itemize}
+            \item 被除数减去除数
+            \item 够减则商1，不够减则商0
+            \item 恢复余数或直接加减
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{原码加减交替法}
+        \begin{enumerate}
+            \item 符号位单独处理
+            \item 数值部分：被除数（余数）减去除数
+            \item 余数 $> 0$：商1，余数左移后减除数
+            \item 余数 $< 0$：商0，余数左移后加除数
+            \item 重复 $n$ 次
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 补码加减法：统一为加法，符号位参与运算
+        \item 溢出判断：双符号位法 / 单符号位+进位法
+        \item 定点乘法：逐位判断、相加、右移
+        \item 定点除法：加减交替法判断商位
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-4 浮点数表示——IEEE 754标准与浮点数范围}}
+    \end{center}
+\end{frame}
+
+\end{document}

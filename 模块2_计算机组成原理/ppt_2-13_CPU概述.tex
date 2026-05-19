@@ -1,0 +1,234 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-13 CPU概述}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握CPU的四大基本功能
+        \item 区分通用寄存器与专用寄存器
+        \item 理解运算器的组成与作用
+        \item 了解控制器的基本工作流程
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{CPU的基本功能}
+    \begin{center}
+        \textbf{CPU = 控制器 + 运算器}
+    \end{center}
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item \textbf{指令控制} —— 取指令、分析指令、执行指令
+        \item \textbf{操作控制} —— 产生控制信号，控制各部件协调工作
+        \item \textbf{时间控制} —— 为每条指令提供时序控制
+        \item \textbf{数据加工} —— 对数据进行算术运算和逻辑运算
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{block}{延伸}
+        此外CPU还负责中断处理、异常处理等控制功能。
+    \end{block}
+\end{frame}
+
+\begin{frame}{CPU的内部结构}
+    \begin{center}
+        \begin{tabular}{c}
+            \hline
+            \textbf{CPU} \\
+            \hline
+            \begin{tabular}{c}
+                \textbf{控制器} \\
+                \begin{tabular}{c}
+                    \textbullet\ 取指令 \\
+                    \textbullet\ 译码 \\
+                    \textbullet\ 发控制信号
+                \end{tabular}
+            \end{tabular}
+            \quad
+            \begin{tabular}{c}
+                \textbf{运算器} \\
+                \begin{tabular}{c}
+                    \textbullet\ 算术运算 \\
+                    \textbullet\ 逻辑运算 \\
+                    \textbullet\ 移位
+                \end{tabular}
+            \end{tabular}
+            \\
+            \hline
+            \multicolumn{1}{c}{\textbf{寄存器组}} \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 控制器是"指挥中心"，运算器是"加工厂"
+        \item 寄存器组是中间数据暂存区
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{寄存器概述}
+    \textbf{寄存器}：CPU内部的高速存储单元，读写速度远高于主存
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{分类} & \textbf{名称} & \textbf{功能} \\
+            \hline
+            通用 & 通用寄存器 & 存放操作数、中间结果 \\
+            专用 & PC & 程序计数器，存下一条指令地址 \\
+            专用 & IR & 指令寄存器，存当前指令 \\
+            专用 & MAR & 存储器地址寄存器 \\
+            专用 & MDR & 存储器数据寄存器 \\
+            专用 & PSW & 程序状态字 / 标志寄存器 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{专用寄存器详解}
+    \begin{itemize}
+        \item \textbf{PC（程序计数器）}
+            \begin{itemize}
+                \item 存放下一条指令在主存中的地址
+                \item 取指后自动加1（或加指令字节数）
+                \item 转移指令会修改PC值
+            \end{itemize}
+        \item \textbf{IR（指令寄存器）}
+            \begin{itemize}
+                \item 存放当前正在执行的指令
+                \item 控制器根据IR内容译码产生控制信号
+            \end{itemize}
+        \item \textbf{MAR（存储器地址寄存器）}
+            \begin{itemize}
+                \item 存放要访问的主存单元的地址
+                \item 地址线宽度决定最大寻址空间
+            \end{itemize}
+        \item \textbf{MDR（存储器数据寄存器）}
+            \begin{itemize}
+                \item 存放从主存读出或写入主存的数据
+            \end{itemize}
+        \item \textbf{PSW（程序状态字）}
+            \begin{itemize}
+                \item 存放运算结果标志（ZF、OF、SF、CF等）
+                \item 存放中断标志、CPU运行模式等
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{运算器的组成}
+    \textbf{运算器（ALU）}的核心部件：
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item \textbf{ALU（算术逻辑单元）}
+            \begin{itemize}
+                \item 执行加、减、与、或等基本运算
+                \item 组合逻辑电路
+            \end{itemize}
+        \item \textbf{寄存器组}
+            \begin{itemize}
+                \item 暂存操作数和运算结果
+                \item 加速数据存取
+            \end{itemize}
+        \item \textbf{数据通路}
+            \begin{itemize}
+                \item 连接各寄存器和ALU的线路
+                \item 由多路选择器、三态门控制
+            \end{itemize}
+        \item \textbf{标志寄存器（PSW的一部分）}
+            \begin{itemize}
+                \item 记录运算结果的特性
+            \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{控制器的功能与组成}
+    \textbf{控制器功能}：
+    \begin{enumerate}
+        \item \textbf{取指令}：从主存中取出指令送IR
+        \item \textbf{分析指令}：译码器分析IR的操作码
+        \item \textbf{执行指令}：发控制信号驱动各部件
+        \item \textbf{处理异常/中断}
+    \end{enumerate}
+    \vspace{0.3em}
+    \textbf{控制器组成}：
+    \begin{itemize}
+        \item 程序计数器 PC
+        \item 指令寄存器 IR
+        \item 指令译码器
+        \item 时序控制逻辑
+        \item 微操作信号发生器
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{CPU的工作流程}
+    \begin{center}
+        \textbf{取指令 $\rightarrow$ 译码 $\rightarrow$ 执行 $\rightarrow$ 中断检查}
+    \end{center}
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item \textbf{取指令}
+            \begin{itemize}
+                \item PC $\rightarrow$ MAR $\rightarrow$ 主存 $\rightarrow$ MDR $\rightarrow$ IR
+                \item PC $\leftarrow$ PC + 1
+            \end{itemize}
+        \item \textbf{译码}
+            \begin{itemize}
+                \item 控制器分析IR中的操作码
+                \item 生成相应的微操作控制信号
+            \end{itemize}
+        \item \textbf{执行}
+            \begin{itemize}
+                \item 根据控制信号进行运算或数据传送
+                \item 结果写回目标寄存器或内存
+            \end{itemize}
+        \item \textbf{检查中断}
+            \begin{itemize}
+                \item 若有中断请求，进入中断处理
+                \item 否则进入下一条指令的取指
+            \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{CPU的主要性能指标}
+    \begin{itemize}
+        \item \textbf{主频}：CPU内部时钟频率，单位GHz（例：3.0 GHz）
+        \item \textbf{CPI（Clock cycles Per Instruction）}
+            \begin{itemize}
+                \item 执行一条指令所需的时钟周期数
+                \item 不同指令CPI不同
+            \end{itemize}
+        \item \textbf{IPC（Instructions Per Cycle）}
+            \begin{itemize}
+                \item 每个时钟周期执行的指令数 = $1/\text{CPI}$
+            \end{itemize}
+        \item \textbf{MIPS（Million Instructions Per Second）}
+            \begin{itemize}
+                \item $\text{MIPS} = \dfrac{\text{主频}}{\text{CPI} \times 10^6}$
+            \end{itemize}
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{关系}
+        主频高不一定性能好，还需考虑CPI和指令集效率。
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item CPU功能：指令控制、操作控制、时间控制、数据加工
+        \item 寄存器分通用和专用，PC/IR/MAR/MDR/PSW是核心专用寄存器
+        \item 运算器核心是ALU，配合寄存器组和数据通路完成运算
+        \item 控制器负责取指、译码、发控制信号，协调指令执行
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-14 指令执行过程 --- 一条指令的旅程}}
+    \end{center}
+\end{frame}
+
+\end{document}

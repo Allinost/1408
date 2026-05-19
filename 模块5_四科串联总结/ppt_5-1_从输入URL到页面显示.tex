@@ -1,0 +1,217 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 四科串联总结}
+\subtitle{5-1 从输入URL到页面显示}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 串联计算机网络、操作系统、计算机组成原理、数据结构四科知识
+        \item 理解从输入URL到页面显示的完整过程
+        \item 掌握各科在完整流程中的角色与协作关系
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{完整流程概览}
+    \begin{center}
+    \begin{tikzpicture}[node distance=3mm, auto]
+        \tikzset{
+            box/.style={rectangle, draw=primary, fill=white!90!primary, rounded corners, 
+                        text centered, minimum width=20mm, minimum height=8mm, font=\small},
+            arrow/.style={->, thick, primary}
+        }
+        \node[box] (url) {输入URL};
+        \node[box, right=of url] (dns) {DNS解析};
+        \node[box, right=of dns] (http) {HTTP请求};
+        \node[box, right=of http] (tcp) {TCP连接};
+        \node[box, right=of tcp] (ip) {IP路由};
+        \node[box, below=of ip] (arp) {ARP-MAC};
+        \node[box, below=of arp] (frame) {封装成帧};
+        \node[box, right=of ip] (serve) {服务器处理};
+        \node[box, below=of serve] (resp) {HTTP响应};
+        \node[box, right=of resp] (render) {浏览器渲染};
+
+        \draw[arrow] (url) -- (dns);
+        \draw[arrow] (dns) -- (http);
+        \draw[arrow] (http) -- (tcp);
+        \draw[arrow] (tcp) -- (ip);
+        \draw[arrow] (ip) -- (arp);
+        \draw[arrow] (arp) -- (frame);
+        \draw[arrow] (frame) -| (serve);
+        \draw[arrow] (serve) -- (resp);
+        \draw[arrow] (resp) -| (render);
+    \end{tikzpicture}
+    \end{center}
+    \vspace{0.5em}
+    \centering\textcolor{secondary}{贯穿科目：计算机网络~$\cdot$~操作系统~$\cdot$~计组~$\cdot$~数据结构}
+\end{frame}
+
+\begin{frame}{计网：DNS域名解析}
+    \begin{block}{DNS（域名系统）}
+        \begin{itemize}
+            \item 将 \texttt{www.example.com} 解析为 IP 地址
+            \item 查询顺序：浏览器缓存 $\to$ 操作系统缓存 $\to$ 本地DNS服务器 $\to$ 根/顶级/权威DNS
+        \end{itemize}
+    \end{block}
+    \begin{block}{涉及的数据结构}
+        \begin{itemize}
+            \item \textbf{DNS缓存：哈希表} --- O(1) 查找已解析的域名
+            \item \textbf{域名层级：树形结构} --- 根、顶级域、二级域、子域
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \alert{DNS使用UDP协议（53端口），响应中包含TTL控制缓存有效期}
+\end{frame}
+
+\begin{frame}{计网：HTTP请求 --- TCP三次握手}
+    \begin{block}{HTTP请求}
+        \begin{itemize}
+            \item 浏览器构建HTTP请求报文（请求行、首部、空行、主体）
+            \item HTTP/1.1默认持久连接，HTTP/2支持多路复用
+        \end{itemize}
+    \end{block}
+    \begin{block}{TCP三次握手}
+        \begin{enumerate}
+            \item 客户端 $\to$ 服务器：\texttt{SYN=1, seq=x}
+            \item 服务器 $\to$ 客户端：\texttt{SYN=1, ACK=1, seq=y, ack=x+1}
+            \item 客户端 $\to$ 服务器：\texttt{ACK=1, seq=x+1, ack=y+1}
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \alert{TCP头部至少20字节，包含源/目的端口、序号、确认号、窗口大小等字段}
+\end{frame}
+
+\begin{frame}{计网：IP路由 --- ARP --- 封装成帧}
+    \begin{block}{IP路由}
+        \begin{itemize}
+            \item 根据目的IP地址查询路由表，确定下一跳
+            \item \textbf{路由表：Trie树（前缀树）} --- 最长前缀匹配算法
+        \end{itemize}
+    \end{block}
+    \begin{block}{ARP协议}
+        \begin{itemize}
+            \item 已知IP地址，获取目标MAC地址（局域网内广播）
+            \item ARP缓存表（哈希表）保存近期映射关系
+        \end{itemize}
+    \end{block}
+    \begin{block}{封装成帧}
+        \begin{itemize}
+            \item 数据链路层添加帧头帧尾：MAC地址 + 类型 + CRC校验
+            \item 物理层：比特流传输（曼彻斯特/4B/5B编码等）
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{OS：Socket编程与内核交互}
+    \begin{block}{Socket编程接口}
+        \begin{itemize}
+            \item 应用程序通过Socket API（\texttt{socket, bind, connect, send, recv}）进行网络通信
+            \item Socket本质是操作系统提供的网络I/O接口
+        \end{itemize}
+    \end{block}
+    \begin{block}{进程间通信与内核态切换}
+        \begin{itemize}
+            \item 用户态 $\to$ 内核态：系统调用（如 \texttt{send, recv}）触发软中断
+            \item 内核协议栈处理TCP/IP协议，管理连接状态
+        \end{itemize}
+    \end{block}
+    \begin{block}{数据缓冲区管理}
+        \begin{itemize}
+            \item 发送缓冲区、接收缓冲区（内核空间）
+            \item \textbf{TCP缓冲区：队列结构} --- 字节流按序到达，等待应用程序读取
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{计组：网卡DMA与中断处理}
+    \begin{block}{网卡DMA传输}
+        \begin{itemize}
+            \item 网卡接收网络数据后，通过DMA直接写入内存缓冲区
+            \item CPU无需逐字节搬运，提高效率
+        \end{itemize}
+    \end{block}
+    \begin{block}{中断处理}
+        \begin{itemize}
+            \item 数据到达内存后，网卡发出中断信号
+            \item CPU保存当前上下文，跳转到中断处理程序
+            \item 中断处理完成后恢复用户进程
+        \end{itemize}
+    \end{block}
+    \begin{block}{CPU执行协议栈指令}
+        \begin{itemize}
+            \item CPU执行内核协议栈代码（指令流水线）
+            \item 频繁访问的代码和数据被Cache缓存，加速处理
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{数据结构：四科交汇处的核心结构}
+    \begin{block}{路由表 --- Trie树（前缀树）}
+        \begin{itemize}
+            \item 按IP前缀组织，支持最长前缀匹配
+            \item 搜索复杂度 O(L)，L为IP地址长度
+        \end{itemize}
+    \end{block}
+    \begin{block}{DNS缓存 --- 哈希表}
+        \begin{itemize}
+            \item Key：域名，Value：IP地址 + TTL
+            \item 平均查找 O(1)，冲突处理（链地址法/开放定址法）
+        \end{itemize}
+    \end{block}
+    \begin{block}{TCP缓冲区 --- 队列}
+        \begin{itemize}
+            \item 发送队列、接收队列，按序存储数据段
+            \item 滑动窗口机制依赖于缓冲区的容量管理
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{返回路径：服务器处理与HTTP响应}
+    \begin{block}{服务器处理}
+        \begin{itemize}
+            \item 接收HTTP请求 $\to$ 解析请求行/首部 $\to$ 路由到处理程序
+            \item 查询数据库（B+树索引）、读取文件，生成响应内容
+        \end{itemize}
+    \end{block}
+    \begin{block}{HTTP响应返回}
+        \begin{itemize}
+            \item 响应报文：状态行 + 首部 + 空行 + 主体
+            \item 再次经过TCP传输 $\to$ IP路由 $\to$ 链路传输
+        \end{itemize}
+    \end{block}
+    \begin{block}{TCP四次挥手（连接关闭）}
+        \begin{itemize}
+            \item 数据传输完毕，发起FIN关闭连接（或保持Keep-Alive复用）
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{浏览器渲染（核心流程）}
+    \begin{enumerate}
+        \item \textbf{HTML解析}：构建DOM树（文档对象模型）\textcolor{accent}{--- 树形结构}
+        \item \textbf{CSS解析}：构建CSSOM树（CSS对象模型）
+        \item \textbf{合并}：DOM + CSSOM $\to$ Render Tree（渲染树）
+        \item \textbf{布局（Layout）}：计算每个节点的几何位置（盒模型）
+        \item \textbf{绘制（Paint）}：将渲染树绘制到屏幕上（栅格化）
+    \end{enumerate}
+    \vspace{0.5em}
+    \alert{浏览器渲染引擎（如Blink、WebKit）涉及栈、树等多种数据结构的综合运用}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 输入URL到页面显示是一道经典的综合题，串联四门核心科目
+        \item 计网负责传输：DNS $\to$ HTTP $\to$ TCP $\to$ IP $\to$ ARP $\to$ 帧
+        \item OS提供Socket接口、进程通信与缓冲区管理
+        \item 计组完成数据搬运：DMA传输 + 中断处理 + Cache加速
+        \item 数据结构是底层骨架：哈希表(DNS缓存)、Trie树(路由表)、队列(TCP缓冲区)、树(DOM树)
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：5-2 程序的一生}}
+    \end{center}
+\end{frame}
+\end{document}

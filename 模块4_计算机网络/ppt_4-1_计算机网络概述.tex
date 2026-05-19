@@ -1,0 +1,261 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 计算机网络}
+\subtitle{4-1 计算机网络概述}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解计算机网络的定义
+        \item 掌握计算机网络的组成与功能
+        \item 熟悉计算机网络的分类
+        \item 掌握三种交换方式的原理与区别
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{计算机网络的定义}
+    \textbf{计算机网络}：将\textbf{地理位置不同}的具有\textbf{独立功能}的多个计算机系统，通过通信设备和线路连接起来，由功能完善的\textbf{软件}实现\textbf{资源共享}的系统。\\
+    \vspace{0.5em}
+    \textbf{要点提炼}：
+    \begin{itemize}
+        \item \textbf{互连的}：通过通信设备和线路互相连接
+        \item \textbf{自治的}：每个计算机拥有独立功能，不依赖于其他计算机
+        \item \textbf{集合}：多台计算机组成的整体系统
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{考研提示}
+        "互连的、自治的计算机集合"是计算机网络的核心定义，常考选择题。
+    \end{block}
+\end{frame}
+
+\begin{frame}{计算机网络的组成 --- 硬件 + 软件}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{硬件部分}：
+        \begin{itemize}
+            \item \textbf{主机}（端系统）：服务器、PC等
+            \item \textbf{通信链路}：双绞线、光纤等
+            \item \textbf{交换设备}：路由器、交换机、集线器
+            \item \textbf{其他设备}：调制解调器、中继器等
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{软件部分}：
+        \begin{itemize}
+            \item \textbf{协议}：通信双方必须遵守的规则和约定（核心）
+            \item \textbf{网络操作系统}
+            \item \textbf{网络应用软件}
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{block}{注意}
+        协议是计算机网络的\textbf{灵魂}，规定了通信的语法、语义和同步规则。
+    \end{block}
+\end{frame}
+
+\begin{frame}{计算机网络的功能}
+    \begin{enumerate}
+        \item \textbf{数据通信}（最基本功能）
+        \begin{itemize}
+            \item 实现计算机之间各种信息的传输
+        \end{itemize}
+        \item \textbf{资源共享}
+        \begin{itemize}
+            \item 硬件资源（打印机、硬盘等）
+            \item 软件资源（应用软件、工具等）
+            \item 数据资源（数据库、文件等）
+        \end{itemize}
+        \item \textbf{分布式处理}
+        \begin{itemize}
+            \item 将复杂任务分配给网络中多台计算机协同完成
+            \item 提高效率和可靠性
+        \end{itemize}
+        \item \textbf{提高可靠性}（替代设备、负载均衡）
+        \item \textbf{负载均衡}（任务分散到多台计算机）
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{计算机网络的分类 --- 按覆盖范围}
+    \begin{table}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{类型} & \textbf{覆盖范围} & \textbf{典型场景} & \textbf{传输速率} \\ \hline
+            \textbf{LAN} & 几m$\sim$几km & 办公室、校园 & 10M$\sim$10Gbps \\
+            \textbf{MAN} & 几km$\sim$几十km & 城市范围 & 较高 \\
+            \textbf{WAN} & 几十$\sim$几千km & 国家、洲际 & 较低 \\
+            \textbf{PAN} & 1m$\sim$10m & 个人设备互联 & 较低 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item LAN：局域网，覆盖范围小，速率高（如以太网）
+        \item MAN：城域网，覆盖一个城市（如有线电视网）
+        \item WAN：广域网，覆盖范围广，速率相对较低（如Internet）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{计算机网络的分类 --- 按拓扑结构}
+    \begin{columns}[T]
+        \column{0.25\textwidth}
+        \textbf{星型}\\
+        \begin{tikzpicture}[scale=0.4]
+            \node[circle,draw,inner sep=2pt,fill=blue!20] (c) at (0,0) {};
+            \node[circle,draw,inner sep=2pt] (a) at (-1.5,1.5) {};
+            \node[circle,draw,inner sep=2pt] (b) at (1.5,1.5) {};
+            \node[circle,draw,inner sep=2pt] (d) at (-1.5,-1.5) {};
+            \node[circle,draw,inner sep=2pt] (e) at (1.5,-1.5) {};
+            \draw (c)--(a) (c)--(b) (c)--(d) (c)--(e);
+        \end{tikzpicture}
+        \column{0.25\textwidth}
+        \textbf{总线型}\\
+        \begin{tikzpicture}[scale=0.4]
+            \draw[thick] (-2,0)--(2,0);
+            \node[circle,draw,inner sep=2pt] (a) at (-1.5,0) {};
+            \node[circle,draw,inner sep=2pt] (b) at (-0.5,0) {};
+            \node[circle,draw,inner sep=2pt] (c) at (0.5,0) {};
+            \node[circle,draw,inner sep=2pt] (d) at (1.5,0) {};
+        \end{tikzpicture}
+        \column{0.25\textwidth}
+        \textbf{环型}\\
+        \begin{tikzpicture}[scale=0.4]
+            \node[circle,draw,inner sep=2pt] (a) at (0,1.5) {};
+            \node[circle,draw,inner sep=2pt] (b) at (1.5,0) {};
+            \node[circle,draw,inner sep=2pt] (c) at (0,-1.5) {};
+            \node[circle,draw,inner sep=2pt] (d) at (-1.5,0) {};
+            \draw (a)--(b)--(c)--(d)--(a);
+        \end{tikzpicture}
+        \column{0.25\textwidth}
+        \textbf{网状}\\
+        \begin{tikzpicture}[scale=0.4]
+            \node[circle,draw,inner sep=2pt] (a) at (0,1.5) {};
+            \node[circle,draw,inner sep=2pt] (b) at (2,0.8) {};
+            \node[circle,draw,inner sep=2pt] (c) at (1,-1.2) {};
+            \node[circle,draw,inner sep=2pt] (d) at (-1,-1.2) {};
+            \node[circle,draw,inner sep=2pt] (e) at (-2,0.8) {};
+            \draw (a)--(b)--(c)--(d)--(e)--(a);
+            \draw (a)--(c) (b)--(d) (c)--(e) (d)--(a);
+        \end{tikzpicture}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 星型：中央节点控制，易扩展，中央节点是瓶颈
+        \item 总线型：所有节点共享总线，容易冲突
+        \item 环型：数据沿环单向传输，单向依赖
+        \item 网状：节点间多条路径，可靠性高，成本高
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{计算机网络的分类 --- 按交换方式}
+    \begin{block}{定义}
+        交换方式决定了数据如何在网络中从源主机传输到目的主机。
+    \end{block}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item \textbf{电路交换}
+        \begin{itemize}
+            \item 过程：建立连接 $\rightarrow$ 通信 $\rightarrow$ 释放连接
+            \item 特点：独占线路，实时性好，信道利用率低
+        \end{itemize}
+        \item \textbf{报文交换}
+        \begin{itemize}
+            \item 过程：存储转发，整个报文一起转发
+            \item 特点：不需要建立连接，时延较大
+        \end{itemize}
+        \item \textbf{分组交换}
+        \begin{itemize}
+            \item 过程：将报文分组，独立转发，存储转发
+            \item 特点：效率高，是\textbf{互联网的基础}
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{电路交换}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{过程}：
+        \begin{enumerate}
+            \item \textbf{建立连接}：源向目的发送请求，沿途建立专用物理通路
+            \item \textbf{通信}：双方在专用通路上传输数据
+            \item \textbf{释放连接}：通信结束，拆除通路
+        \end{enumerate}
+        \vspace{0.5em}
+        \textbf{举例}：传统电话网络
+        \column{0.5\textwidth}
+        \textbf{特点}：
+        \begin{itemize}
+            \item[\color{green!70!black}$\checkmark$] 实时性好，无冲突
+            \item[\color{green!70!black}$\checkmark$] 有序传输，时延小
+            \item[\color{red!70!black}$\times$] 建立连接耗时长
+            \item[\color{red!70!black}$\times$] \textbf{独占线路}，信道利用率低
+            \item[\color{red!70!black}$\times$] 对突发性数据传输效率低
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{报文交换与分组交换}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{报文交换}
+        \begin{itemize}
+            \item 整个报文一次转发
+            \item 存储转发方式
+            \item 不需要建立连接
+            \item 时延较大
+            \item 对中间节点存储要求高
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{分组交换}
+        \begin{itemize}
+            \item 报文拆分为\textbf{分组}独立发送
+            \item 存储转发方式
+            \item 每个分组带目的地址
+            \item 效率高，时延较小
+            \item \textcolor{blue}{\textbf{互联网的核心技术}}
+        \end{itemize}
+    \end{columns}
+    \vspace{0.8em}
+    \begin{block}{三种交换方式对比}
+        \begin{itemize}
+            \item 电路交换：面向连接，独占资源，适合实时通信
+            \item 报文交换：无连接，完整存储转发
+            \item 分组交换：无连接（数据报）或有连接（虚电路），灵活高效
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{三种交换方式对比总结}
+    \begin{table}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{特性} & \textbf{电路交换} & \textbf{报文交换} & \textbf{分组交换} \\ \hline
+            连接建立 & 需要 & 不需要 & 不需要 \\
+            数据传输 & 直接传输 & 存储转发 & 存储转发 \\
+            资源分配 & 独占 & 共享 & 共享 \\
+            实时性 & 好 & 差 & 较好 \\
+            信道利用率 & 低 & 较高 & 高 \\
+            存储要求 & 低 & 高 & 较低 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.5em}
+    \begin{center}
+        \textcolor{blue}{\textbf{分组交换是现今计算机网络（包括Internet）的基础交换方式。}}
+    \end{center}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 计算机网络是\textbf{互连的、自治的}计算机集合
+        \item 组成 = \textbf{硬件}（主机、链路、交换设备）+ \textbf{软件}（协议）
+        \item 功能：数据通信、资源共享、分布式处理、提高可靠性、负载均衡
+        \item 分类：按范围（LAN/MAN/WAN）、按拓扑（星型/总线/环型/网状）、按交换方式
+        \item 三种交换方式：电路交换（独占、实时）、报文交换（完整转发）、分组交换（分组转发，互联网基础）
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：4-2 网络性能指标}}
+    \end{center}
+\end{frame}
+\end{document}

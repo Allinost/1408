@@ -1,0 +1,195 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-19 程序查询与中断}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握程序查询方式的工作流程
+        \item 理解中断的基本概念（请求、响应、处理）
+        \item 掌握中断处理过程的完整步骤
+        \item 了解中断优先级与中断屏蔽
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{程序查询方式详解}
+    \textbf{基本流程}：
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item CPU 读取设备状态寄存器
+        \item 判断设备是否就绪（Ready=1？）
+        \item 若未就绪，继续查询（循环步骤1-2）
+        \item 若就绪，执行数据传送
+        \item 若传送完成则结束，否则继续
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{block}{CPU时间浪费示例}
+        设CPU主频 1GHz，外设就绪需 1ms，轮询一次需 10个时钟周期
+        \begin{itemize}
+            \item 轮询一次耗时 $10 \times 1\text{ns} = 10\text{ns}$
+            \item 等待期间轮询 $1\text{ms} / 10\text{ns} = 10^5$ 次
+            \item CPU 几乎全部时间用于轮询
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{程序查询的优缺点}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{优点} & \textbf{缺点} \\
+            \hline
+            控制简单，易于实现 & CPU利用率极低 \\
+            硬件开销小 & 实时性差 \\
+            无需中断相关硬件 & 无法处理突发事件 \\
+            适合简单低速设备 & 不适合多设备并发 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 适用场景：单用户、低负载系统
+        \item 实际系统中较少单独使用，常与其它方式结合
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{中断的基本概念}
+    \textbf{中断}：CPU执行程序时，收到中断请求，暂停当前程序，转去处理中断服务，处理完后返回继续执行
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{c}
+            \textbf{主程序} \quad $\longrightarrow$ \quad \textbf{中断服务程序} \quad $\longrightarrow$ \quad \textbf{主程序} \\
+            ↓ 中断请求  \quad \quad \quad \quad ↓ 执行  \quad \quad \quad \quad \quad ↓ 返回
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \textbf{中断相关术语}：
+    \begin{itemize}
+        \item \textbf{中断源}：发出中断请求的事件或设备
+        \item \textbf{中断请求}：中断源向CPU发送的信号
+        \item \textbf{中断响应}：CPU接受中断请求
+        \item \textbf{中断服务程序}：处理中断的程序
+        \item \textbf{断点}：被中断程序的返回地址
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{中断处理过程}
+    \begin{enumerate}
+        \item \textbf{关中断}
+            \begin{itemize}
+                \item CPU响应中断后，自动关闭中断，防止新中断干扰
+            \end{itemize}
+        \item \textbf{保存断点}
+            \begin{itemize}
+                \item 将当前PC（返回地址）压入堆栈
+            \end{itemize}
+        \item \textbf{识别中断源}
+            \begin{itemize}
+                \item 查询中断向量表，找到中断服务程序入口
+            \end{itemize}
+        \item \textbf{保护现场}
+            \begin{itemize}
+                \item 将被中断程序的关键寄存器内容压栈
+            \end{itemize}
+        \item \textbf{执行中断服务程序}
+            \begin{itemize}
+                \item 处理具体中断事件（如读键盘数据）
+            \end{itemize}
+        \item \textbf{恢复现场}
+            \begin{itemize}
+                \item 从堆栈恢复寄存器内容
+            \end{itemize}
+        \item \textbf{开中断}
+            \begin{itemize}
+                \item 允许CPU再次响应中断
+            \end{itemize}
+        \item \textbf{返回断点}
+            \begin{itemize}
+                \item 从堆栈恢复PC，继续执行原程序
+            \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{中断分类}
+    \textbf{按中断来源}：
+    \begin{itemize}
+        \item \textbf{外中断}：来自CPU外部（I/O设备、时钟等）
+        \item \textbf{内中断}：来自CPU内部（除零、溢出、缺页等）
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{按中断是否可屏蔽}：
+    \begin{itemize}
+        \item \textbf{可屏蔽中断}：可通过IF标志屏蔽
+        \item \textbf{不可屏蔽中断}（NMI）：必须立即处理（如电源故障）
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{按中断识别方式}：
+    \begin{itemize}
+        \item \textbf{向量中断}：中断源提供中断向量号，直接查表
+        \item \textbf{查询中断}：CPU轮询各中断源状态
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{中断优先级与中断屏蔽}
+    \textbf{中断优先级}
+    \begin{itemize}
+        \item 多个中断同时发生时，优先响应高优先级中断
+        \item 优先级顺序（典型）：内部异常 $>$ NMI $>$ 可屏蔽中断
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{中断嵌套}
+    \begin{itemize}
+        \item 处理低优先级中断时，允许高优先级中断打断
+        \item 实现：保存现场 $\rightarrow$ 处理高优先级 $\rightarrow$ 恢复现场 $\rightarrow$ 继续低优先级
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{中断屏蔽}
+    \begin{itemize}
+        \item 每个中断源可通过屏蔽字控制是否响应
+        \item 中断屏蔽字 = 每位对应一个中断源
+        \item 例：屏蔽字 1010 表示允许第1、3位的中断
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{中断方式 vs 程序查询方式}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{对比项} & \textbf{程序查询} & \textbf{中断方式} \\
+            \hline
+            CPU利用率 & 低（大量轮询） & 高（可执行其它任务） \\
+            实时性 & 差 & 好 \\
+            硬件开销 & 小 & 较大（需中断控制器） \\
+            多设备支持 & 差（串行查询慢） & 好（可嵌套优先级） \\
+            数据传送 & 同步 & 异步 \\
+            突发事件 & 无法处理 & 可处理 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{block}{考研常考}
+        给定场景选择最优的I/O控制方式，并说明理由。
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 程序查询方式：CPU不断轮询设备状态，简单但效率低
+        \item 中断方式：设备就绪后主动通知CPU，效率更高
+        \item 中断处理八步：关中断 $\rightarrow$ 保存断点 $\rightarrow$ 识别中断 $\rightarrow$ 保护现场 $\rightarrow$ 服务 $\rightarrow$ 恢复现场 $\rightarrow$ 开中断 $\rightarrow$ 返回
+        \item 中断优先级决定响应顺序，中断屏蔽控制允许多少中断
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-20 DMA方式 --- 直接存储器访问}}
+    \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,116 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-13 树、森林与二叉树}
+\author{}
+\date{}
+
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握树转换为二叉树的方法
+        \item 掌握森林转换为二叉树的方法及还原
+        \item 理解树和森林的遍历方式及其与二叉树遍历的对应关系
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{树转换为二叉树}
+    \textbf{孩子兄弟表示法}
+    \vspace{0.3em}
+    \textbf{转换步骤}
+    \begin{enumerate}
+        \item 兄弟之间加连线
+        \item 只保留与第一个孩子的连线，删除与其他孩子的连线
+        \item 以根为轴顺时针旋转 $45^\circ$
+    \end{enumerate}
+    \vspace{0.3em}
+    \textbf{转换结果}
+    \begin{itemize}
+        \item 左指针 $\to$ 第一个孩子
+        \item 右指针 $\to$ 下一个兄弟
+        \item 根结点无右子树
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{森林转换为二叉树}
+    \textbf{转换步骤}
+    \begin{enumerate}
+        \item 每棵树分别转换为二叉树
+        \item 用右指针连接各棵树的根
+    \end{enumerate}
+    \vspace{0.5em}
+    \textbf{二叉树 $\to$ 森林}
+    \begin{itemize}
+        \item 根为第一棵树根
+        \item 左子树为第一棵树的子结点结构
+        \item 右指针指向第二棵树根
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{树和森林的遍历}
+    \textbf{树的先根遍历} $\leftrightarrow$ \textbf{二叉树的先序遍历}
+    \vspace{0.3em}
+    \textbf{树的后根遍历} $\leftrightarrow$ \textbf{二叉树的中序遍历}
+    \vspace{0.5em}
+    \textbf{森林的先序遍历}
+    \begin{itemize}
+        \item 访问第一棵树根
+        \item 先序遍历第一棵树的子树森林
+        \item 先序遍历剩余森林
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{森林的中序遍历}
+    \begin{itemize}
+        \item 中序遍历第一棵树的子树森林
+        \item 访问第一棵树根
+        \item 中序遍历剩余森林
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{例题}
+    \textbf{森林 F 对应二叉树 B 有 $m$ 个结点，B 的根为 $p$，$p$ 的右孩子结点数为 $n$，求森林中树的棵数}
+    \vspace{0.5em}
+    \textbf{分析}
+    \begin{itemize}
+        \item 根 $p$ 对应第一棵树
+        \item $p$ 的右孩子对应第二棵树根
+        \item 右孩子的右孩子对应第三棵树根
+        \item 以此类推
+    \end{itemize}
+    \vspace{0.5em}
+    \[
+    \boxed{\text{树的棵数} = n + 1}
+    \]
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 树 $\to$ 二叉树：孩子兄弟表示法
+        \item 森林 $\to$ 二叉树：每棵树转换后根用右指针连接
+        \item 树的先根遍历 $\leftrightarrow$ 二叉树先序遍历
+        \item 树的后根遍历 $\leftrightarrow$ 二叉树中序遍历
+        \item 孩子兄弟表示法统一了树、森林、二叉树的存储
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：哈夫曼树与并查集}}
+    \end{center}
+\end{frame}
+
+\end{document}

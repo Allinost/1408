@@ -1,0 +1,88 @@
+﻿\documentclass[10pt, aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-16 图的遍历}
+\author{}
+\date{}
+\setbeamertemplate{page number in head/foot}{}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}{本节目标}
+\begin{enumerate}
+\item 理解 DFS 的原理与实现
+\item 理解 BFS 的原理与实现
+\item 掌握 DFS 和 BFS 在连通性、生成树中的应用
+\end{enumerate}
+\end{frame}
+\begin{frame}{深度优先搜索 DFS}
+\textbf{策略}：沿路径深入探索，回溯继续
+\vspace{0.3em}
+\textbf{递归算法}
+\begin{itemize}
+\item 访问 $v$，标记 visited
+\item 取 $v$ 的未访问邻接顶点 $w$，递归 DFS($w$)
+\item 所有邻接顶点已访问则回溯
+\end{itemize}
+\vspace{0.3em}
+\textbf{时间复杂度}
+\begin{itemize}
+\item 邻接表：$O(n+e)$
+\item 邻接矩阵：$O(n^2)$
+\end{itemize}
+空间复杂度 $O(n)$（递归栈）
+\end{frame}
+\begin{frame}{广度优先搜索 BFS}
+\textbf{策略}：按距离递增逐层访问
+\vspace{0.3em}
+\textbf{队列实现}
+\begin{itemize}
+\item 访问 $v$，入队
+\item 出队 $u$，访问 $u$ 的所有未访问邻接顶点并入队
+\item 重复直到队空
+\end{itemize}
+\vspace{0.3em}
+\textbf{时间复杂度}
+\begin{itemize}
+\item 邻接表：$O(n+e)$
+\item 邻接矩阵：$O(n^2)$
+\end{itemize}
+空间复杂度 $O(n)$（队列）
+\vspace{0.3em}
+\textbf{应用}：无权图单源最短路径
+\end{frame}
+\begin{frame}{图的连通性判定}
+一次 DFS/BFS 只能访问一个连通分量
+\vspace{0.3em}
+\textbf{遍历所有顶点}
+\begin{itemize}
+\item 对每个未访问顶点启动一次遍历
+\item 遍历次数 $=$ 连通分量数
+\end{itemize}
+\vspace{0.5em}
+\textbf{生成树}
+\begin{itemize}
+\item DFS 路径 $\to$ 深度优先生成树
+\item BFS 路径 $\to$ 广度优先生成树
+\item 包含全部 $n$ 个顶点，$n-1$ 条边
+\end{itemize}
+\end{frame}
+\begin{frame}{本节总结}
+\begin{enumerate}
+\item DFS：递归/栈，沿路径深入，$O(n+e)$
+\item BFS：队列，按层访问，$O(n+e)$
+\item 一次遍历一个连通分量
+\item 遍历路径构成生成树
+\end{enumerate}
+\vspace{1em}
+\begin{center}
+\textcolor{blue}{\textbf{下节预告：查找基础}}
+\end{center}
+\end{frame}
+\end{document}

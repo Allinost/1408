@@ -1,0 +1,187 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-1 计算机系统概述}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解冯·诺依曼结构的基本思想与五大部件
+        \item 掌握存储程序概念及其意义
+        \item 了解计算机发展的四个时代
+        \item 掌握计算机性能指标：CPI、MIPS、FLOPS
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{冯·诺依曼结构}
+    \begin{itemize}
+        \item 1945年，冯·诺依曼提出\textbf{存储程序}概念
+        \item 计算机由\textbf{五大部件}组成：
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{部件} & \textbf{功能} \\
+            \hline
+            运算器 & 算术运算和逻辑运算 \\
+            \hline
+            控制器 & 指令执行——取指、译码、控制 \\
+            \hline
+            存储器 & 存放程序和数据 \\
+            \hline
+            输入设备 & 将信息输入计算机 \\
+            \hline
+            输出设备 & 将结果输出给用户 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{存储程序概念}
+    \begin{block}{核心思想}
+        \begin{itemize}
+            \item 将\textbf{指令}和\textbf{数据}以二进制形式预先存入主存储器
+            \item 计算机运行时自动逐条取出指令并执行
+            \item 程序执行过程 = 取指 $\rightarrow$ 译码 $\rightarrow$ 执行 $\rightarrow$ 再取指
+        \end{itemize}
+    \end{block}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 这是现代计算机的基础（\textbf{冯·诺依曼机}）
+        \item 区别于此前的外插程序计算机（如ENIAC）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{冯·诺依曼结构的特点}
+    \begin{enumerate}
+        \item 计算机由五大部件组成
+        \item 指令和数据以\textbf{同等地位}存储在存储器中（二进制）
+        \item 指令由\textbf{操作码}和\textbf{地址码}组成
+        \item 存储程序，自动执行
+        \item 以\textbf{运算器}为中心（现代计算机以存储器为中心）
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{center}
+        \textcolor{blue}{注：现代计算机采用\textbf{以存储器为中心}的结构}
+    \end{center}
+\end{frame}
+
+\begin{frame}{计算机发展历程}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{时代} & \textbf{时间} & \textbf{逻辑元件} & \textbf{代表} \\
+        \hline
+        第一代 & 1946--1957 & 电子管 & ENIAC \\
+        \hline
+        第二代 & 1958--1964 & 晶体管 &  \\
+        \hline
+        第三代 & 1965--1971 & 中小规模IC & IBM 360 \\
+        \hline
+        第四代 & 1972--至今 & VLSI & Intel 4004 \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 发展趋势：体积$\downarrow$，速度$\uparrow$，价格$\downarrow$，功耗$\downarrow$
+        \item 摩尔定律：集成电路上晶体管数量约\textbf{每18个月}翻一番
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{计算机的性能指标（1）}
+    \begin{block}{存储容量}
+        \begin{itemize}
+            \item 位（bit）：二进制一位
+            \item 字节（Byte）：1 B = 8 bit
+            \item 字（Word）：CPU一次处理的位数
+            \item 常用单位：KB ($2^{10}$), MB ($2^{20}$), GB ($2^{30}$), TB ($2^{40}$)
+        \end{itemize}
+    \end{block}
+    \begin{block}{吞吐量与响应时间}
+        \item \textbf{吞吐量}：单位时间内完成的任务量
+        \item \textbf{响应时间}：从任务提交到完成的总时间
+    \end{block}
+\end{frame}
+
+\begin{frame}{计算机的性能指标（2）——CPU性能}
+    \begin{block}{主频与时钟周期}
+        \item 主频：CPU每秒的时钟周期数（单位Hz）
+        \item 时钟周期：主频的倒数，CPU最小时间单位
+        \item 主频(Hz) $\times$ 时钟周期(s) = 1
+    \end{block}
+    \begin{block}{CPI (Cycles Per Instruction)}
+        \[
+            \text{CPI} = \frac{\text{CPU执行程序所需时钟周期数}}{\text{指令条数}}
+        \]
+        \[
+            \text{CPU执行时间} = \text{指令条数} \times \text{CPI} \times \text{时钟周期}
+        \]
+    \end{block}
+\end{frame}
+
+\begin{frame}{计算机的性能指标（3）}
+    \begin{block}{MIPS (Million Instructions Per Second)}
+        \[
+            \text{MIPS} = \frac{\text{指令条数}}{\text{执行时间} \times 10^6} = \frac{\text{主频}}{\text{CPI} \times 10^6}
+        \]
+        \begin{itemize}
+            \item MIPS越高，CPU性能越好（但需注意指令集差异）
+        \end{itemize}
+    \end{block}
+    \begin{block}{FLOPS (Floating-point Operations Per Second)}
+        \item MFLOPS ($10^6$), GFLOPS ($10^9$), TFLOPS ($10^{12}$)
+        \item 衡量浮点运算能力（科学计算常用）
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \textcolor{blue}{考研常见陷阱：MIPS与指令集有关，不同架构不能直接比较}
+    \end{center}
+\end{frame}
+
+\begin{frame}{计算机系统层次结构}
+    \begin{center}
+        \begin{tabular}{c}
+            \hline
+            最终用户 \\
+            \hline
+            高级语言（C / Python） \\
+            \hline
+            汇编语言 \\
+            \hline
+            操作系统 \\
+            \hline
+            指令集体系结构（ISA） \\
+            \hline
+            微体系结构（Microarchitecture） \\
+            \hline
+            数字逻辑电路 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item ISA是软件与硬件的\textbf{接口}
+        \item 同一种ISA可以有不同的微体系结构实现（如x86）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 冯·诺依曼结构 = 五大部件 + 存储程序
+        \item 计算机发展：电子管 $\to$ 晶体管 $\to$ IC $\to$ VLSI
+        \item 性能指标：CPI、MIPS、FLOPS是考研重点
+        \item 指令集体系结构（ISA）是软硬件接口
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-2 数制与编码——二进制、八进制、十六进制与编码规则}}
+    \end{center}
+\end{frame}
+
+\end{document}

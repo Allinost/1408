@@ -1,0 +1,236 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 计算机网络}
+\subtitle{4-5 传输介质与设备}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握导向型传输介质的特点和应用
+        \item 了解非导向型传输介质
+        \item 掌握中继器和集线器的工作原理
+        \item 理解冲突域的概念
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{导向型传输介质 --- 双绞线}
+    \begin{columns}[T]
+        \column{0.55\textwidth}
+        \textbf{双绞线}
+        \begin{itemize}
+            \item 将两根相互绝缘的铜导线\textbf{绞合}在一起
+            \item 绞合目的：减少电磁干扰
+            \item 接口：\textbf{RJ45}（水晶头）
+        \end{itemize}
+        \vspace{0.3em}
+        \textbf{分类}：
+        \begin{itemize}
+            \item \textbf{STP}（屏蔽双绞线）：有金属屏蔽层，抗干扰强，成本高
+            \item \textbf{UTP}（非屏蔽双绞线）：无屏蔽层，成本低，使用广泛
+        \end{itemize}
+        \vspace{0.3em}
+        \textbf{常见标准}：Cat5e、Cat6（百兆/千兆以太网）
+        \column{0.45\textwidth}
+        \begin{block}{特点}
+            \begin{itemize}
+                \item[\color{green!70!black}$\checkmark$] 价格便宜，易于安装
+                \item[\color{green!70!black}$\checkmark$] 适合短距离（$\le 100$m）
+                \item[\color{red!70!black}$\times$] 传输距离有限
+                \item[\color{red!70!black}$\times$] 易受电磁干扰
+            \end{itemize}
+        \end{block}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{导向型传输介质 --- 同轴电缆}
+    \begin{columns}[T]
+        \column{0.55\textwidth}
+        \textbf{同轴电缆}
+        \begin{itemize}
+            \item 由内导体、绝缘层、外导体（屏蔽层）、外护套组成
+            \item 外导体接地，抗干扰能力强
+            \item 比双绞线传输距离更远
+        \end{itemize}
+        \vspace{0.3em}
+        \textbf{分类}：
+        \begin{itemize}
+            \item \textbf{基带同轴电缆}（50$\Omega$）：传输数字信号，LAN中使用
+            \item \textbf{宽带同轴电缆}（75$\Omega$）：传输模拟信号，有线电视
+        \end{itemize}
+        \column{0.45\textwidth}
+        \begin{block}{特点}
+            \begin{itemize}
+                \item[\color{green!70!black}$\checkmark$] 抗干扰能力强
+                \item[\color{green!70!black}$\checkmark$] 传输距离较远
+                \item[\color{red!70!black}$\times$] 成本较高
+                \item[\color{red!70!black}$\times$] 安装较复杂
+            \end{itemize}
+        \end{block}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{导向型传输介质 --- 光纤}
+    \textbf{原理}：利用光的\textbf{全反射}特性，在玻璃纤维中传输光信号。
+    \vspace{0.5em}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{单模光纤}
+        \begin{itemize}
+            \item 纤芯很细（$8\sim10\mu$m）
+            \item 光沿直线传播
+            \item 衰减小，传输距离长（$>10$km）
+            \item 成本高
+            \item 适合远距离骨干网
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{多模光纤}
+        \begin{itemize}
+            \item 纤芯较粗（$50\sim62.5\mu$m）
+            \item 光以多个角度反射传播
+            \item 有模间色散
+            \item 距离较短（$<2$km）
+            \item 成本低
+            \item 适合局域网
+        \end{itemize}
+    \end{columns}
+    \vspace{0.3em}
+    \begin{block}{光纤优点}
+        传输带宽高、损耗小、抗电磁干扰、保密性好
+    \end{block}
+\end{frame}
+
+\begin{frame}{非导向型传输介质}
+    \begin{columns}[T]
+        \column{0.33\textwidth}
+        \textbf{无线电波}
+        \begin{itemize}
+            \item 穿透性好
+            \item 全方向传播
+            \item 传输距离远
+            \item WiFi、蓝牙、手机信号
+            \item 易受干扰
+        \end{itemize}
+        \column{0.33\textwidth}
+        \textbf{微波}
+        \begin{itemize}
+            \item 直线传播（视距）
+            \item 频率高，带宽大
+            \item 需中继站接力
+            \item 对障碍物敏感
+            \item 卫星通信、地面微波
+        \end{itemize}
+        \column{0.33\textwidth}
+        \textbf{红外}
+        \begin{itemize}
+            \item 短距离通信
+            \item 不能穿透障碍物
+            \item 点对点
+            \item 遥控器
+            \item 成本低
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{block}{对比}
+        无线电波穿透性好但速率较低，微波速率高但需要视距传输，红外适合短距离低成本场景。
+    \end{block}
+\end{frame}
+
+\begin{frame}{物理层设备 --- 中继器}
+    \begin{columns}[T]
+        \column{0.55\textwidth}
+        \textbf{中继器（Repeater）}
+        \begin{itemize}
+            \item 功能：对信号进行\textbf{再生和放大}，延长传输距离
+            \item 工作在\textbf{物理层}
+            \item 两端连接相同的网段
+            \item 不能连接不同速率/协议的网段
+        \end{itemize}
+        \vspace{0.3em}
+        \textbf{5-4-3规则}：
+        \begin{itemize}
+            \item 最多\textbf{5}个网段
+            \item 最多\textbf{4}个中继器
+            \item 最多\textbf{3}个网段有主机
+        \end{itemize}
+        \column{0.45\textwidth}
+        \begin{block}{注意}
+            \begin{itemize}
+                \item 中继器不能连接不同类型的网络
+                \item 不能过滤数据
+                \item 将信号原样转发（包括噪声）
+                \item 扩展了冲突域
+            \end{itemize}
+        \end{block}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{物理层设备 --- 集线器}
+    \begin{columns}[T]
+        \column{0.55\textwidth}
+        \textbf{集线器（Hub）}
+        \begin{itemize}
+            \item 本质：\textbf{多端口的中继器}
+            \item 工作在\textbf{物理层}
+            \item 接收一个端口信号，向\textbf{所有其他端口}转发
+            \item \textbf{共享带宽}：所有端口平分总带宽
+            \item \textbf{半双工}：同一时刻只能单向传输
+        \end{itemize}
+        \vspace{0.3em}
+        \begin{alertblock}{重要特性}
+            集线器连接的设备处于同一个\textbf{冲突域}和\textbf{广播域}。
+        \end{alertblock}
+        \column{0.45\textwidth}
+        \begin{exampleblock}{举例}
+            10Mbps的集线器连接4台主机：\\
+            $\to$ 总带宽10Mbps共享\\
+            $\to$ 每台主机理论最高10Mbps\\
+            $\to$ 但实际需竞争，总带宽固定10Mbps
+        \end{exampleblock}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{冲突域的概念}
+    \begin{block}{冲突域（Collision Domain）}
+        当两$+$台设备同时发送数据时，信号会在共享介质上产生\textbf{冲突}的范围。
+    \end{block}
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{冲突域的特点}：
+        \begin{itemize}
+            \item 共享同一传输介质的所有设备
+            \item 同一时刻只能一台设备发送
+            \item 冲突发生时需重传
+            \item 降低网络效率
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{设备对冲突域的影响}：
+        \begin{itemize}
+            \item \textbf{集线器/中继器}：不隔离冲突域
+            \item \textbf{交换机/网桥}：隔离冲突域（每个端口独立冲突域）
+            \item \textbf{路由器}：隔离冲突域和广播域
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{exampleblock}{区分}
+        \textbf{冲突域}：物理层概念，共享介质产生冲突的范围\\
+        \textbf{广播域}：网络层概念，能收到广播的范围
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item \textbf{导向型介质}：双绞线（STP/UTP，RJ45）、同轴电缆（基带/宽带）、光纤（单模/多模，全反射）
+        \item \textbf{非导向型介质}：无线电波（穿透好）、微波（直线中继）、红外（短距离）
+        \item \textbf{中继器}：信号再生放大，延长距离；5-4-3规则
+        \item \textbf{集线器}：多端口中继器，共享带宽，半双工
+        \item \textbf{冲突域}：共享介质时信号冲突的范围；集线器不隔离冲突域
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：4-6 数据链路层功能}}
+    \end{center}
+\end{frame}
+\end{document}

@@ -1,0 +1,131 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-9 树的基本概念}
+\author{}
+\date{}
+
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解树的递归定义与基本术语
+        \item 掌握树的性质（结点数、度数、深度之间的关系）
+        \item 理解树的四种存储结构及特点
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{树的递归定义}
+    \textbf{树}：$n$ 个结点的有限集合（$n \ge 0$）
+    \vspace{0.3em}
+    \begin{itemize}
+        \item $n = 0$ 时为空树
+        \item 非空树有且仅有一个根结点
+        \item 其余结点分为 $m$ 个互不相交的有限集合，每个集合本身是一棵树（子树）
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{特征}
+        递归定义，树由根结点和若干子树构成，每棵子树又是一棵树
+    \end{block}
+\end{frame}
+
+\begin{frame}{树的术语}
+    \begin{itemize}
+        \item \textbf{度}：结点拥有的子树个数
+        \item \textbf{树的度}：所有结点度的最大值
+        \item \textbf{叶结点}：度为 0 的结点
+        \item \textbf{分支结点}：度 $> 0$ 的结点
+        \item \textbf{深度/高度}：结点的最大层次数
+        \item \textbf{双亲} $\leftrightarrow$ \textbf{孩子}：上下层关系
+        \item \textbf{兄弟}：同一双亲的孩子
+        \item \textbf{祖先} $\leftrightarrow$ \textbf{子孙}：路径上的前后关系
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{树的性质}
+    \textbf{性质一}
+    \[
+    \text{结点数} = \text{所有结点的度数之和} + 1
+    \]
+    \vspace{0.3em}
+    \textbf{性质二}：度为 $m$ 的树第 $i$ 层最多有
+    \[
+    m^{i-1} \text{ 个结点}
+    \]
+    \vspace{0.3em}
+    \textbf{性质三}：高度为 $h$ 的 $m$ 叉树最多有
+    \[
+    \frac{m^h - 1}{m - 1} \text{ 个结点}
+    \]
+    \vspace{0.3em}
+    \textbf{性质四}：$n$ 个结点的 $m$ 叉树最小高度
+    \[
+    \lceil \log_m(n(m-1) + 1) \rceil
+    \]
+\end{frame}
+
+\begin{frame}{树的存储结构}
+    \textbf{双亲表示法}
+    \begin{itemize}
+        \item 数组存储结点，每个结点含数据域和双亲指针
+        \item 找双亲 $O(1)$，找孩子需遍历
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{孩子表示法}
+    \begin{itemize}
+        \item 每个结点维护指向孩子链表的指针
+        \item 找孩子方便，找双亲需遍历
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{孩子兄弟表示法}
+    \begin{itemize}
+        \item 每个结点含 firstchild 和 nextsibling 指针
+        \item 可将树转换为二叉树
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{例题 --- 求叶结点数}
+    \textbf{一棵度为 4 的树中，度 1、2、3、4 的结点数分别为 4、2、1、1，求叶结点数 $n_0$}
+    \vspace{0.5em}
+    \textbf{解答}
+    \[
+    \begin{aligned}
+    n &= n_0 + 4 + 2 + 1 + 1 = n_0 + 8\\
+    \text{总度数} &= 0 \times n_0 + 1 \times 4 + 2 \times 2 + 3 \times 1 + 4 \times 1 = 15\\
+    n &= 15 + 1 = 16\\
+    n_0 + 8 &= 16 \implies n_0 = 8
+    \end{aligned}
+    \]
+    \vspace{0.3em}
+    叶结点数为 \textbf{8}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 树是递归定义的分层结构
+        \item 术语：度、叶结点、深度、双亲、孩子、兄弟
+        \item 结点数 $=$ 度数之和 $+1$
+        \item 存储结构：双亲、孩子、孩子兄弟，各有适用场景
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：二叉树}}
+    \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,219 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-12 寻址方式}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解立即寻址与直接寻址的区别
+        \item 掌握间接寻址的基本思想
+        \item 区分寄存器寻址与寄存器间接寻址
+        \item 理解变址寻址、基址寻址、相对寻址的用途
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{寻址方式概述}
+    \begin{itemize}
+        \item \textbf{寻址方式}：指令中如何给出操作数或操作数地址的方式
+        \item 解决的核心问题：\textcolor{blue}{操作数在哪？}
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{寻址方式} & \textbf{操作数位置} \\
+            \hline
+            立即寻址 & 指令本身 \\
+            直接寻址 & 主存（地址在指令中） \\
+            间接寻址 & 主存（地址由指针给出） \\
+            寄存器寻址 & 寄存器 \\
+            变址/基址/相对寻址 & 主存（地址经计算得到） \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{立即寻址}
+    \begin{itemize}
+        \item 操作数直接存放在指令的地址码字段中
+        \item 形式：\texttt{ADD R1, \#100} $\Rightarrow$ \texttt{R1 $\leftarrow$ R1 + 100}
+        \item 指令执行时直接从指令中读取，无需访存
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{特点}
+        \begin{itemize}
+            \item[+] 执行速度快，无需访问内存
+            \item[+] 适合提供常数、初始值
+            \item[-] 操作数大小受地址码字段长度限制
+            \item[-] 无法修改（指令不可变）
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{直接寻址}
+    \begin{itemize}
+        \item 指令的地址码字段直接给出操作数所在的主存地址
+        \item 形式：\texttt{ADD R1, [100]} $\Rightarrow$ 从内存地址100读取数据
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{寻址过程}
+        \begin{enumerate}
+            \item 取出指令，得到地址码 A
+            \item $\text{EA} = \text{A}$（有效地址即为指令给出的地址）
+            \item 访存 $\text{M[A]}$ 得到操作数
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item[+] 寻址简单，只需一次访存
+        \item[-] 地址空间受限，修改地址需修改指令
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{间接寻址}
+    \begin{itemize}
+        \item 指令的地址码给出的是存放操作数地址的地址
+        \item 形式：\texttt{ADD R1, [[100]]}
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{寻址过程（一次间接）}
+        \begin{enumerate}
+            \item 取出指令，得到地址 A
+            \item $\text{EA} = \text{M[A]}$（从A中取出操作数地址）
+            \item 再次访存 $\text{M[EA]}$ 得到操作数
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item[+] 灵活，可方便地修改操作数地址
+        \item[-] 需两次访存，速度较慢
+        \item[!] 可多次间接（多级间接），但考研常考一次间接
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{寄存器寻址}
+    \begin{itemize}
+        \item 操作数存放在寄存器中，指令给出寄存器编号
+        \item 形式：\texttt{ADD R1, R2} $\Rightarrow$ \texttt{R1 $\leftarrow$ R1 + R2}
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{特点}
+        \begin{itemize}
+            \item[+] 无需访问主存，执行速度最快
+            \item[+] 指令字长短（寄存器编号仅需几位）
+            \item[-] 寄存器数量有限，成本高
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \textbf{寄存器间接寻址}
+    \begin{itemize}
+        \item 寄存器中存放的是操作数的地址
+        \item 形式：\texttt{ADD R1, [R2]} $\Rightarrow$ \texttt{R1 $\leftarrow$ R1 + M[R2]}
+        \item $\text{EA} = \text{(R2)}$，需访存一次
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{变址寻址}
+    \begin{itemize}
+        \item 有效地址 = 变址寄存器内容 + 指令中的形式地址
+        \item 公式：$\text{EA} = \text{(IX)} + \text{A}$
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{特点}
+        \begin{itemize}
+            \item 变址寄存器 IX 的内容可自动修改
+            \item 适合\textbf{数组/循环}操作
+            \item 每循环一次 IX 自增，指向下一元素
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \textbf{例：}数组求和
+    \begin{itemize}
+        \item \texttt{IX} 初始指向数组首地址，\texttt{A} = 0
+        \item 每次执行 \texttt{ADD R1, [IX+A]}，IX 自增
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{基址寻址}
+    \begin{itemize}
+        \item 有效地址 = 基址寄存器内容 + 指令中的形式地址
+        \item 公式：$\text{EA} = \text{(BR)} + \text{A}$
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{与变址寻址的区别}
+        \begin{itemize}
+            \item 基址寄存器由\textbf{操作系统或管理程序}设定，用户不可修改
+            \item 形式地址 A 是相对于基址的偏移量
+            \item 主要用于\textbf{程序重定位}和\textbf{多道程序}
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        & \textbf{基址寻址} & \textbf{变址寻址} \\
+        \hline
+        寄存器内容 & 由系统设定，不变 & 用户可修改，常变 \\
+        形式地址 & 偏移量（可变） & 基准量（不变） \\
+        主要用途 & 程序重定位 & 数组/循环访问 \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{相对寻址}
+    \begin{itemize}
+        \item 有效地址 = PC（程序计数器）+ 指令中的形式地址
+        \item 公式：$\text{EA} = \text{(PC)} + \text{A}$
+        \item A 可正可负（补码表示）
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{特点}
+        \begin{itemize}
+            \item[+] 以当前执行位置为基准，适合\textbf{转移指令}
+            \item[+] 程序代码整体移动时无需修改指令（位置无关代码）
+            \item[-] 寻址范围受偏移量位数限制
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \textbf{例：}\texttt{JMP \$+50} $\Rightarrow$ 从当前PC位置向后跳转50个字节
+\end{frame}
+
+\begin{frame}{寻址方式对比总结}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{寻址方式} & \textbf{有效地址 EA} & \textbf{访存次数} \\
+            \hline
+            立即寻址   & 操作数在指令中 & 0 \\
+            直接寻址   & EA = A & 1 \\
+            间接寻址   & EA = (A) & 2 \\
+            寄存器寻址   & 操作数在寄存器 & 0 \\
+            寄存器间接寻址 & EA = (R) & 1 \\
+            变址寻址   & EA = (IX) + A & 1 \\
+            基址寻址   & EA = (BR) + A & 1 \\
+            相对寻址   & EA = (PC) + A & 1 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 立即寻址操作数在指令中，直接寻址操作数地址在指令中
+        \item 间接寻址通过指针找到操作数，需多次访存
+        \item 寄存器寻址速度最快，寄存器间接寻址指向内存
+        \item 变址寻址适合数组，基址寻址适合重定位，相对寻址适合转移
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-13 CPU概述 --- 计算机的大脑}}
+    \end{center}
+\end{frame}
+
+\end{document}

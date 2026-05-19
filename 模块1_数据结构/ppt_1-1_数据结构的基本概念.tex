@@ -1,0 +1,256 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-1 数据结构的基本概念}
+\author{}
+\date{}
+
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握数据、数据元素、数据项的定义及其层级关系
+        \item 理解数据结构的二元组形式化定义
+        \item 区分逻辑结构与存储结构，掌握四种逻辑结构与两种存储结构的特征
+        \item 理解抽象数据类型 ADT 的概念
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{数据的定义}
+    \textbf{数据（Data）}
+    \begin{itemize}
+        \item 客观事物的符号表示
+        \item 所有能输入到计算机中并被计算机程序处理的符号的总称
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{分类}
+    \begin{itemize}
+        \item 数值数据：整数、实数
+        \item 非数值数据：字符、图像、声音
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{数据元素与数据项}
+    \textbf{数据元素（Data Element）}
+    \begin{itemize}
+        \item 数据的基本单位
+        \item 在计算机程序中通常作为一个整体进行考虑和处理
+        \item 一个数据元素可由若干个数据项组成
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{数据项（Data Item）}
+    \begin{itemize}
+        \item 数据的不可分割的最小单位
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{数据对象（Data Object）}
+    \begin{itemize}
+        \item 性质相同的数据元素的集合
+        \item 是数据的一个子集
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{四概念层级关系}
+    \begin{center}
+    \begin{tikzpicture}
+        \draw[blue, thick] (0,0) ellipse (3cm and 2cm);
+        \node[blue] at (0,1.2) {数据 (Data)};
+        \draw[blue, thick] (0,0) ellipse (2cm and 1.3cm);
+        \node[blue] at (0,0.6) {数据对象 (Data Object)};
+        \draw[blue, thick] (0,0) ellipse (1.2cm and 0.7cm);
+        \node[blue] at (0,0) {数据元素};
+        \draw[blue, thick] (0,0) ellipse (0.5cm and 0.3cm);
+        \node[blue, font=\tiny] at (0,-0.2) {数据项};
+    \end{tikzpicture}
+    \end{center}
+    \begin{center}
+        \textcolor{blue}{数据 $\supset$ 数据对象 $\supset$ 数据元素 $\supset$ 数据项}
+    \end{center}
+\end{frame}
+
+\begin{frame}{数据结构的定义}
+    \textbf{形式化定义}
+    \begin{itemize}
+        \item 数据结构是一个二元组：
+            \[
+            \text{Data\_Structure} = (D, S)
+            \]
+        \item $D$ --- 数据元素的有限集合
+        \item $S$ --- $D$ 上关系的有限集合
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{关系的形式化表示}
+    \[
+    D = \{a_1, a_2, \ldots, a_n\}, \quad S = \{R\}
+    \]
+    \[
+    r = \{\langle a_i, a_j \rangle \mid a_i, a_j \in D\}
+    \]
+\end{frame}
+
+\begin{frame}{数据结构的两要素}
+    \begin{center}
+    \begin{tikzpicture}
+        \draw[blue, thick] (0,0) rectangle (4,2);
+        \node[blue] at (2,1.5) {\textbf{数据结构}};
+        \draw[->, blue, thick] (0.5,0.5) -- (0.5,-0.5);
+        \draw[->, blue, thick] (3.5,0.5) -- (3.5,-0.5);
+        \node at (0.5,-0.8) {数据元素集合 $D$};
+        \node at (3.5,-0.8) {关系集合 $S$};
+        \node[font=\small] at (2,-1.5) {二者缺一不可};
+    \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{逻辑结构 --- 分类}
+    \textbf{逻辑结构}：描述数据元素之间的逻辑关系，与存储方式无关
+    \begin{enumerate}
+        \item \textbf{集合结构}：元素间除同属集合外无其他关系
+        \item \textbf{线性结构}：一对一关系，唯一前驱/后继
+        \item \textbf{树形结构}：一对多层次关系
+        \item \textbf{图状结构}：多对多任意关系
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{四种逻辑结构对比}
+    \begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{类型} & \textbf{关系特征} & \textbf{典型实例} \\
+        \hline
+        集合结构 & 无关系 & 同班学生 \\
+        \hline
+        线性结构 & 一对一 & 线性表、栈、队列 \\
+        \hline
+        树形结构 & 一对多 & 二叉树、B树 \\
+        \hline
+        图状结构 & 多对多 & 有向图、无向图 \\
+        \hline
+    \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{存储结构 --- 顺序存储}
+    \textbf{顺序存储结构}
+    \begin{itemize}
+        \item 借助元素在存储器中的相对位置表示逻辑关系
+        \item 通常使用数组实现
+        \item 特征：逻辑相邻 $\implies$ 物理相邻
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{优点} & \textbf{缺点} \\
+        \hline
+        随机访问 O(1) & 插入删除 O(n) \\
+        \hline
+    \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{存储结构 --- 链式存储}
+    \textbf{链式存储结构}
+    \begin{itemize}
+        \item 借助指针表示元素之间的逻辑关系
+        \item 每个结点包含数据域与指针域
+        \item 特征：逻辑相邻 $\nRightarrow$ 物理相邻
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{优点} & \textbf{缺点} \\
+        \hline
+        插入删除 O(1) & 不支持随机访问 \\
+        \hline
+    \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{ADT --- 抽象数据类型}
+    \textbf{定义}：一个数学模型以及定义在该模型上的一组操作
+    \[
+    \text{ADT} = (D, S, P)
+    \]
+    \begin{itemize}
+        \item $D$ --- 数据对象
+        \item $S$ --- $D$ 上的关系集合
+        \item $P$ --- 对 $D$ 的基本操作集合
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{核心特征}：
+    \begin{enumerate}
+        \item 数据抽象 --- 仅描述逻辑特性
+        \item 信息隐藏 --- 实现细节对外不可见
+        \item 接口与实现分离
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{栈的 ADT 定义示例}
+    \begin{center}
+    \begin{minipage}{0.85\textwidth}
+    \begin{verbatim}
+ADT Stack {
+    数据对象: D = {ai | ai ∈ ElemSet}
+    数据关系: R = {<ai-1, ai>}
+    基本操作:
+      InitStack(&S)    构造空栈
+      Push(&S, e)      入栈
+      Pop(&S, &e)      出栈
+      GetTop(S, &e)    取栈顶元素
+      StackEmpty(S)    判栈空
+}
+    \end{verbatim}
+    \end{minipage}
+    \end{center}
+\end{frame}
+
+\begin{frame}{例题 --- 逻辑结构判定}
+    \textbf{题目}：判断下列数据集合的逻辑结构类型
+    \begin{enumerate}
+        \item 某班级全体学生的学号集合，元素间无特定关系
+        \item 线性队列中等待处理的任务序列
+        \item 文件系统中的目录与子目录关系
+        \item 城市之间的交通路线图
+    \end{enumerate}
+    \vspace{0.5em}
+    \textbf{答案}：
+    \begin{enumerate}
+        \item 集合结构
+        \item 线性结构
+        \item 树形结构
+        \item 图状结构
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 数据结构定义为二元组 $(D, S)$
+        \item 逻辑结构：集合、线性、树形、图状
+        \item 存储结构：顺序存储、链式存储
+        \item 逻辑结构与存储结构相互独立
+        \item ADT 实现数据模型与操作的封装
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：时间复杂度与空间复杂度}}
+    \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,379 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 计算机网络}
+\subtitle{4-9 介质访问控制}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解信道划分MAC的四种方式：FDM、TDM、WDM、CDM
+        \item 掌握随机访问MAC的CSMA/CD协议原理
+        \item 了解轮询访问MAC的令牌传递机制
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{介质访问控制概述}
+    \begin{block}{解决的问题}
+        多个站点共享同一传输介质时，如何协调发送以避免冲突？
+    \end{block}
+    \vspace{0.5em}
+    \begin{columns}[t]
+        \column{0.33\textwidth}
+        \textbf{信道划分MAC}
+        \begin{itemize}
+            \item FDM
+            \item TDM / 统计TDM
+            \item WDM
+            \item CDM
+        \end{itemize}
+        \pause
+        \column{0.33\textwidth}
+        \textbf{随机访问MAC}
+        \begin{itemize}
+            \item ALOHA
+            \item CSMA
+            \item CSMA/CD
+            \item CSMA/CA
+        \end{itemize}
+        \pause
+        \column{0.33\textwidth}
+        \textbf{轮询访问MAC}
+        \begin{itemize}
+            \item 令牌传递
+            \item 无冲突
+            \item 负载高时效率高
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{信道划分MAC --- 频分多路FDM}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \draw[->] (0,0) -- (8,0) node[right]{频率};
+            \fill[red!30] (0,0.2) rectangle (7,0.6);
+            \fill[green!30] (0,0.7) rectangle (7,1.1);
+            \fill[blue!30] (0,1.2) rectangle (7,1.6);
+            \fill[yellow!30] (0,1.7) rectangle (7,2.1);
+            \node[right] at (7,0.4) {信道1（频率1）};
+            \node[right] at (7,0.9) {信道2（频率2）};
+            \node[right] at (7,1.4) {信道3（频率3）};
+            \node[right] at (7,1.9) {信道4（频率4）};
+            \node[above] at (3.5,2.3) {\textbf{FDM：不同频率同时传输}};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 将信道划分为多个不同频段，各站点占用不同频率
+        \item 优点：同时传输，互不干扰
+        \item 应用：传统电话网络、广播电视
+        \item 缺点：频率利用率不高，扩展性差
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{信道划分MAC --- 时分多路TDM}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \draw[->] (0,0) -- (10,0) node[right]{时间};
+            \fill[red!30] (0,0.2) rectangle (1.8,0.8);
+            \fill[green!30] (1.8,0.2) rectangle (3.6,0.8);
+            \fill[blue!30] (3.6,0.2) rectangle (5.4,0.8);
+            \fill[yellow!30] (5.4,0.2) rectangle (7.2,0.8);
+            \fill[red!30] (7.2,0.2) rectangle (9.0,0.8);
+            \fill[green!30] (9.0,0.2) rectangle (10.8,0.8);
+            \node[below] at (0.9,0) {A};
+            \node[below] at (2.7,0) {B};
+            \node[below] at (4.5,0) {C};
+            \node[below] at (6.3,0) {D};
+            \node[below] at (8.1,0) {A};
+            \node[below] at (9.9,0) {B};
+            \node[above] at (5,1.2) {\textbf{TDM：不同时间片轮流传输}};
+            \draw[decorate,decoration={brace,amplitude=5pt}] (0,1.0) -- (7.2,1.0);
+            \node[above] at (3.6,1.5) {一帧(含4个时间片)};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{TDM}
+        \begin{itemize}
+            \item 固定分配时间片
+            \item 空闲时片浪费
+        \end{itemize}
+        \column{0.48\textwidth}
+        \textbf{统计TDM}
+        \begin{itemize}
+            \item 按需分配时间片
+            \item 提高信道利用率
+            \item 需额外地址信息
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{信道划分MAC --- WDM与CDM}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{波分多路WDM}
+        \begin{itemize}
+            \item 不同波长的光信号在同一光纤传输
+            \item 本质是光的FDM
+            \item 极大提升光纤传输容量
+            \item 应用：光纤骨干网
+        \end{itemize}
+        \vspace{0.5em}
+        \begin{center}
+            \begin{tikzpicture}[>=stealth]
+                \draw[red,->,thick] (0,0) -- (2,0);
+                \draw[blue,->,thick] (0,0.3) -- (2,0.3);
+                \draw[green,->,thick] (0,0.6) -- (2,0.6);
+                \draw[->,thick] (2,0) -- (3.5,0.3);
+                \node at (1,-0.3) {多种波长};
+                \node at (2.8,-0.3) {光纤};
+            \end{tikzpicture}
+        \end{center}
+        \column{0.48\textwidth}
+        \textbf{码分多路CDM}
+        \begin{itemize}
+            \item 每个站点分配唯一编码序列
+            \item 所有站点同时发送，共用同一频率
+            \item 接收方用对应编码解码
+            \item \textbf{码分多址CDMA}广泛应用（3G）
+        \end{itemize}
+        \vspace{0.3em}
+        \begin{block}{CDMA原理}
+            \[
+            S \cdot T = 0 \quad (S \neq T)
+            \]
+            \[
+            S \cdot S = 1
+            \]
+            不同站点的码片序列正交
+        \end{block}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{随机访问MAC --- ALOHA协议}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{纯ALOHA}
+        \begin{itemize}
+            \item 任意时刻均可发送
+            \item 冲突则随机等待后重发
+            \item 最大吞吐率$18\%$
+        \end{itemize}
+        \vspace{0.5em}
+        \begin{center}
+            \begin{tikzpicture}[>=stealth]
+                \draw[->] (0,0) -- (4,0);
+                \fill[blue!30] (0.5,0) rectangle (1.2,0.4);
+                \fill[red!30] (1.5,0) rectangle (2.2,0.4);
+                \fill[blue!30] (2.8,0) rectangle (3.5,0.4);
+                \node[below] at (0.85,-0.2) {站A};
+                \node[below] at (1.85,-0.2) {站B};
+                \node[below] at (3.15,-0.2) {站A重传};
+            \end{tikzpicture}
+        \end{center}
+        \column{0.48\textwidth}
+        \textbf{时隙ALOHA}
+        \begin{itemize}
+            \item 时间分为等长时隙
+            \item 只能在时隙起点发送
+            \item 最大吞吐率$37\%$
+        \end{itemize}
+        \vspace{0.5em}
+        \begin{center}
+            \begin{tikzpicture}[>=stealth]
+                \draw[->] (0,0) -- (4,0);
+                \foreach \x in {0,1,2,3} {
+                    \draw[dashed] (\x,0) -- (\x,0.5);
+                    \node[above] at (\x+0.5,0) {时隙};
+                }
+                \fill[blue!30] (1,0) rectangle (1.7,0.4);
+            \end{tikzpicture}
+        \end{center}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{alertblock}{注意}
+        ALOHA是最简单的随机访问协议，但冲突概率高，效率低。
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{随机访问MAC --- CSMA协议}
+    \begin{block}{载波监听多路访问}
+        发前先监听信道是否空闲（载波监听），避免盲目发送。
+    \end{block}
+    \vspace{0.3em}
+    \begin{columns}[t]
+        \column{0.32\textwidth}
+        \textbf{1-持续CSMA}
+        \begin{itemize}
+            \item 监听信道
+            \item 空闲立即发送
+            \item 忙则持续监听
+        \end{itemize}
+        \column{0.32\textwidth}
+        \textbf{非持续CSMA}
+        \begin{itemize}
+            \item 空闲→发送
+            \item 忙→随机等待
+            \item 减少冲突概率
+        \end{itemize}
+        \column{0.32\textwidth}
+        \textbf{p-持续CSMA}
+        \begin{itemize}
+            \item 空闲→概率$p$发送
+            \item 忙→继续监听
+            \item 折中方案
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{exampleblock}{考点}
+        CSMA仍有冲突（因为传播时延导致监听结果可能过时），于是有了CSMA/CD。
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{CSMA/CD协议 --- 核心原理}
+    \begin{center}
+        \fbox{\parbox{0.85\textwidth}{\centering \textbf{先听后发 \quad 边听边发 \quad 冲突停发 \quad 随机重发}}}
+    \end{center}
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item \textbf{先听后发}：发送前监听信道，空闲才发送
+        \item \textbf{边听边发}：发送过程中持续检测冲突
+        \item \textbf{冲突停发}：检测到冲突，立即停止发送，发送\textbf{强化干扰信号}(Jam)
+        \item \textbf{随机重发}：等待随机时间后重试
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{block}{截断二进制指数退避算法}
+        \[
+        t = \text{rand}(0, 2^k - 1) \times 2\tau \quad (k = \min\{\text{重传次数}, 10\})
+        \]
+        \begin{itemize}
+            \item $2\tau$：争用期（$\tau$为最远站点传播时延）
+            \item 重传16次仍失败 → 丢弃帧，报告错误
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{CSMA/CD --- 最短帧长}
+    \begin{block}{为什么需要最短帧长？}
+        发送方在发送完帧之前必须检测到冲突，否则认为发送成功。
+    \end{block}
+    \vspace{0.5em}
+    \begin{exampleblock}{最短帧长公式}
+        \[
+        \text{最短帧长} = 2\tau \times \text{数据传输速率}
+        \]
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 以太网最短帧长：\textbf{64字节}
+        \item $2\tau = 51.2\mu\text{s}$（10Mbps以太网）
+        \item 若帧长小于64字节 → 填充至64字节
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \draw[->] (0,0) -- (6,0);
+            \draw[red,thick] (0,0.1) -- (2,0.1);
+            \node[above] at (1,0.3) {最短帧发送时间$=2\tau$};
+            \node[below] at (1,-0.2) {此期间必须检测到冲突};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{CSMA/CD --- 冲突检测过程}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth, node distance=1.5cm]
+            \node (A) {主机A};
+            \node[right=4cm of A] (B) {主机B};
+            \draw[->] (A) -- node[above]{发送数据} (B);
+            \node[below=0.5cm of A] (t1) {$\tau$时刻：};
+            \draw[->] (B) -- node[below]{B也发送} (A);
+            \node[below=0.5cm of t1] (t2) {$\tau$时刻：冲突发生};
+            \node[below=0.5cm of t2] {最多$2\tau$检测到冲突};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item A在$t_0$发送，B在$t_0+\tau-\delta$发送
+        \item 冲突在$t_0+\tau$发生
+        \item A在$t_0+2\tau-\delta$检测到冲突
+        \item 结论：最坏情况在$2\tau$后检测到冲突
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{轮询访问MAC --- 令牌传递}
+    \begin{block}{工作原理}
+        网络中只有一个令牌（特殊帧）在循环传递，站点拿到令牌才能发送数据。
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \foreach \i/\angle/\label in {1/90/A,2/18/B,3/-54/C,4/-126/D,5/-198/E,6/-270/F,7/-342/G} {
+                \node[draw,circle,minimum size=0.8cm] (n\i) at (\angle:2cm) {\label};
+            }
+            \foreach \i in {1,2,3,4,5,6,7} {
+                \pgfmathtruncatemacro{\next}{mod(\i,7)+1}
+                \draw[->] (n\i) -- (n\next);
+            }
+            \node[draw,circle,fill=yellow!40,minimum size=0.5cm] at (90:0.5cm) {令牌};
+            \draw[->,thick,blue] (90:0.5cm) -- (18:0.5cm);
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{优点}
+        \begin{itemize}
+            \item 无冲突
+            \item 负载高时效率高
+            \item 可设置优先级
+        \end{itemize}
+        \column{0.48\textwidth}
+        \textbf{缺点}
+        \begin{itemize}
+            \item 令牌维护复杂
+            \item 单点故障（令牌丢）
+            \item 轻负载时效率低
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{三种MAC方式对比}
+    \begin{table}
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{特性} & \textbf{信道划分} & \textbf{随机访问} & \textbf{轮询} \\
+            \hline
+            冲突 & 无 & 有 & 无 \\
+            轻负载效率 & 低 & 高 & 低 \\
+            重负载效率 & 高 & 低（冲突多） & 高 \\
+            公平性 & 好 & 较差 & 好 \\
+            典型协议 & FDM/TDM/CDMA & CSMA/CD & 令牌环 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 信道划分：预先分配资源，适合恒定流量
+        \item 随机访问：按需竞争，适合突发流量
+        \item 轮询访问：有序访问，适合负载较重场景
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 信道划分MAC：FDM（频率）、TDM（时间片）、WDM（波长）、CDM（编码）
+        \item 随机访问MAC：ALOHA（纯18\%/时隙37\%）、CSMA（监听后发）、CSMA/CD（先听后发、边听边发、冲突停发、随机重发），最短帧长64B
+        \item 轮询访问MAC：令牌传递，无冲突，重负载效率高
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：4-10 网络层功能与IP}}
+    \end{center}
+\end{frame}
+\end{document}

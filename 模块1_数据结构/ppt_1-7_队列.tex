@@ -1,0 +1,159 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-7 队列}
+\author{}
+\date{}
+
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解队列的定义、逻辑特征及其 ADT 定义
+        \item 掌握循环队列的存储结构与基本操作
+        \item 掌握链队列的存储结构与基本操作
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{队列的定义与 ADT}
+    \textbf{队列}：只允许在队尾插入、队头删除的线性表
+    \begin{itemize}
+        \item 队头 --- 删除端
+        \item 队尾 --- 插入端
+        \item 原则：先进先出（FIFO）
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{基本操作}
+    \begin{itemize}
+        \item InitQueue(\&Q) --- 初始化
+        \item EnQueue(\&Q, e) --- 入队
+        \item DeQueue(\&Q, \&e) --- 出队
+        \item GetHead(Q, \&e) --- 取队头
+        \item QueueEmpty(Q) --- 判队空
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{循环队列}
+    \textbf{解决假溢出的问题}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item $\text{front}$ --- 队头指针
+        \item $\text{rear}$ --- 队尾指针（指向队尾的下一个位置）
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{模运算实现}
+    \[
+    \begin{aligned}
+    &\text{入队：} Q \to \text{data}[Q \to \text{rear}] = e;\quad Q \to \text{rear} = (Q \to \text{rear} + 1) \% \text{MaxSize}\\
+    &\text{出队：} e = Q \to \text{data}[Q \to \text{front}];\quad Q \to \text{front} = (Q \to \text{front} + 1) \% \text{MaxSize}
+    \end{aligned}
+    \]
+    \vspace{0.3em}
+    \textbf{队空}：$\text{front} == \text{rear}$ \\
+    \textbf{队满}：$(\text{rear} + 1) \% \text{MaxSize} == \text{front}$
+\end{frame}
+
+\begin{frame}{循环队列 --- 元素个数}
+    \textbf{队列中的元素个数}
+    \[
+    (\text{rear} - \text{front} + \text{MaxSize}) \% \text{MaxSize}
+    \]
+    \vspace{0.5em}
+    \textbf{区分队空队满的三种方法}
+    \begin{enumerate}
+        \item 牺牲一个存储单元（常用）
+        \item 增加 size 字段
+        \item 增加 tag 字段
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{链队列}
+    \textbf{带队头队尾指针的单链表}
+    \vspace{0.5em}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+typedef struct LinkNode {
+    ElemType data;
+    struct LinkNode *next;
+} LinkNode;
+typedef struct {
+    LinkNode *front, *rear;
+} LinkQueue;
+    \end{lstlisting}
+    \vspace{0.3em}
+    \textbf{特点}
+    \begin{itemize}
+        \item 不会队满（除非内存耗尽）
+        \item 入队出队 $O(1)$
+        \item 出队时注意尾指针的更新
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{队列的应用}
+    \textbf{层次遍历}
+    \begin{itemize}
+        \item 根结点入队 $\to$ 出队访问 $\to$ 子结点入队
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{缓冲区管理}
+    \begin{itemize}
+        \item 解决 CPU 与 I/O 设备速度不匹配问题
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{广度优先搜索 BFS}
+    \begin{itemize}
+        \item 队列记录待探索的顶点
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{例题 --- 双栈模拟队列}
+    \textbf{利用两个栈模拟队列}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 栈 A：入队时压入
+        \item 栈 B：出队时弹出
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{入队}：$\text{Push}(A, e)$
+    \vspace{0.3em}
+    \textbf{出队}
+    \begin{itemize}
+        \item 若 $B$ 非空，$\text{Pop}(B)$
+        \item 若 $B$ 为空，将 $A$ 全部转移到 $B$，再 $\text{Pop}(B)$
+    \end{itemize}
+    \vspace{0.3em}
+    摊还时间复杂度 $O(1)$
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 队列是 FIFO 的受限线性表
+        \item 循环队列用模运算解决假溢出
+        \begin{itemize}
+            \item 队空 $\text{front} == \text{rear}$
+            \item 队满 $(\text{rear}+1)\% \text{MaxSize} == \text{front}$
+        \end{itemize}
+        \item 链队列使用双指针，入队出队 $O(1)$
+        \item 应用：层次遍历、缓冲区、BFS
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：数组与特殊矩阵}}
+    \end{center}
+\end{frame}
+
+\end{document}

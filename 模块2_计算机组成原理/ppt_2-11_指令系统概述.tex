@@ -1,0 +1,202 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-11 指令系统概述}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握指令的基本格式（操作码 + 地址码）
+        \item 理解定长操作码与可变长操作码的区别
+        \item 熟悉零地址至三地址指令的特点
+        \item 了解指令的四大分类
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{指令的基本格式}
+    \begin{itemize}
+        \item 指令 = \textbf{操作码（OP）} + \textbf{地址码（A）}
+        \item 操作码：指明指令要完成的操作（加减、传送等）
+        \item 地址码：指明操作数的来源或结果的目的地
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{操作码 OP} & \textbf{地址码 A} \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 指令字长 = 操作码长度 + 地址码长度
+        \item 指令字长通常为字节的整数倍
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{定长操作码 vs 可变长操作码}
+    \textbf{定长操作码}
+    \begin{itemize}
+        \item 所有指令的操作码长度固定
+        \item 译码简单、硬件开销小
+        \item 如：操作码占8位，最多支持 $2^8 = 256$ 条指令
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{可变长操作码}
+    \begin{itemize}
+        \item 操作码长度随指令不同而变化
+        \item 短操作码常用指令，长操作码不常用指令
+        \item 可有效利用编码空间，但译码更复杂
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{扩展操作码技术}
+    \begin{itemize}
+        \item 在地址码字段中"借位"扩展操作码
+        \item 平衡指令条数与地址码位数
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{地址码的个数}
+    \begin{enumerate}
+        \item \textbf{零地址指令}
+            \begin{itemize}
+                \item 无地址码字段，操作数隐含（如堆栈操作、空操作）
+                \item 例：\texttt{NOP}、\texttt{RET}
+            \end{itemize}
+        \item \textbf{一地址指令}
+            \begin{itemize}
+                \item 一个地址码，既是源又是目的
+                \item 例：\texttt{INC AX}（\texttt{A$_1$ $\leftarrow$ (A$_1$) + 1}）
+            \end{itemize}
+        \item \textbf{二地址指令}
+            \begin{itemize}
+                \item 两个地址码：源地址 + 目的地址
+                \item 例：\texttt{ADD AX, BX}（\texttt{A$_1$ $\leftarrow$ (A$_1$) + (A$_2$)}）
+            \end{itemize}
+        \item \textbf{三地址指令}
+            \begin{itemize}
+                \item 两个源地址 + 一个目的地址
+                \item 例：\texttt{A$_3$ $\leftarrow$ (A$_1$) + (A$_2$)}
+            \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{指令的分类 --- 数据传送类}
+    功能：在寄存器、内存、I/O之间移动数据
+    \vspace{0.3em}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{典型指令} & \textbf{功能说明} \\
+        \hline
+        \texttt{MOV}   & 传送数据 \\
+        \texttt{LOAD}  & 从内存加载到寄存器 \\
+        \texttt{STORE} & 从寄存器存入内存 \\
+        \texttt{PUSH}  & 入栈 \\
+        \texttt{POP}   & 出栈 \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 数据传送不改变源数据内容
+        \item 不涉及算术或逻辑运算
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{指令的分类 --- 算术与逻辑运算类}
+    \textbf{算术运算}
+    \begin{itemize}
+        \item 加法 \texttt{ADD}、减法 \texttt{SUB}
+        \item 乘法 \texttt{MUL}、除法 \texttt{DIV}
+        \item 自增 \texttt{INC}、自减 \texttt{DEC}
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{逻辑运算}
+    \begin{itemize}
+        \item 与 \texttt{AND}、或 \texttt{OR}、非 \texttt{NOT}
+        \item 异或 \texttt{XOR}、移位 \texttt{SHL/SHR}
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{注意}
+        算术运算可能影响标志位（CF、OF、ZF、SF等）
+    \end{block}
+\end{frame}
+
+\begin{frame}{指令的分类 --- 控制转移类}
+    功能：改变程序的执行顺序
+    \vspace{0.3em}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{指令} & \textbf{说明} \\
+        \hline
+        \texttt{JMP}   & 无条件跳转 \\
+        \texttt{BRZ}   & 为零则跳转（条件转移） \\
+        \texttt{CALL}  & 子程序调用（保存返回地址） \\
+        \texttt{RET}   & 子程序返回 \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 通过修改PC实现跳转
+        \item 条件转移需要依赖标志位或条件码
+        \item CALL/RET 需配合堆栈使用
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{指令的分类 --- 输入输出与其它类}
+    \textbf{输入/输出指令}
+    \begin{itemize}
+        \item CPU与外设之间的数据交换
+        \item \texttt{IN}、\texttt{OUT}（独立编址）
+        \item 或使用 \texttt{MOV} \ （统一编址）
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{其它指令}
+    \begin{itemize}
+        \item \texttt{HLT} 停机、\texttt{NOP} 空操作
+        \item \texttt{CLC} 清标志位
+        \item 特权指令（仅内核态可使用）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{指令系统与程序开发}
+    \begin{itemize}
+        \item \textbf{CISC（复杂指令集计算机）}
+            \begin{itemize}
+                \item 指令数量多、格式复杂
+                \item 支持多种寻址方式
+                \item 例：x86 架构
+            \end{itemize}
+        \item \textbf{RISC（精简指令集计算机）}
+            \begin{itemize}
+                \item 指令数量少、格式规整
+                \item 所有指令长度相同
+                \item 例：ARM、MIPS
+            \end{itemize}
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{考研要点}
+        理解CISC与RISC的主要区别，是408常考内容。
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 指令由操作码和地址码组成，操作码决定操作类型
+        \item 定长操作码译码简单，可变长操作码更灵活
+        \item 地址码个数分为零／一／二／三地址，各有适用场景
+        \item 指令分为数据传送、算术逻辑运算、控制转移、I/O等类别
+        \item CISC指令丰富，RISC指令精简，是两大设计方向
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-12 寻址方式 --- 操作数在哪？}}
+    \end{center}
+\end{frame}
+
+\end{document}

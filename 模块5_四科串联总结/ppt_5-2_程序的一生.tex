@@ -1,0 +1,179 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 四科串联总结}
+\subtitle{5-2 程序的一生}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解源代码到可执行文件的完整过程
+        \item 掌握编译、链接、加载、运行各阶段的四科交叉知识
+        \item 从CPU、操作系统、数据结构三个角度理解程序运行
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{程序的一生 --- 完整流程}
+    \begin{center}
+    \begin{tikzpicture}[node distance=3mm, auto]
+        \tikzset{
+            box/.style={rectangle, draw=primary, fill=white!90!primary, rounded corners,
+                        text centered, minimum width=22mm, minimum height=8mm, font=\small},
+            arrow/.style={->, thick, primary}
+        }
+        \node[box] (src) {源代码};
+        \node[box, right=of src] (compile) {编译};
+        \node[box, right=of compile] (link) {链接};
+        \node[box, right=of link] (load) {加载};
+        \node[box, right=of load] (run) {运行};
+        \node[box, below=of compile] (note1) {数据结构};
+        \node[box, below=of link] (note2) {操作系统};
+        \node[box, below=of load] (note3) {计组+OS};
+        \node[box, below=of run] (note4) {计组+OS+DS};
+
+        \draw[arrow] (src) -- (compile);
+        \draw[arrow] (compile) -- (link);
+        \draw[arrow] (link) -- (load);
+        \draw[arrow] (load) -- (run);
+        \draw[dashed,->] (compile) -- (note1);
+        \draw[dashed,->] (link) -- (note2);
+        \draw[dashed,->] (load) -- (note3);
+        \draw[dashed,->] (run) -- (note4);
+    \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{编译阶段（数据结构视角）}
+    \begin{block}{编译的五个子阶段}
+        \begin{enumerate}
+            \item \textbf{词法分析}：源代码 $\to$ Token序列（扫描器，正则表达式 $\to$ DFA）
+            \item \textbf{语法分析}：Token $\to$ 语法分析树/抽象语法树（CFG, LL/LR分析）
+            \item \textbf{语义分析}：类型检查、作用域解析（符号表 --- 哈希表）
+            \item \textbf{中间代码生成}：三地址码等形式
+            \item \textbf{优化与目标代码生成}：常量传播、死代码删除等
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \alert{编译器的核心数据结构：符号表（哈希表）、语法树（树）、Token流（队列/线性表）}
+\end{frame}
+
+\begin{frame}{链接阶段（操作系统视角）}
+    \begin{block}{静态链接}
+        \begin{itemize}
+            \item 所有目标文件和库的代码（.text）、数据（.data）复制到可执行文件
+            \item 优点：运行时不需要额外加载，部署简单
+            \item 缺点：文件体积大，内存浪费（多进程共享同一库时重复加载）
+        \end{itemize}
+    \end{block}
+    \begin{block}{动态链接}
+        \begin{itemize}
+            \item 可执行文件仅记录共享库引用（DLL/.so）
+            \item 运行时由动态链接器加载共享库到内存，多进程共享一份代码
+            \item 优点：节省磁盘和内存空间，库更新无需重新链接程序
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \alert{链接的核心任务：符号解析（全局变量/函数地址确定）\;+\;地址重定位}
+\end{frame}
+
+\begin{frame}{加载阶段（计组 + 操作系统）}
+    \begin{block}{磁盘 $\to$ 内存}
+        \begin{itemize}
+            \item 操作系统将可执行文件从磁盘读入内存
+            \item 按照ELF/PE格式解析各段（.text, .data, .bss, .rodata等）
+        \end{itemize}
+    \end{block}
+    \begin{block}{地址重定位}
+        \begin{itemize}
+            \item 逻辑地址 $\to$ 物理地址（或虚拟地址）
+            \item 代码段中的符号地址根据加载基址调整
+        \end{itemize}
+    \end{block}
+    \begin{block}{页表建立}
+        \begin{itemize}
+            \item OS为进程创建页目录和页表
+            \item 建立虚拟地址 $\to$ 物理地址的映射关系
+            \item 设置页表项权限位（读/写/执行）
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{运行阶段 --- CPU视角：指令流水线}
+    \begin{block}{取指 $\to$ 译码 $\to$ 执行 $\to$ 访存 $\to$ 写回}
+        \begin{enumerate}
+            \item \textbf{取指（IF）}：根据PC从指令Cache/内存取指令
+            \item \textbf{译码（ID）}：指令译码，读取寄存器
+            \item \textbf{执行（EX）}：ALU运算或地址计算
+            \item \textbf{访存（MEM）}：数据Cache/内存读写
+            \item \textbf{写回（WB）}：结果写回寄存器
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 流水线冒险：结构冒险（硬件资源冲突）、数据冒险（数据依赖）、控制冒险（分支跳转）
+        \item 解决：前递（旁路）、分支预测、流水线停顿
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{运行阶段 --- OS视角：进程调度与内存管理}
+    \begin{block}{进程状态转换}
+        \begin{center}
+        就绪 $\rightleftarrows$ 运行 $\rightleftarrows$ 阻塞
+        \end{center}
+        \begin{itemize}
+            \item 调度算法：时间片轮转、优先级调度、多级反馈队列
+            \item 上下文切换：保存CPU寄存器、程序计数器、页表基址等
+        \end{itemize}
+    \end{block}
+    \begin{block}{MMU + 页表：虚拟地址 $\to$ 物理地址}
+        \begin{itemize}
+            \item CPU发出虚拟地址，MMU查询页表完成转换
+            \item TLB（快表）缓存近期使用的页表项，加速地址转换
+            \item 缺页中断发生时，OS从磁盘换入页面
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{运行阶段 --- 数据结构视角}
+    \begin{block}{函数调用栈（栈）}
+        \begin{itemize}
+            \item 每调用一个函数，栈帧入栈（参数、返回地址、局部变量）
+            \item 函数返回时，栈帧出栈，恢复调用者状态
+            \item 递归调用可能导致栈溢出
+        \end{itemize}
+    \end{block}
+    \begin{block}{堆内存管理（堆）}
+        \begin{itemize}
+            \item \texttt{malloc/new} 从堆中分配内存，\texttt{free/delete} 释放
+            \item 堆的实现：空闲链表（链表）、位图、Buddy系统
+            \item 碎片问题：内部碎片（对齐）和外部碎片（不连续空闲区）
+        \end{itemize}
+    \end{block}
+    \begin{block}{指令序列（线性表）}
+        \begin{itemize}
+            \item 程序指令按顺序存放在内存（顺序存储的线性表）
+            \item 分支/跳转改变执行顺序（非线性访问）
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 编译阶段：词法/语法/语义分析 $\to$ 数据结构（树、哈希表、队列）
+        \item 链接阶段：静态/动态链接 $\to$ 操作系统管理符号与地址
+        \item 加载阶段：磁盘 $\to$ 内存，地址重定位，页表建立 $\to$ 计组+OS配合
+        \item 运行阶段：
+            \begin{itemize}
+                \item CPU：取指-译码-执行（流水线）
+                \item OS：进程调度 + MMU地址转换
+                \item 数据结构：栈（函数调用）、堆（动态分配）、线性表（指令顺序）
+            \end{itemize}
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：5-3 数据的存储之旅}}
+    \end{center}
+\end{frame}
+\end{document}

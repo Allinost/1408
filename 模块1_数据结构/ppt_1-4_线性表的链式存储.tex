@@ -1,0 +1,172 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-4 线性表的链式存储}
+\author{}
+\date{}
+
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解单链表的结点结构，掌握头指针与头结点的概念
+        \item 掌握单链表的建立方法（头插法和尾插法）
+        \item 掌握单链表的插入、删除、查找操作的实现与时间复杂度分析
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{单链表的结构定义}
+    每个结点包含数据域和指针域
+    \vspace{0.5em}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+typedef struct LNode {
+    ElemType data;
+    struct LNode *next;
+} LNode, *LinkList;
+    \end{lstlisting}
+    \vspace{0.5em}
+    \textbf{重要概念}
+    \begin{itemize}
+        \item \textbf{头指针}：指向链表第一个结点的指针
+        \item \textbf{头结点}：第一个结点前的附加结点
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{引入头结点的好处}
+        第一个元素前插入或删除第一个元素时，操作与其他位置一致
+    \end{block}
+\end{frame}
+
+\begin{frame}{单链表的建立 --- 头插法}
+    \textbf{每次将新结点插入到头结点之后}
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item 生成新结点 $s$
+        \item $s \to \text{next} = \text{head} \to \text{next}$
+        \item $\text{head} \to \text{next} = s$
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{block}{特点}
+        链表顺序与输入顺序相反（逆序建立）
+    \end{block}
+\end{frame}
+
+\begin{frame}{单链表的建立 --- 尾插法}
+    \textbf{每次将新结点插入到链表尾部}
+    \vspace{0.5em}
+    维护尾指针 $r$ 指向最后一个结点
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item 生成新结点 $s$
+        \item $r \to \text{next} = s$
+        \item $r = s$
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{block}{特点}
+        链表顺序与输入顺序相同（正序建立）
+    \end{block}
+\end{frame}
+
+\begin{frame}{单链表的查找}
+    \textbf{按位查找}
+    \begin{itemize}
+        \item 从头结点开始，沿 next 指针移动
+        \item 时间复杂度 $O(n)$
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{按值查找}
+    \begin{itemize}
+        \item 从第一个元素结点开始依次比较
+        \item 时间复杂度 $O(n)$
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{alertblock}{与顺序表对比}
+        顺序表按位查找 $O(1)$，链表 $O(n)$
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{单链表的插入操作}
+    \textbf{后插（已知结点 $p$）}
+    \[
+    s \to \text{next} = p \to \text{next};\quad p \to \text{next} = s;
+    \]
+    时间复杂度 $O(1)$
+    \vspace{0.5em}
+    \textbf{前插（已知结点 $p$）}
+    \begin{itemize}
+        \item 后插 + 交换数据
+        \item 时间复杂度 $O(1)$
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{按位序插入}
+    \begin{itemize}
+        \item 先查找第 $i-1$ 个结点
+        \item 再后插
+        \item 时间复杂度 $O(n)$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{单链表的删除操作}
+    \textbf{删除 $p$ 的后继 $q$}
+    \[
+    p \to \text{next} = q \to \text{next};\quad \text{free}(q);
+    \]
+    时间复杂度 $O(1)$
+    \vspace{0.5em}
+    \textbf{删除指定结点 $p$}
+    \begin{itemize}
+        \item 将后继数据复制到 $p$，再删除后继
+        \item 时间复杂度 $O(1)$
+        \item 注意：$p$ 为尾结点时无效
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{按位序删除}
+    \begin{itemize}
+        \item 先查找第 $i-1$ 个结点
+        \item 时间复杂度 $O(n)$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{例题 --- 单链表就地逆置}
+    \textbf{设计算法，对带头结点的单链表就地逆置}
+    \[
+    O(n), O(1)
+    \]
+    \vspace{0.3em}
+    \textbf{思路}：头插法
+    \begin{enumerate}
+        \item $\text{head} \to \text{next} = \text{NULL}$
+        \item 遍历原链表，依次取下每个结点 $p$
+        \item 使用头插法将 $p$ 插入 head 之后
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 单链表结点由数据域和指针域组成
+        \item 头指针标识链表，头结点简化边界处理
+        \item 建立方式：头插法（逆序）、尾插法（正序）
+        \item 查找 $O(n)$，已知位置插入删除 $O(1)$
+        \item 链表适用于插入删除频繁而查找较少的场景
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：链表进阶 --- 循环链表与双向链表}}
+    \end{center}
+\end{frame}
+
+\end{document}

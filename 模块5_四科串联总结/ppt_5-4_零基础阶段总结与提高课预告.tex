@@ -1,0 +1,203 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 四科串联总结}
+\subtitle{5-4 零基础阶段总结与提高课预告}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 回顾零基础课程全部五个模块的知识体系
+        \item 理解四门科目之间的交叉关系
+        \item 了解提高课的内容安排
+        \item 获取备考建议，规划后续复习
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{零基础课程知识总图}
+    \begin{center}
+    \begin{tikzpicture}[node distance=2mm]
+        \tikzset{
+            mod/.style={rectangle, draw=primary, fill=white!90!primary, rounded corners,
+                        text centered, minimum width=55mm, minimum height=7mm, font=\small\bfseries},
+            sub/.style={font=\tiny, text=primary}
+        }
+        \node[mod, fill=red!10] (m0) {模块0 导学};
+        \node[sub, below=of m0] {考试概览、学习路线、C语言速成};
+
+        \node[mod, below=of m0, yshift=-8mm, fill=orange!10] (m1) {模块1 数据结构};
+        \node[sub, below=of m1] {线性表 $\to$ 栈/队列 $\to$ 树/二叉树 $\to$ 图 $\to$ 查找 $\to$ 排序};
+
+        \node[mod, below=of m1, yshift=-8mm, fill=yellow!10] (m2) {模块2 计算机组成原理};
+        \node[sub, below=of m2] {数据表示 $\to$ 运算 $\to$ 存储 $\to$ 指令 $\to$ CPU $\to$ I/O};
+
+        \node[mod, below=of m2, yshift=-8mm, fill=green!10] (m3) {模块3 操作系统};
+        \node[sub, below=of m3] {进程管理 $\to$ 内存管理 $\to$ 文件管理 $\to$ I/O管理};
+
+        \node[mod, below=of m3, yshift=-8mm, fill=blue!10] (m4) {模块4 计算机网络};
+        \node[sub, below=of m4] {物理层 $\to$ 链路层 $\to$ 网络层 $\to$ 传输层 $\to$ 应用层};
+    \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{模块0 --- 导学回顾}
+    \begin{block}{考试概览}
+        \begin{itemize}
+            \item 408计算机学科专业基础综合，满分150分
+            \item 数据结构45分、计组45分、操作系统35分、计网25分
+        \end{itemize}
+    \end{block}
+    \begin{block}{学习路线}
+        \begin{itemize}
+            \item 基础阶段（现在）：理解概念、建立体系
+            \item 强化阶段：刷题巩固、专题突破
+            \item 冲刺阶段：全真模考、查漏补缺
+        \end{itemize}
+    \end{block}
+    \begin{block}{C语言速成}
+        \begin{itemize}
+            \item 指针、结构体、动态内存分配是数据结构的编程基础
+            \item 理解地址与引用的概念，为计组和OS打下基础
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{模块1 --- 数据结构回顾}
+    \begin{block}{核心内容}
+        \begin{itemize}
+            \item \textbf{线性结构}：顺序表、链表、栈、队列 --- 基础数据结构
+            \item \textbf{树与二叉树}：遍历、BST、AVL、哈夫曼树 --- 层次关系建模
+            \item \textbf{图}：DFS/BFS、最短路径、最小生成树 --- 网状关系建模
+            \item \textbf{查找}：二分查找、BST查找、哈希表 --- O(log n)~O(1)
+            \item \textbf{排序}：插入/交换/选择/归并/基数 --- 时间与空间复杂度权衡
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \alert{各科中均用到数据结构：OS的PCB队列、计网的路由表（Trie树）、计组的页表（数组）}
+\end{frame}
+
+\begin{frame}{模块2 --- 计算机组成原理回顾}
+    \begin{block}{核心内容}
+        \begin{itemize}
+            \item \textbf{数据表示}：原码/反码/补码、浮点数IEEE754
+            \item \textbf{运算}：ALU、加法器、乘法器
+            \item \textbf{存储}：Cache、主存、磁盘，存储层次与映射
+            \item \textbf{指令系统}：指令格式、寻址方式、CISC vs RISC
+            \item \textbf{CPU}：数据通路、控制单元、流水线
+            \item \textbf{I/O}：程序查询、中断、DMA三种方式
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \alert{计组是理解OS底层实现（中断、MMU、DMA）的硬件基础}
+\end{frame}
+
+\begin{frame}{模块3 --- 操作系统回顾}
+    \begin{block}{核心内容}
+        \begin{itemize}
+            \item \textbf{进程管理}：PCB、调度、同步互斥（信号量/PV操作）、死锁
+            \item \textbf{内存管理}：分页/分段/段页式、虚拟内存、页面置换
+            \item \textbf{文件管理}：目录结构、文件分配方式（连续/链接/索引）、磁盘调度
+            \item \textbf{I/O管理}：SPOOLing、缓冲、设备驱动
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \alert{OS是软硬件桥梁：向下依赖计组的CPU/中断/MMU，向上为应用提供抽象接口}
+\end{frame}
+
+\begin{frame}{模块4 --- 计算机网络回顾}
+    \begin{block}{核心内容}
+        \begin{itemize}
+            \item \textbf{物理层}：信号编码、传输介质、接口特性
+            \item \textbf{数据链路层}：成帧、差错控制（CRC）、流量控制、介质访问控制（CSMA/CD）
+            \item \textbf{网络层}：IP协议、子网划分、路由算法（RIP/OSPF/BGP）
+            \item \textbf{传输层}：TCP（可靠传输、拥塞控制）vs UDP
+            \item \textbf{应用层}：HTTP、DNS、SMTP、FTP
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \alert{计网是分布式系统的基础，协议栈体现分层设计的工程思想}
+\end{frame}
+
+\begin{frame}{四科交叉关系}
+    \begin{center}
+    \begin{tikzpicture}[node distance=8mm]
+        \tikzset{
+            subject/.style={ellipse, draw, thick, minimum width=28mm, minimum height=12mm,
+                           text centered, font=\small\bfseries},
+            label/.style={font=\tiny, text=primary!70!black}
+        }
+        \node[subject, fill=red!20] (ds) {数据结构};
+        \node[subject, right=of ds, fill=green!20] (os) {操作系统};
+        \node[subject, below=of ds, fill=yellow!20] (co) {计算机组成};
+        \node[subject, below=of os, fill=blue!20] (cn) {计算机网络};
+
+        \draw[<->, thick, primary] (ds) -- (os) node[midway, above, label] {算法实现};
+        \draw[<->, thick, primary] (ds) -- (co) node[midway, left, label] {硬件设计};
+        \draw[<->, thick, primary] (co) -- (os) node[midway, right, label] {软硬接口};
+        \draw[<->, thick, primary] (os) -- (cn) node[midway, below, label] {网络服务};
+        \draw[<->, thick, primary] (co) -- (cn) node[pos=0.3, left, label] {传输介质};
+        \draw[<->, thick, primary] (ds) -- (cn) node[pos=0.7, right, label] {路由查找};
+    \end{tikzpicture}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item \textbf{数据结构} --- 算法基础，各科实现的核心工具
+        \item \textbf{计算机组成原理} --- 硬件基础，理解计算机运行的根本
+        \item \textbf{操作系统} --- 软硬件桥梁，管理资源、提供抽象
+        \item \textbf{计算机网络} --- 分布式基础，实现多机通信与协作
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{提高课内容预告}
+    \begin{block}{紧扣408考纲逐条精讲}
+        \begin{itemize}
+            \item 覆盖考纲全部知识点，不留盲区
+            \item 重点难点深度剖析
+        \end{itemize}
+    \end{block}
+    \begin{block}{历年真题分类精讲}
+        \begin{itemize}
+            \item 按知识点分类，掌握命题规律
+            \item 逐个题型突破，总结解题技巧
+        \end{itemize}
+    \end{block}
+    \begin{block}{跨科目综合题突破}
+        \begin{itemize}
+            \item 类似本模块的五科串联思维训练
+            \item 针对408越来越灵活的综合大题
+        \end{itemize}
+    \end{block}
+    \begin{block}{模考冲刺与查漏补缺}
+        \begin{itemize}
+            \item 全真模拟考试，适应考场节奏
+            \item 针对性补齐知识短板
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{备考建议}
+    \begin{enumerate}
+        \item \textbf{合理安排时间}：根据自身基础制定复习计划，零基础学生需更多时间投入
+        \item \textbf{反复刷真题}：真题是最好的复习资料，近十年真题至少做两遍
+        \item \textbf{建立错题本}：记录错题和易混淆概念，定期回顾
+        \item \textbf{重视代码题}：数据结构算法题占比不小，手写代码要熟练
+        \item \textbf{理解大于背诵}：408重在理解原理，机械记忆难以应对灵活题型
+        \item \textbf{保持节奏}：每天坚持学习，避免三天打鱼两天晒网
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 零基础课程覆盖了数据结构、计组、OS、计网四大核心科目
+        \item 四科相互交叉：数据结构是算法工具，计组是硬件基础，OS是桥梁，计网是分布式基础
+        \item 提高课将逐条精讲考纲、真题分类、综合题突破、模考冲刺
+        \item 备考建议：合理安排时间、反复刷真题、建立错题本
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{全系列课程完结，恭喜完成408零基础课程！}}
+    \end{center}
+\end{frame}
+\end{document}

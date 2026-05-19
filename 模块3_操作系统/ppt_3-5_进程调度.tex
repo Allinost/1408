@@ -1,0 +1,186 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-5 进程调度}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解调度的三个层次及其作用
+        \item 掌握FCFS、SJF、RR调度算法
+        \item 掌握优先级调度与多级反馈队列
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{调度层次}
+    \begin{enumerate}
+        \item \textbf{高级调度（作业调度）}
+        \begin{itemize}
+            \item 从外存\textbf{磁盘}中选作业调入\textbf{内存}
+            \item 频率低（秒/分钟级）
+        \end{itemize}
+        \item \textbf{中级调度（对换调度）}
+        \begin{itemize}
+            \item 将进程在内存与外存之间交换（挂起/激活）
+            \item 缓解内存紧张
+        \end{itemize}
+        \item \textbf{低级调度（进程调度）}
+        \begin{itemize}
+            \item 从就绪队列中选择进程分配CPU
+            \item 频率最高（毫秒级）
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{调度方式}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{非抢占式}
+            \begin{itemize}
+                \item 进程一直运行到结束或阻塞
+                \item 实现简单，开销小
+                \item 但无法满足紧急任务
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{抢占式}
+            \begin{itemize}
+                \item 可强行中断当前进程
+                \item 响应更快，适合分时系统
+                \item 实现复杂，开销较大
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{FCFS（先来先服务）}
+    \textbf{First Come First Served}
+
+    \begin{itemize}
+        \item 按到达时间顺序调度
+        \item \textbf{非抢占式}
+        \item 实现最简单
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        进程 & 到达时间 & 服务时间 & 完成时间 \\
+        \hline
+        P1 & 0 & 7 & 7 \\
+        P2 & 2 & 4 & 11 \\
+        P3 & 4 & 1 & 12 \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 优点：公平、简单
+        \item 缺点：短作业等待时间长，平均等待时间较长
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{SJF（短作业优先）}
+    \textbf{Shortest Job First}
+
+    \begin{itemize}
+        \item 选择\textbf{服务时间最短}的进程优先执行
+        \item 非抢占式（SJF）或抢占式（SRTN）
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{特点}
+        \begin{itemize}
+            \item 平均等待时间\textbf{最短}（理论上最优）
+            \item 但长作业可能\textbf{饥饿}
+            \item 难以准确预估运行时间
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{RR（时间片轮转）}
+    \textbf{Round Robin}
+
+    \begin{itemize}
+        \item 每个进程分配一个\textbf{时间片}（如 10ms）
+        \item 时间片用完 $\to$ 进程回到就绪队列末尾
+        \item \textbf{抢占式}
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{时间片的选择}
+        \begin{itemize}
+            \item \textbf{太大} $\to$ 退化为FCFS
+            \item \textbf{太小} $\to$ 频繁切换，系统开销大
+            \item 通常取 $10 \sim 100$ ms
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{优先级调度}
+    \textbf{Priority Scheduling}
+
+    \begin{itemize}
+        \item 每个进程分配一个\textbf{优先级}
+        \item 优先级高的进程优先执行
+        \item 可分为\textbf{静态优先级}和\textbf{动态优先级}
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{tabular}{|c|c|}
+        \hline
+        静态优先级 & 创建时确定，运行中不变 \\
+        \hline
+        动态优先级 & 运行中动态调整（防饥饿） \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \begin{alertblock}{注意}
+        优先级调度可能出现\textbf{低优先级进程永远无法运行}（饥饿），可通过动态老化解决。
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{多级反馈队列}
+    \textbf{Multilevel Feedback Queue}
+
+    \begin{enumerate}
+        \item 设置多个就绪队列，各队列时间片不同（逐级增大）
+        \item 新进程进入最高优先级队列
+        \item 时间片用完未完成 $\to$ 降到下一级队列
+        \item 优先调度高优先级队列
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{block}{特点}
+        结合了RR和优先级调度的优点，是当今通用OS常用调度算法。
+    \end{block}
+\end{frame}
+
+\begin{frame}{调度算法对比}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        算法 & 抢占 & 平均等待 & 饥饿 & 适用 \\
+        \hline
+        FCFS & 否 & 长 & 无 & 批处理 \\
+        SJF & 可选 & 最短 & 可能有 & 批处理 \\
+        RR & 是 & 中等 & 无 & 分时系统 \\
+        优先级 & 可选 & — & 可能有 & 实时/分时 \\
+        多级反馈 & 是 & 良好 & 较少 & 通用OS \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 调度三层次：高级（磁盘$\to$内存）、中级（对换）、低级（CPU分配）
+        \item FCFS按到达顺序调度；SJF按运行时间调度，平均等待最短
+        \item RR按时间片轮转，时间片大小影响性能
+        \item 优先级调度需防止饥饿；多级反馈队列结合多种算法优点
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-6 进程同步与互斥}}
+    \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,257 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-8 Cache高速缓存}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解Cache的工作原理——解决CPU-主存速度不匹配
+        \item 掌握时间局部性和空间局部性
+        \item 了解Cache的基本结构（标记、数据、有效位）
+        \item 掌握Cache的读写策略（写直达、写回）
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}[t]{为什么需要Cache？}
+    \begin{block}{CPU-主存速度不匹配}
+        \begin{itemize}
+            \item CPU速度不断提高（主频GHz级）
+            \item 主存DRAM速度提升缓慢（几十ns）
+            \item 差距可达\textbf{几个数量级}
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{层次} & \textbf{典型速度} & \textbf{差} \\
+            \hline
+            CPU寄存器 & 0.3ns & 1倍 \\
+            \hline
+            Cache（SRAM） & 1ns & $\sim$3倍 \\
+            \hline
+            主存（DRAM） & 50ns & $\sim$150倍 \\
+            \hline
+            磁盘 & 10ms & $\sim$3千万倍 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{center}
+        \textcolor{blue}{解决方案：在CPU和主存之间加一层小容量高速SRAM——Cache}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Cache的工作原理}
+    \begin{block}{基本思想}
+        \begin{enumerate}
+            \item 将主存中\textbf{正在使用}的程序段和数据复制到Cache
+            \item CPU访问存储器时，先检查Cache
+            \item 若Cache命中（Hit），直接从Cache读取——快速
+            \item 若Cache未命中（Miss），从主存读取，并复制到Cache
+        \end{enumerate}
+    \end{block}
+    \vspace{0.3em}
+    \begin{block}{关键概念}
+        \begin{itemize}
+            \item \textbf{命中率（Hit Rate）}：CPU访问在Cache中命中的比例
+            \item \textbf{缺失率（Miss Rate）}：$1 - \text{命中率}$
+            \item \textbf{平均访问时间}：
+            \[
+                T_{\text{avg}} = H \times T_{\text{Cache}} + (1-H) \times (T_{\text{Cache}} + T_{\text{主存}})
+            \]
+            \item $H$：命中率，希望越接近1越好
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{局部性原理——Cache的理论基础}
+    \begin{enumerate}
+        \item \textbf{时间局部性}
+        \begin{itemize}
+            \item 刚被访问的单元不久后还可能被访问
+            \item 例：循环变量、循环体指令反复执行
+            \item $\Rightarrow$ 将数据保留在Cache中，下一次直接命中
+        \end{itemize}
+        \vspace{0.3em}
+        \item \textbf{空间局部性}
+        \begin{itemize}
+            \item 刚被访问的单元附近也可能被访问
+            \item 例：数组顺序访问、指令顺序执行
+            \item $\Rightarrow$ 将相邻数据块（Cache行/块）一起调入
+        \end{itemize}
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{center}
+        \textcolor{blue}{空间局部性 $\to$ 按块传输（Cache行大小通常为$2^n$字节）}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Cache的基本结构}
+    \begin{block}{Cache行（Cache Line / Block）}
+        每个Cache行包含：
+        \begin{itemize}
+            \item \textbf{有效位（Valid Bit）}：该行是否有效
+            \item \textbf{标记（Tag）}：存储主存地址的高位，用于判断命中
+            \item \textbf{数据块（Data Block）}：从主存复制的数据
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            有效位 $V$ & 标记 Tag & 数据块 Data \\
+            \hline
+            1位 & $t$位 & $2^b$字节 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{exampleblock}{地址划分}
+        \[
+            \underbrace{\text{Tag}}_{\text{标记}} \quad
+            \underbrace{\text{Index/Set}}_{\text{索引}} \quad
+            \underbrace{\text{Offset}}_{\text{块内偏移}}
+        \]
+        \begin{itemize}
+            \item 标记：用于和Cache行中的Tag比较
+            \item 索引：确定访问哪个Cache行/组
+            \item 偏移：确定块内的具体字节
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Cache读操作流程}
+    \begin{center}
+        \begin{tabular}{c}
+            CPU给出主存地址 \\
+            $\downarrow$ \\
+            解析为 Tag + Index + Offset \\
+            $\downarrow$ \\
+            根据Index找到Cache行 \\
+            $\downarrow$ \\
+            \begin{tabular}{c|c}
+                有效位=1 且 Tag匹配？ & \\
+                \hline
+                是（命中） & 否（缺失） \\
+                $\downarrow$ & $\downarrow$ \\
+                返回数据块[Offset] & 从主存读取数据 \\
+                                  & 写入Cache行并返回 \\
+            \end{tabular}
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 写操作策略更加复杂（见下一页）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Cache写策略——写直达法}
+    \begin{block}{写直达（Write-Through）}
+        \begin{itemize}
+            \item 写Cache的同时也写入主存
+            \item 优点：主存数据始终保持一致
+            \item 缺点：写操作速度慢（需要等主存完成）
+            \item 改进：写缓冲（Write Buffer）—异步写入主存
+        \end{itemize}
+    \end{block}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{c}
+            CPU写数据 $\to$ Cache命中 \\
+            $\downarrow$ \\
+            同时写入Cache和主存 \\
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Cache写策略——写回法}
+    \begin{block}{写回（Write-Back）}
+        \begin{itemize}
+            \item 写入时只修改Cache，不写主存
+            \item 当Cache行被替换出Cache时，才写回主存
+            \item 需要\textbf{脏位（Dirty Bit）}记录该行是否被修改
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tabular}{c}
+            CPU写数据 $\to$ Cache命中 \\
+            $\downarrow$ \\
+            只修改Cache，置脏位=1 \\
+            $\downarrow$ \\
+            当该行被替换时，若脏位=1则写回主存
+        \end{tabular}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 优点：减少主存访问次数
+        \item 缺点：一致性维护复杂（多核时需\textbf{缓存一致性协议}）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{写策略对比}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{特性} & \textbf{写直达} & \textbf{写回} \\
+            \hline
+            写Cache时写主存 & 是 & 否 \\
+            \hline
+            主存一致性 & 好 & 需额外机制 \\
+            \hline
+            写速度 & 慢 & 快 \\
+            \hline
+            带宽占用 & 高 & 低 \\
+            \hline
+            是否需要脏位 & 否 & 是 \\
+            \hline
+            常用场景 & 简单系统 & 高性能系统 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{写缺失时的处理策略}
+    \begin{block}{写分配（Write-Allocate）}
+        \begin{itemize}
+            \item 写缺失时，先将主存块调入Cache，再写入
+            \item 通常与\textbf{写回法}搭配使用
+        \end{itemize}
+    \end{block}
+    \begin{block}{写不分配（No-Write-Allocate）}
+        \begin{itemize}
+            \item 写缺失时，直接写入主存，不调入Cache
+            \item 通常与\textbf{写直达法}搭配使用
+        \end{itemize}
+    \end{block}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{c|c}
+            \textcolor{blue}{写回 + 写分配} & \textcolor{blue}{写直达 + 写不分配} \\
+            \textcolor{blue}{（Write-Back + WA）} & \textcolor{blue}{（Write-Through + NW A）}
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item Cache解决CPU-主存速度不匹配，基于局部性原理
+        \item 时间局部性 $\to$ 保留数据，空间局部性 $\to$ 按块调入
+        \item Cache行结构：有效位 + Tag + 数据块
+        \item 写策略：写直达（同时写主存）vs 写回（替换时写回）
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-9 Cache映射方式——直接映射、全相联、组相联}}
+    \end{center}
+\end{frame}
+
+\end{document}

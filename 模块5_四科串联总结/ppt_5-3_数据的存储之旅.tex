@@ -1,0 +1,221 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 四科串联总结}
+\subtitle{5-3 数据的存储之旅}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握数据在寄存器 $\to$ Cache $\to$ 内存 $\to$ 磁盘的完整存储链路
+        \item 理解各存储层次的硬件特性与访问速度
+        \item 掌握虚拟内存、页面置换算法
+        \item 理解局部性原理在存储体系中的体现
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{存储层次总览}
+    \begin{center}
+    \begin{tikzpicture}[node distance=2mm, auto]
+        \tikzset{
+            box/.style={rectangle, draw=primary, fill=white!90!primary, rounded corners,
+                        text centered, minimum width=50mm, minimum height=7mm, font=\small},
+            label/.style={font=\scriptsize, text=secondary}
+        }
+        \node[box, fill=red!20] (reg) {寄存器 (Register) --- 几十字节, 0.3ns};
+        \node[label, above=of reg] {$\uparrow$ 速度更快};
+        \node[box, below=of reg] (l1) {L1 Cache --- 32KB~64KB, 1ns};
+        \node[box, below=of l1] (l2) {L2 Cache --- 256KB~512KB, 4ns};
+        \node[box, below=of l2] (l3) {L3 Cache --- 2MB~16MB, 10ns};
+        \node[box, below=of l3] (mem) {主存 (DRAM) --- 4GB~32GB, 100ns};
+        \node[box, below=of mem] (ssd) {SSD --- 256GB~2TB, 0.1ms};
+        \node[box, below=of ssd] (hdd) {磁盘 (HDD) --- 1TB~8TB, 10ms};
+        \node[label, below=of hdd] {$\downarrow$ 容量更大};
+
+        \draw[<->, thick, primary] (reg) -- (l1);
+        \draw[<->, thick, primary] (l1) -- (l2);
+        \draw[<->, thick, primary] (l2) -- (l3);
+        \draw[<->, thick, primary] (l3) -- (mem);
+        \draw[<->, thick, primary] (mem) -- (ssd);
+        \draw[<->, thick, primary] (ssd) -- (hdd);
+    \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{寄存器 --- 最快最小的存储}
+    \begin{block}{位置与特点}
+        \begin{itemize}
+            \item CPU内部，与ALU直接相连，单周期访问
+            \item 容量极小（几十字节），由编译器分配
+            \item 按名称访问（EAX, EBX, R0, R1等）
+        \end{itemize}
+    \end{block}
+    \begin{block}{编译器视角}
+        \begin{itemize}
+            \item 寄存器分配：将频繁使用的变量分配到寄存器
+            \item 寄存器溢出：寄存器不足时，变量暂存到栈内存
+            \item 调用约定：哪些寄存器由调用者保存，哪些由被调用者保存
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Cache --- 高速缓存（SRAM）}
+    \begin{block}{Cache映射方式}
+        \begin{itemize}
+            \item \textbf{直接映射}：主存块 $\to$ 固定Cache行（冲突率高）
+            \item \textbf{全相联映射}：主存块 $\to$ 任意Cache行（硬件成本高）
+            \item \textbf{组相联映射}：折中方案，每组若干行（如2路/4路组相联）
+        \end{itemize}
+    \end{block}
+    \begin{block}{Cache替换算法}
+        \begin{itemize}
+            \item \textbf{LRU（最近最少使用）}：替换最久未访问的行
+            \item LFU（最少使用）、随机替换、FIFO
+        \end{itemize}
+    \end{block}
+    \begin{block}{写策略}
+        \begin{itemize}
+            \item 写直达（Write-Through）：同时写Cache和主存
+            \item 写回（Write-Back）：仅写Cache，脏行替换时才写回主存
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{主存 --- DRAM与分页管理}
+    \begin{block}{DRAM特点}
+        \begin{itemize}
+            \item 电容存储，需要定期刷新
+            \item 随机访问，相对于磁盘快但远慢于Cache
+        \end{itemize}
+    \end{block}
+    \begin{block}{分页管理（操作系统）}
+        \begin{itemize}
+            \item 物理内存划分为固定大小的页框（4KB）
+            \item 进程的虚拟页映射到物理页框（页表管理）
+            \item \textbf{缺页中断}：访问的页不在内存时触发，OS从磁盘加载
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \alert{TLB（快表）是页表的硬件Cache，加速虚拟地址到物理地址的转换}
+\end{frame}
+
+\begin{frame}{磁盘与SSD --- 持久存储}
+    \begin{block}{机械硬盘（HDD）}
+        \begin{itemize}
+            \item 结构：盘片 + 磁头 + 主轴电机
+            \item 访问时间 = 寻道时间 + 旋转延迟 + 传输时间
+            \item 寻道时间（磁头移动）是主要瓶颈
+        \end{itemize}
+    \end{block}
+    \begin{block}{固态硬盘（SSD）}
+        \begin{itemize}
+            \item 闪存颗粒存储，无机械部件
+            \item 随机读写快于HDD数十倍
+            \item 写次数有限（磨损均衡技术）
+            \item 以页为读写单位，以块为擦除单位
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \alert{磁臂调度算法：先来先服务、最短寻道优先、电梯算法（SCAN）}
+\end{frame}
+
+\begin{frame}{虚拟内存与页面置换}
+    \begin{block}{请求分页 + PAGE文件}
+        \begin{itemize}
+            \item 虚拟内存大小 = 物理内存 + 交换文件（磁盘）
+            \item 按需加载：仅当访问时，才将页从磁盘调入内存
+        \end{itemize}
+    \end{block}
+    \begin{block}{页面置换算法}
+        \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{算法} & \textbf{思路} & \textbf{评价} \\
+            \hline
+            OPT & 替换未来最远使用的页 & 理想化，无法实现 \\
+            \hline
+            FIFO & 替换最先进入的页 & 简单，可能Belady异常 \\
+            \hline
+            LRU & 替换最久未使用的页 & 性能好，硬件开销大 \\
+            \hline
+            CLOCK & 近似LRU，使用位循环扫描 & 折中方案 \\
+            \hline
+        \end{tabular}
+        \end{center}
+    \end{block}
+    \vspace{0.3em}
+    \alert{工作集 = 进程当前频繁访问的页面集合，驻留在内存中}
+\end{frame}
+
+\begin{frame}{完整数据流与延迟对比}
+    \begin{center}
+    \begin{tikzpicture}[node distance=3mm]
+        \tikzset{
+            box/.style={rectangle, draw, rounded corners, minimum width=55mm, minimum height=6mm, font=\small},
+            arrow/.style={->, thick}
+        }
+        \node[box, fill=red!15] (cpu) {CPU请求数据};
+        \node[box, below=of cpu, fill=orange!15] (reg) {寄存器命中：$\sim$0.3ns};
+        \node[box, below=of reg, fill=yellow!15] (l1) {L1 Cache命中：$\sim$1ns};
+        \node[box, below=of l1, fill=yellow!25] (l2) {L2 Cache命中：$\sim$4ns};
+        \node[box, below=of l2, fill=yellow!35] (l3) {L3 Cache命中：$\sim$10ns};
+        \node[box, below=of l3, fill=blue!15] (mem) {主存命中：$\sim$100ns};
+        \node[box, below=of mem, fill=purple!15] (disk) {磁盘读取：$\sim$10ms};
+
+        \draw[arrow] (cpu) -- (reg);
+        \draw[arrow] (reg) -- (l1);
+        \draw[arrow] (l1) -- (l2);
+        \draw[arrow] (l2) -- (l3);
+        \draw[arrow] (l3) -- (mem);
+        \draw[arrow] (mem) -- (disk);
+
+        \node[right=of reg, xshift=10mm, font=\tiny] {$\times 1$};
+        \node[right=of l1, xshift=10mm, font=\tiny] {$\times 3$};
+        \node[right=of l2, xshift=10mm, font=\tiny] {$\times 13$};
+        \node[right=of l3, xshift=10mm, font=\tiny] {$\times 33$};
+        \node[right=of mem, xshift=10mm, font=\tiny] {$\times 330$};
+        \node[right=of disk, xshift=10mm, font=\tiny] {$\times 33,000,000$};
+    \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{局部性原理的体现}
+    \begin{block}{时间局部性}
+        \begin{itemize}
+            \item 当前访问的数据可能在不久的将来再次访问
+            \item 体现：Cache LRU替换算法保留最近访问的行
+            \item 体现：TLB缓存近期页表项，循环代码段驻留Cache
+        \end{itemize}
+    \end{block}
+    \begin{block}{空间局部性}
+        \begin{itemize}
+            \item 当前访问的数据附近的数据也可能被访问
+            \item 体现：Cache预取机制（一次加载一个Cache行/块）
+            \item 体现：页表按页映射，缺页中断加载连续的多页（预调页）
+        \end{itemize}
+    \end{block}
+    \begin{block}{性能意义}
+        \begin{itemize}
+            \item 良好的局部性 $\to$ Cache命中率高 $\to$ 程序运行快
+            \item 数组按行遍历 $\gg$ 按列遍历（空间局部性差异）
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 存储层次：寄存器 $\to$ Cache $\to$ 主存 $\to$ 磁盘，速度递减、容量递增
+        \item Cache：三种映射方式 + LRU替换 + 写策略
+        \item 主存：DRAM + 分页管理 + 缺页中断
+        \item 磁盘：HDD（机械，寻道为主）vs SSD（闪存，快但写有限）
+        \item 虚拟内存：请求分页 + 置换算法（OPT/FIFO/LRU/CLOCK）
+        \item 局部性原理是存储体系设计的基石
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：5-4 零基础阶段总结与提高课预告}}
+    \end{center}
+\end{frame}
+\end{document}

@@ -1,0 +1,186 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-3 进程概念}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 区分程序与进程的概念
+        \item 理解PCB的作用与进程的组成
+        \item 掌握进程的三种基本状态及转换
+        \item 了解挂起态的概念
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{程序 vs 进程}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        对比项 & 程序 & 进程 \\
+        \hline
+        本质 & 静态的指令序列 & 程序的一次动态执行 \\
+        存在时间 & 永久（存在于磁盘） & 暂时（从创建到消亡） \\
+        组成 & 指令和数据 & PCB + 程序段 + 数据段 \\
+        并发性 & 不具备 & 可并发执行 \\
+        与CPU关系 & 无 & 是CPU分配资源的基本单位 \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \begin{block}{一句话}
+        \textbf{进程是程序的一次执行过程}，是系统进行资源分配和调度的基本单位。
+    \end{block}
+\end{frame}
+
+\begin{frame}{进程的组成}
+    \begin{enumerate}
+        \item \textbf{PCB（进程控制块）}
+        \begin{itemize}
+            \item 描述进程当前状态和资源使用情况
+            \item \textcolor{408orange}{进程存在的唯一标志}
+        \end{itemize}
+        \item \textbf{程序段}
+        \begin{itemize}
+            \item 进程要执行的代码指令
+        \end{itemize}
+        \item \textbf{数据段}
+        \begin{itemize}
+            \item 进程运行时使用的数据
+        \end{itemize}
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{center}
+        进程 = \textcolor{408blue}{PCB} + \textcolor{408blue}{程序段} + \textcolor{408blue}{数据段}
+    \end{center}
+\end{frame}
+
+\begin{frame}{PCB包含的信息}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{进程标识信息}
+            \begin{itemize}
+                \item 进程ID（PID）
+                \item 用户ID（UID）
+            \end{itemize}
+            \textbf{处理机状态信息}
+            \begin{itemize}
+                \item 通用寄存器
+                \item 程序计数器（PC）
+                \item PSW（程序状态字）
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{进程调度信息}
+            \begin{itemize}
+                \item 进程状态
+                \item 优先级
+                \item 调度队列指针
+            \end{itemize}
+            \textbf{资源管理信息}
+            \begin{itemize}
+                \item 内存指针
+                \item 打开的文件列表
+                \item I/O设备信息
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{进程的三种基本状态}
+    \begin{center}
+        \begin{tabular}{ll}
+            \textbf{运行态（Running）} & 进程占用CPU正在执行 \\
+            \textbf{就绪态（Ready）} & 已具备运行条件，等待CPU分配 \\
+            \textbf{阻塞态（Blocked）} & 因等待某事件而暂停执行 \\
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{block}{注意}
+        在单核CPU中，任一时刻最多只有一个进程处于\textbf{运行态}。
+    \end{block}
+\end{frame}
+
+\begin{frame}{进程状态的转换}
+    \begin{itemize}
+        \item \textbf{就绪 $\to$ 运行}：进程调度程序分配CPU
+        \item \textbf{运行 $\to$ 就绪}：时间片用完或被更高优先级进程抢占
+        \item \textbf{运行 $\to$ 阻塞}：进程请求某资源未得到或等待I/O
+        \item \textbf{阻塞 $\to$ 就绪}：所等待的事件发生（如I/O完成）
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{alertblock}{不可转换的情况}
+        \begin{itemize}
+            \item 阻塞 $\to$ 运行（必须先转为就绪）
+            \item 就绪 $\to$ 阻塞（就绪态不占用CPU，不会阻塞）
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{挂起态}
+    \textbf{挂起（Suspend）}：将进程从内存移到外存，释放内存空间。
+
+    \vspace{0.5em}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{引入原因}
+            \begin{itemize}
+                \item 内存资源紧张
+                \item 进程故障调试
+                \item 系统负载管理
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{挂起态特点}
+            \begin{itemize}
+                \item 进程在\textbf{外存}中
+                \item \textbf{不参与}CPU调度
+                \item 激活（Active）后回到就绪态
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{exampleblock}
+        挂起增加了一组新状态：\textbf{就绪挂起}、\textbf{阻塞挂起}。
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{进程的组织方式}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{链接方式}
+            \begin{itemize}
+                \item 同一状态的PCB通过指针链接成队列
+                \item 就绪队列、阻塞队列等
+                \item 系统通过队列头指针管理
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{索引方式}
+            \begin{itemize}
+                \item 系统建立若干索引表
+                \item 索引表指向各状态的PCB
+                \item 通过索引表快速定位PCB
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 进程是程序的动态执行过程，进程 = PCB + 程序段 + 数据段
+        \item PCB是进程存在的唯一标志，记录进程状态与资源信息
+        \item 三种基本状态：运行、就绪、阻塞；转换由调度与事件驱动
+        \item 挂起态将进程移出内存以释放资源，不参与调度
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-4 线程}}
+    \end{center}
+\end{frame}
+
+\end{document}

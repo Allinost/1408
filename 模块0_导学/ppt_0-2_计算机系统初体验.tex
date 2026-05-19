@@ -1,0 +1,97 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 导学篇}
+\subtitle{0-2 计算机系统初体验}
+\author{}
+\date{}
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解计算机系统的层次结构
+        \item 掌握计算机的五大核心部件及其功能
+        \item 理解从按下电源到操作系统加载的完整过程
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{计算机系统的层次结构}
+    \textbf{计算机系统 = 硬件 + 软件}
+    \vspace{0.5em}
+    \begin{center}
+    \begin{tikzpicture}
+        \draw[blue,thick] (0,2) rectangle (4,2.8);
+        \node at (2,2.4) {用户应用程序};
+        \draw[blue,thick] (0,1) rectangle (4,1.8);
+        \node at (2,1.4) {操作系统};
+        \draw[blue,thick] (0,0) rectangle (4,0.8);
+        \node at (2,0.4) {硬件系统};
+        \draw[<->,thick] (4.5,1.4) -- (5.5,1.4);
+        \node at (6.5,1.4) {系统调用接口};
+    \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    操作系统是连接应用软件和硬件的桥梁
+\end{frame}
+
+\begin{frame}{五大核心部件}
+    \textbf{冯诺依曼体系结构}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item \textbf{运算器} --- 执行算术/逻辑运算
+        \item \textbf{控制器} --- 取指令、分析指令、发出控制信号
+        \item \textbf{存储器} --- 存储程序和数据（内存 + 外存）
+        \item \textbf{输入设备} --- 键盘、鼠标等
+        \item \textbf{输出设备} --- 显示器、打印机等
+    \end{enumerate}
+    \vspace{0.3em}
+    五大部件通过总线连接
+\end{frame}
+
+\begin{frame}{从按下电源到桌面}
+    \textbf{启动过程六步骤}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item 电源供电，各部件初始化
+        \item CPU 复位，从固定地址开始执行
+        \item BIOS 加电自检（POST）
+        \item 读取主引导记录 MBR
+        \item 加载操作系统内核到内存
+        \item 系统初始化，显示桌面
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{软硬件关系}
+    \begin{itemize}
+        \item \textbf{操作系统}：管理硬件资源，为应用程序提供运行环境
+        \item \textbf{驱动程序}：操作系统与硬件设备之间的中间层
+        \item \textbf{系统调用}：用户程序进入内核态的唯一入口
+    \end{itemize}
+    \vspace{0.5em}
+    软件运行的本质是 CPU 取指令 $\to$ 分析指令 $\to$ 执行指令的循环
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 计算机系统：硬件 + 软件，分层架构
+        \item 五大核心部件：运算器、控制器、存储器、输入、输出
+        \item 启动六步：电源 $\to$ CPU $\to$ BIOS $\to$ MBR $\to$ 内核 $\to$ 桌面
+        \item 操作系统是软硬件之间的桥梁
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：学习路线与资料推荐}}
+    \end{center}
+\end{frame}
+
+\end{document}

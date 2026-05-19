@@ -1,0 +1,152 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-4 线程}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解线程的概念和引入线程的目的
+        \item 掌握进程与线程的区别与联系
+        \item 理解线程共享与独有资源
+        \item 了解用户级线程与内核级线程
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{为什么引入线程}
+    \begin{itemize}
+        \item 进程是资源分配的基本单位，也是CPU调度的基本单位 $\to$ 切换开销大
+        \item 同一进程内的多个任务需要并发执行，但进程间通信复杂
+        \item 需要一种更轻量级的执行单元
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{引入线程后的分工}
+        \begin{itemize}
+            \item \textbf{进程}：系统\textbf{资源分配}的基本单位
+            \item \textbf{线程}：CPU\textbf{调度}的基本单位（轻量级进程）
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{线程的定义}
+    \textbf{线程（Thread）}：是进程内部的\textbf{执行单元}，是CPU调度的基本单位。
+
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 一个进程可以包含\textbf{多个线程}
+        \item 同一进程内的线程共享进程的资源
+        \item 线程之间的切换比进程切换\textbf{开销小}
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{exampleblock}
+        类比：进程像一个工厂（拥有资源），线程是工厂里的工人（执行任务）。
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{线程的组成}
+    \textbf{线程独有的资源：}
+    \begin{itemize}
+        \item 线程ID（TID）
+        \item 程序计数器（PC）
+        \item 寄存器上下文
+        \item 栈（存放局部变量和函数调用信息）
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{线程共享的资源（同一进程中）：}
+    \begin{itemize}
+        \item 地址空间（代码段、数据段、堆）
+        \item 打开的文件列表
+        \item 全局变量
+        \item 信号处理函数
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{进程 vs 线程}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        对比项 & 进程 & 线程 \\
+        \hline
+        资源分配 & 基本单位 & 不分配资源 \\
+        调度 & 非基本单位 & 基本单位 \\
+        地址空间 & 独立 & 共享进程地址空间 \\
+        切换开销 & 大 & 小 \\
+        通信 & IPC机制 & 直接读写共享内存 \\
+        系统开销 & 创建/撤销开销大 & 创建/撤销开销小 \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{用户级线程（ULT）}
+    \textbf{用户级线程}：线程的管理由\textbf{用户空间的线程库}完成，内核 unaware。
+
+    \begin{itemize}
+        \item 线程的创建、切换、销毁在用户空间完成
+        \item 内核只看到进程，不知道线程的存在
+        \item 优点：切换不需要系统调用，开销小；可移植性好
+        \item 缺点：一个线程阻塞会导致整个进程阻塞；不能利用多核优势
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{内核级线程（KLT）}
+    \textbf{内核级线程}：线程的管理由\textbf{操作系统内核}完成。
+
+    \begin{itemize}
+        \item 线程的创建、切换、销毁由内核完成
+        \item 内核直接控制线程调度
+        \item 优点：一个线程阻塞不影响其他线程；可利用多核并行
+        \item 缺点：切换需要系统调用，开销较大
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{用户级 vs 内核级线程对比}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        对比项 & 用户级线程 & 内核级线程 \\
+        \hline
+        管理者 & 用户线程库 & OS内核 \\
+        切换方式 & 用户空间（无系统调用） & 内核空间（系统调用） \\
+        切换速度 & 快 & 较慢 \\
+        多核利用 & 不能 & 能 \\
+        一个线程阻塞 & 整个进程阻塞 & 不影响其他线程 \\
+        操作系统支持 & 不需要 & 需要 \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{多线程模型}
+    \begin{itemize}
+        \item \textbf{多对一模型}：多个用户级线程映射到一个内核级线程
+        \begin{itemize}
+            \item 优点：管理开销小；缺点：不能利用多核
+        \end{itemize}
+        \item \textbf{一对一模型}：每个用户级线程映射到一个内核级线程
+        \begin{itemize}
+            \item 优点：并发性好；缺点：系统开销大
+        \end{itemize}
+        \item \textbf{多对多模型}：多个用户级线程映射到多个内核级线程
+        \begin{itemize}
+            \item 结合两者优点，Linux目前采用此模型
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 线程是CPU调度的基本单位，进程是资源分配的基本单位
+        \item 线程独有：TID、PC、寄存器、栈；共享：地址空间、文件、全局变量
+        \item 用户级线程：用户管理，切换快，但无法利用多核
+        \item 内核级线程：内核管理，可利用多核，但切换开销大
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-5 进程调度}}
+    \end{center}
+\end{frame}
+
+\end{document}

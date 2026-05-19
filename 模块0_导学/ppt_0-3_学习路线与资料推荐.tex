@@ -1,0 +1,81 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 导学篇}
+\subtitle{0-3 学习路线与资料推荐}
+\author{}
+\date{}
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 了解四门科目的推荐教材和辅导书
+        \item 掌握四门科目的推荐学习顺序
+        \item 制定合理的备考时间规划
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{教材推荐}
+    \begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{科目} & \textbf{教材} & \textbf{辅导书} \\ \hline
+        数据结构 & 严蔚敏 & 王道/天勤 \\ \hline
+        组成原理 & 唐朔飞 & 王道 \\ \hline
+        操作系统 & 汤子瀛 & 王道 \\ \hline
+        计网 & 谢希仁 & 王道 \\ \hline
+    \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{学习顺序}
+    \textbf{推荐顺序}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item \textbf{数据结构} --- 基础科目，最先学习
+        \item \textbf{计算机组成原理} --- 硬件核心，与 OS 交叉
+        \item \textbf{操作系统} --- 需要组成原理前置知识
+        \item \textbf{计算机网络} --- 相对独立，可最后学习
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{block}{为什么这样安排？}
+        数据结构是所有算法的基础；组成原理的中断、存储器等是 OS 相关模块的前置知识；计网与其他三科关联少，放在最后更利于记忆。
+    \end{block}
+\end{frame}
+
+\begin{frame}{三阶段备考规划}
+    \begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{阶段} & \textbf{时间} & \textbf{任务} \\ \hline
+        零基础阶段 & 2-3 个月 & 本系列 76 集 + 知识框架 \\ \hline
+        强化阶段 & 3-4 个月 & 教材精读 + 王道刷题 + 真题 \\ \hline
+        冲刺阶段 & 1-2 个月 & 模拟题 + 查漏补缺 \\ \hline
+    \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 教材：严蔚敏、唐朔飞、汤子瀛、谢希仁
+        \item 辅导书：王道考研复习指导系列
+        \item 学习顺序：数据结构 $\to$ 组成原理 $\to$ OS $\to$ 计网
+        \item 三阶段：零基础（2-3月）$\to$ 强化（3-4月）$\to$ 冲刺（1-2月）
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：C语言速成（上）}}
+    \end{center}
+\end{frame}
+
+\end{document}

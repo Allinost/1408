@@ -1,0 +1,109 @@
+﻿\documentclass[10pt, aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-18 排序入门}
+\author{}
+\date{}
+\setbeamertemplate{page number in head/foot}{}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}{本节目标}
+\begin{enumerate}
+\item 理解排序的基本概念（稳定性、内/外部排序）
+\item 掌握插入排序、冒泡排序、简单选择排序
+\item 理解快速排序的分治思想
+\end{enumerate}
+\end{frame}
+\begin{frame}{排序的基本概念}
+\textbf{稳定性}：相等元素排序后相对顺序不变
+\vspace{0.3em}
+\textbf{分类}
+\begin{itemize}
+\item 内部排序：所有元素在内存中
+\item 外部排序：元素需借助外存
+\end{itemize}
+\end{frame}
+\begin{frame}{插入排序}
+\textbf{思想}：将元素插入已排序区的合适位置
+\vspace{0.3em}
+\textbf{性能}
+\begin{itemize}
+\item 最好 $O(n)$（已有序）
+\item 最坏 $O(n^2)$（逆序）
+\item 平均 $O(n^2)$
+\end{itemize}
+\vspace{0.3em}
+空间 $O(1)$，\textbf{稳定}
+\end{frame}
+\begin{frame}{冒泡排序}
+\textbf{思想}：相邻比较交换，最大元素移至末尾
+\vspace{0.3em}
+\textbf{性能}
+\begin{itemize}
+\item 最好 $O(n)$（已有序，提前结束）
+\item 最坏 $O(n^2)$（逆序）
+\item 平均 $O(n^2)$
+\end{itemize}
+\vspace{0.3em}
+空间 $O(1)$，\textbf{稳定}
+\end{frame}
+\begin{frame}{简单选择排序}
+\textbf{思想}：每趟选最小元素与待排序区第一个交换
+\vspace{0.3em}
+\textbf{性能}
+\begin{itemize}
+\item 始终 $O(n^2)$（与初始状态无关）
+\item 空间 $O(1)$
+\end{itemize}
+\textbf{不稳定}
+\end{frame}
+\begin{frame}{快速排序}
+\textbf{思想}：分治 + 分区
+\vspace{0.3em}
+\textbf{分区操作}
+\begin{itemize}
+\item 选枢轴（通常第一个元素）
+\item low/high 指针交替扫描交换
+\item 左边 $\le$ 枢轴 $\le$ 右边
+\end{itemize}
+\vspace{0.3em}
+\textbf{性能}
+\begin{itemize}
+\item 最好 $O(n\log n)$（均匀分割）
+\item 最坏 $O(n^2)$（已有序）
+\item 平均 $O(n\log n)$
+\end{itemize}
+空间 $O(\log n)$ 至 $O(n)$，\textbf{不稳定}
+\end{frame}
+\begin{frame}{排序算法对比}
+\begin{tabular}{|c|c|c|c|c|}
+\hline 算法 & 最好 & 平均 & 最坏 & 稳定 \\ \hline
+插入排序 & $O(n)$ & $O(n^2)$ & $O(n^2)$ & 稳定 \\ \hline
+冒泡排序 & $O(n)$ & $O(n^2)$ & $O(n^2)$ & 稳定 \\ \hline
+选择排序 & $O(n^2)$ & $O(n^2)$ & $O(n^2)$ & 不稳 \\ \hline
+快速排序 & $O(n\log n)$ & $O(n\log n)$ & $O(n^2)$ & 不稳 \\ \hline
+\end{tabular}
+\vspace{0.5em}
+快速排序是实际应用中最常用的排序算法
+\end{frame}
+\begin{frame}{本节总结}
+\begin{enumerate}
+\item 插入排序：插入已排序区，稳定
+\item 冒泡排序：相邻交换，稳定
+\item 选择排序：每趟选最小，不稳定
+\item 快速排序：分治 + 分区，最常用
+\item 数据结构模块至此结束，共 18 集
+\end{enumerate}
+\vspace{1em}
+\begin{center}
+\textcolor{blue}{\textbf{下个模块：计算机组成原理}}
+\end{center}
+\end{frame}
+\end{document}

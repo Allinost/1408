@@ -1,0 +1,183 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-14 文件共享与保护}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解硬链接与软链接的区别
+        \item 掌握文件保护的三种方式
+        \item 理解访问控制矩阵与 ACL
+        \item 熟悉 UNIX 的 rwx 权限模型
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{文件共享概述}
+    \textbf{文件共享}：多个用户（进程）使用同一个文件。
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 节省磁盘空间（同一文件不必存多份）
+        \item 方便协作（多个用户共同操作同一文件）
+    \end{itemize}
+    \vspace{0.5em}
+    两种实现方式：
+    \begin{center}
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textbf{类型} & \textbf{实现机制} & \textbf{典型系统} \\
+            \hline
+            基于索引节点 & 目录项指向同一 inode & Unix/Linux \\
+            基于符号链接 & 创建特殊链接文件 & 所有系统 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{硬链接（Hard Link）}
+    \textbf{硬链接}：多个目录项指向同一个索引节点（inode）。
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 每个硬链接都与原文件共享同一个 inode
+        \item 文件数据只有一份，所有链接共享
+        \item inode 中维护\textbf{链接计数（link count）}
+    \end{itemize}
+    \vspace{0.5em}
+    删除规则：
+    \[
+    \text{链接计数} > 1 \Rightarrow \text{仅删除目录项，计数减 1}
+    \]
+    \[
+    \text{链接计数} = 1 \Rightarrow \text{删除文件数据}
+    \]
+    \vspace{0.5em}
+    \textbf{限制}：
+    \begin{itemize}
+        \item 不能跨文件系统
+        \item 不能链接目录
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{软链接（符号链接）}
+    \textbf{软链接/符号链接}：创建一个 \texttt{.link} 文件，存储目标文件的路径。
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 类似于 Windows 的快捷方式
+        \item 链接文件有自己的 inode，与被链接文件不同
+        \item 访问时 OS 解析路径，定位目标文件
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textbf{特性} & \textbf{硬链接} & \textbf{软链接} \\
+            \hline
+            inode & 相同 & 不同 \\
+            跨文件系统 & 不可以 & 可以 \\
+            链接目录 & 不可以 & 可以 \\
+            原文件删除后 & 仍可访问 & 失效（悬空链接） \\
+            空间占用 & 无额外空间 & 存路径占用少量空间 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{文件保护方式}
+    三种基本保护方式：
+    \vspace{0.5em}
+    \begin{description}
+        \item[口令保护]
+            \begin{itemize}
+                \item 文件设置口令，访问时需验证
+                \item 简单但安全性一般
+            \end{itemize}
+        \item[加密保护]
+            \begin{itemize}
+                \item 文件数据加密存储，需要密钥解密
+                \item 安全性高，但加解密有性能开销
+            \end{itemize}
+        \item[访问控制]
+            \begin{itemize}
+                \item 系统为每个文件维护访问权限列表
+                \item 灵活且精细，现代 OS 的主流方案
+            \end{itemize}
+    \end{description}
+\end{frame}
+
+\begin{frame}{访问控制矩阵与 ACL}
+    \textbf{访问控制矩阵}：
+    \[
+    \begin{pmatrix}
+        & \text{File}_1 & \text{File}_2 & \text{File}_3 \\
+        \text{User}_1 & \text{RW} & \text{R} & - \\
+        \text{User}_2 & \text{R} & \text{RW} & \text{RWX} \\
+        \text{User}_3 & - & \text{R} & \text{R} \\
+    \end{pmatrix}
+    \]
+    \vspace{0.5em}
+    矩阵稀疏大，实际实现常用两种方式：
+    \begin{description}
+        \item[ACL（访问控制列表）]
+            \begin{itemize}
+                \item 每个文件关联一个列表，记录哪些用户有什么权限
+                \item 按列存储，查询方便
+            \end{itemize}
+        \item[能力列表（Capability）]
+            \begin{itemize}
+                \item 每个用户关联一个列表，记录能访问哪些文件
+                \item 按行存储
+            \end{itemize}
+    \end{description}
+\end{frame}
+
+\begin{frame}{UNIX 权限模型}
+    UNIX 使用简洁的权限模型：\textbf{rwx}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{符号} & \textbf{含义} \\
+            \hline
+            r & 读（Read）--- 4 \\
+            w & 写（Write）--- 2 \\
+            x & 执行（eXecute）--- 1 \\
+            - & 无权限 --- 0 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    三组权限：
+    \[
+    \underbrace{\text{rwx}}_{\text{Owner}} \;
+    \underbrace{\text{r-x}}_{\text{Group}} \;
+    \underbrace{\text{r--}}_{\text{Others}}
+    \]
+    \vspace{0.5em}
+    数字表示：\texttt{chmod 754 file}
+    \begin{itemize}
+        \item Owner: rwx = 7
+        \item Group: r-x = 5
+        \item Others: r-- = 4
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 硬链接共享 inode（计数删除），软链接存储路径（快捷方式）
+        \item 文件保护方式：口令、加密、访问控制
+        \item 访问控制矩阵按列存 ACL（每个文件关联权限列表）
+        \item UNIX 权限：rwx 三组（Owner/Group/Others），数字表示
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-15 I/O管理}}
+    \end{center}
+\end{frame}
+
+\end{document}

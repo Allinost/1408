@@ -1,0 +1,369 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+\title{408考研零基础 --- 计算机网络}
+\subtitle{4-13 TCP协议}
+\author{}
+\date{}
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 掌握TCP报文段首部格式及各字段含义
+        \item 理解三次握手建立连接和四次挥手释放连接的过程
+        \item 理解TCP的可靠传输、流量控制和拥塞控制机制
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{TCP报文段首部}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth, scale=0.65, every node/.style={scale=0.65}]
+            \draw[thick] (0,0) -- (12,0);
+            \draw[thick] (0,0) -- (0,-7);
+            \draw[thick] (12,0) -- (12,-7);
+            \draw[thick] (0,-7) -- (12,-7);
+            \foreach \x in {2,4,6,8,10} {
+                \draw[thick] (\x,0) -- (\x,-7);
+            }
+            \foreach \y in {0.7,1.4,2.1,2.8,3.5,4.2,4.9,5.6,6.3} {
+                \draw[thick] (0,-\y) -- (12,-\y);
+            }
+            \node at (1,-0.35) {源端口(16)};
+            \node at (7,-0.35) {目的端口(16)};
+            \node at (3,-1.05) {序号(32)};
+            \node at (3,-1.75) {确认号(32)};
+            \node at (1,-2.45) {数据偏移(4)};
+            \node at (2.5,-2.45) {保留(6)};
+            \node at (5,-2.45) {标志位(6)};
+            \node at (7,-2.45) {窗口(16)};
+            \node at (3,-3.15) {校验和(16)};
+            \node at (9,-3.15) {紧急指针(16)};
+            \node[draw,minimum width=12cm,minimum height=2.8cm,fill=gray!20] at (6,-5.2) {选项（可变长度，填充至32位对齐）};
+            \node[draw,minimum width=12cm,minimum height=0.5cm,fill=blue!20] at (6,-7.7) {数据部分};
+            \node[above] at (6,0.3) {\textbf{TCP首部（20字节固定 + 选项）}};
+            \node[align=left,below] at (0,0.3) {0};
+            \node[align=left,below] at (2,0.3) {4};
+            \node[align=left,below] at (4,0.3) {8};
+            \node[align=left,below] at (6,0.3) {12};
+            \node[align=left,below] at (8,0.3) {16};
+            \node[align=left,below] at (10,0.3) {20};
+            \node[align=left,below] at (12,0.3) {24};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{标志位详解}
+    \begin{block}{6个标志位（每位置1有效）}
+        \begin{description}
+            \item[URG] 紧急指针标志，紧急数据优先处理
+            \item[ACK] 确认号有效（建立连接后通常置1）
+            \item[PSH] 推送，接收方应尽快交付应用层
+            \item[RST] 重置连接（异常断开）
+            \item[SYN] 同步序号，用于建立连接
+            \item[FIN] 释放连接
+        \end{description}
+    \end{block}
+    \vspace{0.5em}
+    \begin{exampleblock}{关键字段}
+        \begin{itemize}
+            \item \textbf{序号}：本报文段数据第一个字节的序号
+            \item \textbf{确认号}：期望收到对方下一个数据字节的序号
+            \item \textbf{窗口}：接收方通告的剩余缓冲区大小（rwnd）
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{三次握手 --- 建立连接}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth, node distance=1.2cm]
+            \node (A) {\textbf{客户端}};
+            \node[right=5cm of A] (B) {\textbf{服务器}};
+            
+            \draw[->,thick] (A) to[out=0,in=180] node[above]{\small SYN=1, seq=x} (B);
+            \draw[->,thick] (B) to[out=180,in=0] node[below]{\small SYN=1, ACK=1, seq=y, ack=x+1} (A);
+            \draw[->,thick] (A) to[out=0,in=180] node[above]{\small ACK=1, seq=x+1, ack=y+1} (B);
+            
+            \node[left=0.3cm of A] (t1) {1.};
+            \node[left=0.3cm of A] (t2) at (0,-1.2) {2.};
+            \node[left=0.3cm of A] (t3) at (0,-2.4) {3.};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item 客户端发送SYN报文（seq=x），进入SYN\_SENT状态
+        \item 服务器回复SYN+ACK（seq=y, ack=x+1），进入SYN\_RCVD状态
+        \item 客户端发送ACK（seq=x+1, ack=y+1），双方进入ESTABLISHED状态
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{为什么需要三次握手？}
+    \begin{block}{核心原因}
+        防止已失效的连接请求到达服务器，造成资源浪费。
+    \end{block}
+    \vspace{0.3em}
+    \begin{exampleblock}{场景说明}
+        \begin{enumerate}
+            \item 客户端发送连接请求SYN（第一次）
+            \item 该请求在网络中延迟，客户端未收到ACK
+            \item 客户端重传SYN并成功建立连接，传输数据后释放
+            \item 延迟的旧SYN到达服务器，服务器误以为新请求
+            \item 若只有两次握手，服务器会建立空连接并等待数据
+            \item 三次握手：服务器回复SYN+ACK，客户端不回应（因无此请求），服务器超时释放
+        \end{enumerate}
+    \end{exampleblock}
+    \vspace{0.3em}
+    \begin{alertblock}{结论}
+        第三次握手用于确认客户端确实有建立连接的意愿。
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{四次挥手 --- 释放连接}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth, node distance=1.2cm]
+            \node (A) {\textbf{客户端}};
+            \node[right=5cm of A] (B) {\textbf{服务器}};
+            
+            \draw[->,thick] (A) to[out=0,in=180] node[above]{\small FIN=1, seq=u} (B);
+            \node[right=0.2cm of B] (s1) {CLOSE\_WAIT};
+            \draw[->,thick] (B) to[out=180,in=0] node[below]{\small ACK=1, seq=v, ack=u+1} (A);
+            \node[left=0.2cm of A] (s2) {FIN\_WAIT\_2};
+            \draw[->,thick] (B) to[out=180,in=0] node[below]{\small FIN=1, ACK=1, seq=w, ack=u+1} (A);
+            \draw[->,thick] (A) to[out=0,in=180] node[above]{\small ACK=1, seq=u+1, ack=w+1} (B);
+            \node[right=0.2cm of B] (s3) {CLOSED};
+            \node[left=0.2cm of A] (s4) {TIME\_WAIT};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item 客户端发送FIN，进入FIN\_WAIT\_1
+        \item 服务器回复ACK，进入CLOSE\_WAIT（客户端FIN\_WAIT\_2）
+        \item 服务器发送FIN，进入LAST\_ACK
+        \item 客户端回复ACK，进入TIME\_WAIT（2MSL后关闭）
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{TIME\_WAIT 2MSL}
+    \begin{block}{为什么TIME\_WAIT需要等待2MSL？}
+        MSL（Maximum Segment Lifetime）：报文段最大生存时间。
+    \end{block}
+    \vspace{0.3em}
+    \begin{enumerate}
+        \item \textbf{确保最后一个ACK到达}
+        \begin{itemize}
+            \item 若ACK丢失，服务器超时重传FIN
+            \item 客户端在2MSL内能收到重传的FIN并重新ACK
+        \end{itemize}
+        \item \textbf{使旧连接报文消失}
+        \begin{itemize}
+            \item 2MSL足够让本连接所有旧报文在网络中消失
+            \item 防止影响新连接（相同IP和端口）
+        \end{itemize}
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \draw[->] (0,0) -- (6,0);
+            \draw[red,thick] (0,0.1) -- node[above]{TIME\_WAIT (2MSL)} (4,0.1);
+            \node at (2,0.4) {\small 等待期间：端口被占用，不能使用};
+            \draw[->,dashed] (0.3,0.5) -- (1.5,0.5);
+            \node[above] at (0.9,0.8) {若FIN重传，可重新ACK};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{可靠传输机制}
+    \begin{block}{TCP如何实现可靠传输？}
+        序号 + 确认 + 超时重传
+    \end{block}
+    \vspace{0.3em}
+    \begin{columns}[t]
+        \column{0.33\textwidth}
+        \textbf{序号}
+        \begin{itemize}
+            \item 每个字节一个序号
+            \item 首次序号ISN随机选择
+            \item 确保数据按序重组
+        \end{itemize}
+        \column{0.33\textwidth}
+        \textbf{确认}
+        \begin{itemize}
+            \item 累积确认
+            \item 确认号 = 期望下个字节序号
+            \item 接收方也可捎带确认
+        \end{itemize}
+        \column{0.33\textwidth}
+        \textbf{超时重传}
+        \begin{itemize}
+            \item 发送时启动计时器
+            \item RTO动态计算
+            \item 基于RTT估算
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{exampleblock}{重传策略}
+        \begin{itemize}
+            \item 超时未收到ACK $\rightarrow$ 重传
+            \item 收到3个冗余ACK $\rightarrow$ 快重传
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{流量控制}
+    \begin{block}{滑动窗口机制}
+        接收方通过\textbf{rwnd（接收窗口）}告知发送方自己的剩余缓冲区大小，发送方据此调整发送速率。
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,minimum width=8cm,minimum height=0.6cm] (buf) at (0,0) {};
+            \node[above] at (-3,0.3) {发送缓冲区};
+            \fill[blue!20] (-3.8,0) rectangle (-0.5,0.6);
+            \fill[green!20] (-0.5,0) rectangle (2.5,0.6);
+            \fill[gray!20] (2.5,0) rectangle (4.2,0.6);
+            \node[above] at (-2.15,0.8) {已确认};
+            \node[above] at (1,0.8) {已发送待确认};
+            \node[above] at (3.35,0.8) {未发送};
+            \draw[decorate,decoration={brace,amplitude=5pt}] (2.5,0.6) -- (4.2,0.6);
+            \node[above] at (3.35,1.2) {窗口大小 = rwnd};
+        \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{columns}[t]
+        \column{0.48\textwidth}
+        \textbf{过程}
+        \begin{enumerate}
+            \item 接收方在ACK中通告rwnd
+            \item 发送方窗口 $\le$ rwnd
+            \item rwnd = 0时，发送方停止发送
+        \end{enumerate}
+        \column{0.48\textwidth}
+        \textbf{持续计时器}
+        \begin{itemize}
+            \item 防止rwnd=0时死锁
+            \item 发送方定期发送探测段
+            \item 了解接收方窗口是否变化
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{拥塞控制}
+    \begin{block}{核心目标}
+        防止过多数据注入网络，避免网络过载。发送方维护\textbf{拥塞窗口cwnd}。
+        \[
+        \text{实际发送窗口} = \min(\text{cwnd}, \text{rwnd})
+        \]
+    \end{block}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \draw[->] (0,0) -- (8,0) node[right]{时间};
+            \draw[->] (0,0) -- (0,4) node[above]{cwnd};
+            
+            \draw[blue,thick] plot coordinates {(0,1) (1,2) (2,4) (3,4) (4,5) (5,6) (6,7) (7,8)};
+            \draw[red,dashed] (1,3) -- (7,3) node[right]{ssthresh};
+            
+            \node at (0.5,1.3) {\small 慢开始};
+            \node at (2.5,4.5) {\small 拥塞避免};
+            \draw[decorate,decoration={zigzag}] (0.5,0.5) -- (0.5,1);
+            
+            \node[below] at (2,0) {阈值};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{慢开始与拥塞避免}
+    \begin{columns}[t]
+        \column{0.5\textwidth}
+        \textbf{慢开始}
+        \begin{itemize}
+            \item cwnd初始值为1MSS
+            \item 每收到一个ACK，cwnd+1
+            \item 每经过一个RTT，cwnd $\times 2$
+            \item \textbf{指数增长}
+            \item 直到ssthresh（慢开始阈值）
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{拥塞避免}
+        \begin{itemize}
+            \item cwnd $\ge$ ssthresh进入此阶段
+            \item 每经过一个RTT，cwnd+1
+            \item \textbf{线性增长}
+            \item 直到发生丢包（超时或3冗余ACK）
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{exampleblock}{拥塞发生时的处理}
+        \begin{itemize}
+            \item \textbf{超时}：ssthresh = cwnd/2，cwnd = 1，重新慢开始
+            \item \textbf{3冗余ACK}：ssthresh = cwnd/2，cwnd = ssthresh，快恢复
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{快重传与快恢复}
+    \begin{columns}[t]
+        \column{0.5\textwidth}
+        \textbf{快重传}
+        \begin{itemize}
+            \item 接收方收到乱序段时立即发送\textbf{冗余ACK}
+            \item 发送方收到\textbf{3个冗余ACK}立即重传
+            \item 不等超时
+            \item 提高重传效率
+        \end{itemize}
+        \vspace{0.3em}
+        \begin{center}
+            \begin{tikzpicture}[>=stealth, scale=0.6]
+                \draw[->] (0,0) -- (4,0);
+                \foreach \x/\l in {0/1,1/2,2/3,3/4} {
+                    \fill[blue!20] (\x*0.8,0) rectangle (\x*0.8+0.4,0.3);
+                    \node at (\x*0.8+0.2,-0.2) {\l};
+                }
+                \fill[red!30] (0.8*2,0.3) -- (0.8*2+0.4,0.3) -- (0.8*2+0.2,0.6) -- cycle;
+                \node at (1.6,-0.5) {丢包};
+                \node at (3.2,-0.5) {$\leftarrow$ 3冗余ACK触发重传};
+            \end{tikzpicture}
+        \end{center}
+        \column{0.5\textwidth}
+        \textbf{快恢复}
+        \begin{itemize}
+            \item 收到3冗余ACK时执行
+            \item ssthresh = cwnd / 2
+            \item cwnd = ssthresh
+            \item 从\textbf{拥塞避免}阶段开始
+            \item 不回到慢开始
+        \end{itemize}
+    \end{columns}
+    \vspace{0.5em}
+    \begin{block}{完整拥塞控制流程}
+        慢开始（指数） $\rightarrow$ 拥塞避免（线性） $\rightarrow$ 丢包$\rightarrow$ 快重传+快恢复（或超时重回慢开始）
+    \end{block}
+\end{frame}
+
+\begin{frame}{拥塞控制状态图}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth, node distance=1.2cm]
+            \node[draw,minimum width=2cm,minimum height=0.8cm,fill=green!20] (ss) {慢开始};
+            \node[draw,minimum width=2cm,minimum height=0.8cm,fill=blue!20,right=1.5cm of ss] (ca) {拥塞避免};
+            \node[draw,minimum width=2cm,minimum height=0.8cm,fill=red!20,below=1cm of ca] (fr) {快恢复};
+            
+            \draw[->] (ss) -- node[above]{cwnd $\ge$ ssthresh} (ca);
+            \draw[->] (ca) to[out=180,in=0] node[above,yshift=0.3cm]{超时：ssthresh=cwnd/2, cwnd=1} (ss);
+            \draw[->] (ca) -- node[right]{3冗余ACK：ssthresh=cwnd/2, cwnd=ssthresh} (fr);
+            \draw[->] (fr) to[out=0,in=0] node[left]{新ACK} (ca);
+            \draw[->] (fr) to[out=180,in=270] node[below]{超时} (ss);
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item TCP报文段首部：20字节固定，含源/目的端口、序号、确认号、标志位、窗口等
+        \item 三次握手（SYN$\to$SYN+ACK$\to$ACK）防止失效连接请求；四次挥手（FIN$\to$ACK$\to$FIN$\to$ACK），TIME\_WAIT 2MSL
+        \item 可靠传输：序号+确认+超时重传；流量控制：滑动窗口rwnd；拥塞控制：慢开始+拥塞避免+快重传+快恢复
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：4-14 应用层协议}}
+    \end{center}
+\end{frame}
+\end{document}

@@ -1,0 +1,166 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-10 二叉树}
+\author{}
+\date{}
+
+\setbeamertemplate{page number in head/foot}{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解二叉树的递归定义及其与度为 2 的树的区别
+        \item 掌握二叉树的重要性质（$n_0 = n_2 + 1$）
+        \item 掌握满二叉树、完全二叉树、二叉排序树、平衡二叉树的概念与特征
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{二叉树的递归定义}
+    \textbf{二叉树}：$n$ 个结点的有限集合
+    \begin{itemize}
+        \item $n = 0$ 时为空二叉树
+        \item 非空二叉树有且仅有一个根结点
+        \item 其余结点分为两个互不相交的集合：左子树和右子树
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{alertblock}{与度为 2 的树的区别}
+        \begin{itemize}
+            \item 二叉树明确区分左右子树
+            \item 度为 2 的树不区分左右
+            \item 二叉树允许只有一个子结点时指明左右
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{二叉树的性质}
+    \textbf{性质一}：第 $i$ 层最多 $2^{i-1}$ 个结点
+    \vspace{0.3em}
+    \textbf{性质二}：深度为 $h$ 的二叉树最多 $2^h - 1$ 个结点
+    \vspace{0.3em}
+    \textbf{性质三（核心）}
+    \[
+    n_0 = n_2 + 1
+    \]
+    叶结点数 $=$ 度为 2 的结点数 $+ 1$
+    \vspace{0.3em}
+    \textbf{证明}
+    \[
+    \begin{aligned}
+    \text{总度数} &= n - 1 = n_1 + 2n_2\\
+    n &= n_0 + n_1 + n_2\\
+    \therefore\; n_0 &= n_2 + 1
+    \end{aligned}
+    \]
+\end{frame}
+
+\begin{frame}{满二叉树}
+    \textbf{定义}：深度为 $h$，结点数为 $2^h - 1$
+    \vspace{0.5em}
+    \textbf{特征}
+    \begin{itemize}
+        \item 所有叶结点在第 $h$ 层
+        \item 每个分支结点都有两棵非空子树
+        \item 结点数达到最大值
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{完全二叉树}
+    \textbf{定义}：结点编号与满二叉树 1 至 $n$ 对应
+    \vspace{0.5em}
+    \textbf{特征}
+    \begin{itemize}
+        \item 叶结点只可能在最后两层
+        \item 最多一个度为 1 的结点（且只有左子树）
+        \item 结点 $i$ 的左孩子为 $2i$，右孩子为 $2i+1$
+        \item 结点 $i$ 的双亲为 $\lfloor i/2 \rfloor$
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{注意}
+        完全二叉树非常适合数组存储
+    \end{block}
+\end{frame}
+
+\begin{frame}{二叉排序树与平衡二叉树}
+    \textbf{二叉排序树（BST）}
+    \begin{itemize}
+        \item 左子树所有结点 $<$ 根 $<$ 右子树所有结点
+        \item 左右子树本身也是二叉排序树
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{平衡二叉树（AVL）}
+    \begin{itemize}
+        \item 任意结点左右子树高度差 $\le 1$
+        \item 查找效率稳定在 $O(\log n)$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{二叉树的存储结构}
+    \textbf{顺序存储}
+    \begin{itemize}
+        \item 按完全二叉树编号存储
+        \item 适用于完全二叉树和满二叉树
+        \item 普通二叉树可能浪费空间
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{链式存储（二叉链表）}
+    \begin{lstlisting}[language=C, basicstyle=\ttfamily\small]
+typedef struct BiTNode {
+    ElemType data;
+    struct BiTNode *lchild, *rchild;
+} BiTNode, *BiTree;
+    \end{lstlisting}
+    \vspace{0.3em}
+    $n$ 个结点有 $n+1$ 个空指针域
+\end{frame}
+
+\begin{frame}{例题 --- 完全二叉树结点数}
+    \textbf{完全二叉树有 1000 个结点，求 $n_0, n_1, n_2$}
+    \vspace{0.5em}
+    \textbf{解答}
+    \[
+    \begin{aligned}
+    n_0 &= n_2 + 1\\
+    n_0 + n_1 + n_2 &= 1000 \implies 2n_2 + n_1 = 999
+    \end{aligned}
+    \]
+    $n_1$ 只能为 0 或 1
+    \begin{itemize}
+        \item $n_1 = 0 \implies 2n_2 = 999$，不成立
+        \item $n_1 = 1 \implies 2n_2 = 998 \implies n_2 = 499$
+    \end{itemize}
+    \[
+    n_0 = 500,\; n_1 = 1,\; n_2 = 499
+    \]
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 二叉树每个结点至多两棵子树，区分左右
+        \item 核心性质：$n_0 = n_2 + 1$
+        \item 满二叉树：$2^h - 1$ 个结点
+        \item 完全二叉树：适合数组存储
+        \item BST 和 AVL 是两种重要的特殊二叉树
+        \item 链式存储：$n$ 个结点 $n+1$ 个空指针
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：二叉树的遍历}}
+    \end{center}
+\end{frame}
+
+\end{document}

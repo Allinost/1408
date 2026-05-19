@@ -1,0 +1,189 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 计算机组成原理}
+\subtitle{2-16 控制器设计}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解硬布线控制器的基本原理
+        \item 掌握微程序控制器的基本原理
+        \item 区分水平型微指令与垂直型微指令
+        \item 对比硬布线与微程序的优缺点
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{控制器的两种实现方式}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{硬布线控制器} & \textbf{微程序控制器} \\
+            \hline
+            组合逻辑电路 & 存储逻辑 \\
+            控制信号由门电路产生 & 控制信号存储在控存中 \\
+            速度快 & 速度慢 \\
+            设计复杂，不易修改 & 设计规整，易扩展 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item RISC 多采用硬布线（追求速度）
+        \item CISC 多采用微程序（追求灵活性）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{硬布线控制器}
+    \textbf{基本原理}：
+    \begin{itemize}
+        \item 使用组合逻辑电路（与门、或门、非门等）直接产生控制信号
+        \item 输入 = 操作码 + 时序信号 + 状态信号
+        \item 输出 = 各部件所需的微操作控制信号
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{block}{硬布线控制器的输入}
+        \begin{itemize}
+            \item IR中的操作码 $\rightarrow$ 译码器 $\rightarrow$ 组合逻辑
+            \item 时钟周期信号（节拍发生器）
+            \item 标志位（PSW中的CF、ZF等）
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item[+] 速度快（适合RISC）
+        \item[-] 设计复杂，指令增加需重做电路
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{微程序控制器 --- 基本思想}
+    \begin{block}{核心思想}
+        将每条指令分解为若干\textbf{微操作}，将微操作的控制信号以\textbf{微指令}形式存储在\textbf{控制存储器（控存）}中，顺序读取执行。
+    \end{block}
+    \vspace{0.3em}
+    \textbf{关键术语}：
+    \begin{itemize}
+        \item \textbf{微操作}：CPU最基本的不可再分的操作（如：PC$\rightarrow$MAR）
+        \item \textbf{微指令}：一组同时执行的微操作的编码
+        \item \textbf{微程序}：一系列微指令的集合，对应一条机器指令
+        \item \textbf{控制存储器}：存放微程序的ROM
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{微程序控制器结构}
+    \begin{center}
+        \begin{tabular}{|c|}
+            \hline
+            \textbf{控制存储器（控存 CS）} \\
+            \hline
+            \begin{tabular}{c}
+                微指令1（对应取指） \\
+                微指令2（对应ADD译码） \\
+                微指令3（对应ADD执行） \\
+                ... \\
+            \end{tabular} \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \textbf{工作流程}：
+    \begin{enumerate}
+        \item 启动取指微程序，从控存读取微指令
+        \item 微指令产生控制信号驱动硬件
+        \item 顺序或跳转到下一条微指令
+        \item 直到指令执行完毕，回到取指微程序
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{微指令格式}
+    \textbf{水平型微指令}
+    \begin{itemize}
+        \item 每个二进制位对应一个微操作控制信号
+        \item 优点：并行度高、执行速度快
+        \item 缺点：指令字长、编码效率低
+        \item 例：\texttt{1001...}（每位控制一个微操作）
+    \end{itemize}
+    \vspace{0.5em}
+    \textbf{垂直型微指令}
+    \begin{itemize}
+        \item 采用类似机器指令的格式（操作码+地址码）
+        \item 优点：字长短、编码紧凑
+        \item 缺点：并行度低、执行速度慢
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            & 水平型 & 垂直型 \\
+            \hline
+            并行能力 & 强 & 弱 \\
+            微指令字长 & 长 & 短 \\
+            执行速度 & 快 & 慢 \\
+            编程难度 & 高 & 低 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{微地址形成与顺序控制}
+    \textbf{微程序入口地址}：
+    \begin{itemize}
+        \item 机器指令的操作码 $\rightarrow$ 映射 $\rightarrow$ 对应微程序的入口地址
+        \item 由\textbf{微地址形成电路}完成
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{微指令顺序控制}：
+    \begin{itemize}
+        \item \textbf{顺序执行}：下址字段给出下一条微指令地址
+        \item \textbf{条件跳转}：根据状态条件选择下一条微指令
+        \item \textbf{返回}：微程序调用与返回
+    \end{itemize}
+    \vspace{0.3em}
+    \textbf{例}：
+    \begin{itemize}
+        \item ADD指令操作码为 0010
+        \item 微地址形成电路将 0010 映射为控存地址 2
+        \item 从控存地址2开始执行ADD对应的微程序
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{硬布线 vs 微程序对比}
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{对比项} & \textbf{硬布线} & \textbf{微程序} \\
+            \hline
+            实现方式 & 组合逻辑电路 & 存储微程序 \\
+            速度 & 快 & 慢 \\
+            设计周期 & 长、复杂 & 短、规整 \\
+            扩展性 & 差（需重新布线） & 好（修改控存即可） \\
+            适用 & RISC & CISC \\
+            规整性 & 不规整 & 规整 \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \vspace{0.5em}
+    \begin{block}{408考研常考}
+        对比两种控制器的原理、优缺点、适用场景。
+    \end{block}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 硬布线控制器用组合逻辑产生控制信号，速度快但设计复杂
+        \item 微程序控制器将控制信号存储在控存中，灵活规整
+        \item 水平型微指令并行度高，垂直型微指令编码紧凑
+        \item 硬布线适合RISC，微程序适合CISC
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：2-17 总线系统 --- 计算机的"高速公路"}}
+    \end{center}
+\end{frame}
+
+\end{document}

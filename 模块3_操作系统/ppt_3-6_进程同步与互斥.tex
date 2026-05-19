@@ -1,0 +1,153 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage{../beamer_theme_408}
+
+\title{408考研零基础 --- 操作系统}
+\subtitle{3-6 进程同步与互斥}
+\author{}
+\date{}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{本节目标}
+    \begin{enumerate}
+        \item 理解同步与互斥的概念
+        \item 掌握临界区及互斥原则
+        \item 掌握信号量的概念及PV操作
+        \item 能使用信号量解决简单的同步互斥问题
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{同步与互斥}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{互斥}
+            \begin{itemize}
+                \item 多个进程\textbf{竞争}同一资源
+                \item 同一时刻只允许一个进程访问
+                \item 例：打印机只能被一个进程使用
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{同步}
+            \begin{itemize}
+                \item 多个进程\textbf{协作}完成任务
+                \item 按约定的先后顺序执行
+                \item 例：A生产数据，B处理数据
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{临界资源与临界区}
+    \textbf{临界资源}：一次只允许一个进程使用的资源（如打印机、共享变量）。
+
+    \textbf{临界区}：访问临界资源的代码段。
+
+    \vspace{0.5em}
+    \begin{block}{临界区互斥的四个原则}
+        \begin{enumerate}
+            \item \textbf{空闲让进} —— 资源空闲时允许进程进入
+            \item \textbf{忙则等待} —— 资源被占用时其他进程等待
+            \item \textbf{有限等待} —— 等待时间有限，避免饥饿
+            \item \textbf{让权等待} —— 等待时释放CPU（非忙等）
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+\begin{frame}{信号量}
+    \textbf{信号量（Semaphore）}：一个整数变量 $S$，用于进程同步与互斥。
+
+    \vspace{0.5em}
+    \textbf{PV操作}（由Dijkstra提出）：
+    \begin{itemize}
+        \item $P(S)$：$S = S - 1$；若 $S < 0$，则进程阻塞
+        \item $V(S)$：$S = S + 1$；若 $S \le 0$，则唤醒一个阻塞进程
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{alertblock}{注意}
+        P操作和V操作是\textbf{原子操作}（不可中断）。
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{用信号量实现进程互斥}
+    \begin{itemize}
+        \item 设置\textbf{互斥信号量} $mutex$，初值为 $1$
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{互斥模式}
+        \begin{tabular}{l}
+            $P(mutex)$ \\
+            \qquad 临界区代码段 \\
+            $V(mutex)$ \\
+        \end{tabular}
+    \end{block}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item $P(mutex)$：若资源空闲，进入临界区；否则阻塞
+        \item $V(mutex)$：退出临界区，唤醒等待进程
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{用信号量实现进程同步}
+    同步关系：进程B必须等待进程A完成某操作后才能继续。
+
+    \vspace{0.5em}
+    \begin{itemize}
+        \item 设置\textbf{同步信号量} $sync$，初值为 $0$
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{block}{同步模式}
+        \begin{tabular}{l}
+            进程A（先执行）：\quad $V(sync)$ \\
+            进程B（后执行）：\quad $P(sync)$ \\
+        \end{tabular}
+    \end{block}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item A执行后做$V$操作，信号量变为$1$
+        \item B执行前做$P$操作，信号量减为$0$，通过
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{互斥与同步的信号量对比}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        对比项 & 互斥信号量 & 同步信号量 \\
+        \hline
+        初始值 & $1$ & $0$ \\
+        目的 & 保护临界资源 & 保证执行顺序 \\
+        使用方式 & P和V成对出现 & 前V后P \\
+        信号量含义 & 资源可用数量 & 事件发生次数 \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{PV操作注意事项}
+    \begin{itemize}
+        \item $P$、$V$操作必须\textbf{成对使用}（互斥中）
+        \item 多个$P$操作顺序可能导致\textbf{死锁}
+        \item PV操作不能在临界区内进行
+        \item 信号量不能用于\textbf{传递大量数据}
+    \end{itemize}
+    \vspace{0.5em}
+    \begin{exampleblock}
+        只要在临界区前后分别加$P$、$V$，就可以保证同一时刻只有一个进程进入临界区。
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{本节总结}
+    \begin{enumerate}
+        \item 同步（协作等待）和互斥（竞争资源）是多进程管理的核心问题
+        \item 临界区互斥四原则：空闲让进、忙则等待、有限等待、让权等待
+        \item 信号量$S$：$P$减1（可能阻塞），$V$加1（可能唤醒）
+        \item 互斥信号量初值1，$P\to$临界区$\to V$；同步信号量初值0，前$V$后$P$
+    \end{enumerate}
+    \vspace{1em}
+    \begin{center}
+        \textcolor{blue}{\textbf{下节预告：3-7 经典同步问题}}
+    \end{center}
+\end{frame}
+
+\end{document}

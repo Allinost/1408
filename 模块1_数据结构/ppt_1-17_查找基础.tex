@@ -1,0 +1,102 @@
+﻿\documentclass[10pt, aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+\usepackage{ctex}
+\usepackage{xeCJK}
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{xcolor}
+\title{408考研零基础 --- 数据结构}
+\subtitle{1-17 查找基础}
+\author{}
+\date{}
+\setbeamertemplate{page number in head/foot}{}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}{本节目标}
+\begin{enumerate}
+\item 掌握顺序查找的算法与性能
+\item 掌握折半查找的算法与判定树
+\item 理解分块查找和 B 树基本概念
+\end{enumerate}
+\end{frame}
+\begin{frame}{查找的基本概念}
+\textbf{平均查找长度 ASL}
+\[
+\text{ASL} = \sum_{i=1}^{n} p_i \times c_i
+\]
+\vspace{0.3em}
+\textbf{分类}
+\begin{itemize}
+\item 静态查找表：只查找，不修改
+\item 动态查找表：查找同时插入/删除
+\end{itemize}
+\end{frame}
+\begin{frame}{顺序查找}
+\textbf{算法}：从表一端开始依次比较
+\vspace{0.3em}
+\textbf{性能}
+\begin{itemize}
+\item 查找成功 ASL：$(n+1)/2$
+\item 查找失败比较次数：$n+1$
+\item 时间复杂度 $O(n)$
+\end{itemize}
+\vspace{0.3em}
+\textbf{优化}：设置哨兵减少边界判断
+\vspace{0.3em}
+适用于无序表或小规模数据
+\end{frame}
+\begin{frame}{折半查找}
+\textbf{适用条件}：有序的顺序表
+\vspace{0.3em}
+\textbf{步骤}
+\begin{itemize}
+\item low, high 指向两端，mid $=$ (low+high)/2
+\item 关键字 $=$ mid 元素 $\to$ 成功
+\item 关键字 $<$ mid $\to$ high $=$ mid$-1$
+\item 关键字 $>$ mid $\to$ low $=$ mid$+1$
+\item low $>$ high $\to$ 失败
+\end{itemize}
+\vspace{0.3em}
+\textbf{性能}：ASL $\approx \log_2(n+1)-1$，$O(\log n)$
+\end{frame}
+\begin{frame}{分块查找}
+\textbf{块间有序，块内无序}
+\vspace{0.3em}
+\textbf{步骤}
+\begin{enumerate}
+\item 索引表中折半查找确定所属块
+\item 块内顺序查找
+\end{enumerate}
+\vspace{0.3em}
+\textbf{性能}：$s=\sqrt{n}$ 时 ASL 最小 $\approx \sqrt{n}+1$
+\vspace{0.3em}
+适合动态插入场景
+\end{frame}
+\begin{frame}{B 树的基本概念}
+$m$ 阶 B 树
+\begin{itemize}
+\item 每个结点至多 $m$ 棵子树（$m-1$ 个关键字）
+\item 根至少 2 棵子树
+\item 非叶结点至少 $\lceil m/2 \rceil$ 棵子树
+\item 所有叶结点在同一层
+\end{itemize}
+\vspace{0.3em}
+\textbf{查找}：$O(\log_m n)$，降低树高减少磁盘 I/O
+\vspace{0.3em}
+广泛应用于文件系统和数据库索引
+\end{frame}
+\begin{frame}{本节总结}
+\begin{enumerate}
+\item 顺序查找：$O(n)$，ASL $(n+1)/2$
+\item 折半查找：$O(\log n)$，要求有序顺序表
+\item 分块查找：索引 + 顺序，适合动态场景
+\item B 树：多路平衡查找，$O(\log_m n)$，用于数据库索引
+\end{enumerate}
+\vspace{1em}
+\begin{center}
+\textcolor{blue}{\textbf{下节预告：排序入门}}
+\end{center}
+\end{frame}
+\end{document}
