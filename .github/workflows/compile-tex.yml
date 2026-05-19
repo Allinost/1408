@@ -2,8 +2,8 @@ name: Compile All LaTeX Courseware
 on:
   push:
     paths:
-      - "1408/01_课件_PPT/**/*.tex"
-      - "1408/beamer_theme_408.sty"
+      - "模块*/**/*.tex"
+      - "beamer_theme_408.sty"
   workflow_dispatch:
 
 jobs:
@@ -20,17 +20,28 @@ jobs:
           - 模块5_四科串联总结
     steps:
       - uses: actions/checkout@v4
-      - name: Install fonts
-        run: sudo apt-get install -y fonts-noto-cjk
-      - uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: 1408/01_课件_PPT/${{ matrix.module }}
-          root_file: |
-            $(ls *.tex)
-          latexmk_use_xelatex: true
-          latexmk_shell_escape: true
+
+      - name: Install TeX Live & Chinese fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            texlive-xetex \
+            texlive-latex-extra \
+            texlive-lang-chinese \
+            latexmk \
+            fonts-noto-cjk
+
+      - name: Compile all .tex files
+        shell: bash
+        run: |
+          for f in *.tex; do
+            echo "=== Compiling: $f ==="
+            latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || echo "FAIL: $f"
+          done
+        working-directory: ./${{ matrix.module }}
+
       - name: Upload PDFs
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.module }}
-          path: 1408/01_课件_PPT/${{ matrix.module }}/*.pdf
+          path: ./${{ matrix.module }}/*.pdf
