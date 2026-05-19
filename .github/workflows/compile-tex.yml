@@ -1,0 +1,36 @@
+name: Compile All LaTeX Courseware
+on:
+  push:
+    paths:
+      - "1408/01_课件_PPT/**/*.tex"
+      - "1408/beamer_theme_408.sty"
+  workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module:
+          - 模块0_导学
+          - 模块1_数据结构
+          - 模块2_计算机组成原理
+          - 模块3_操作系统
+          - 模块4_计算机网络
+          - 模块5_四科串联总结
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install fonts
+        run: sudo apt-get install -y fonts-noto-cjk
+      - uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: 1408/01_课件_PPT/${{ matrix.module }}
+          root_file: |
+            $(ls *.tex)
+          latexmk_use_xelatex: true
+          latexmk_shell_escape: true
+      - name: Upload PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.module }}
+          path: 1408/01_课件_PPT/${{ matrix.module }}/*.pdf
