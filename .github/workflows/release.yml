@@ -32,7 +32,9 @@ jobs:
       - name: Compile release PDFs
         shell: bash
         run: |
+          set -e
           mkdir -p ./release
+          FAILED=""
 
           # 1. compile per-module releases
           for f in release_模块*.tex; do
@@ -40,12 +42,15 @@ jobs:
             echo "============================================"
             echo "  Compiling: $f"
             echo "============================================"
-            latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || echo "FAIL: $f"
+            latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || { echo "FAIL: $f"; FAILED="$FAILED $f"; }
             base="${f%.tex}"
             pdf="${base}.pdf"
             module="${base#release_}"
             if [[ -f "$pdf" ]]; then
               cp "$pdf" "./release/${module}.pdf"
+              echo "  -> ./release/${module}.pdf"
+            else
+              echo "  -> NO PDF GENERATED for: $f"
             fi
           done
 
@@ -54,9 +59,12 @@ jobs:
           echo "============================================"
           echo "  Compiling: release.tex (全系列合集)"
           echo "============================================"
-          latexmk -xelatex -interaction=nonstopmode release.tex && echo "OK: release.tex" || echo "FAIL: release.tex"
+          latexmk -xelatex -interaction=nonstopmode release.tex && echo "OK: release.tex" || { echo "FAIL: release.tex"; FAILED="$FAILED release.tex"; }
           if [[ -f "release.pdf" ]]; then
             cp "release.pdf" "./release/全系列合集.pdf"
+            echo "  -> ./release/全系列合集.pdf"
+          else
+            echo "  -> NO PDF GENERATED for: release.tex"
           fi
 
           echo ""
@@ -64,6 +72,12 @@ jobs:
           echo "  Output PDFs:"
           ls -lh ./release/
           echo "============================================"
+
+          if [[ -n "$FAILED" ]]; then
+            echo ""
+            echo "*** COMPILATION FAILURES: $FAILED ***"
+            exit 1
+          fi
 
       - name: Generate release notes
         shell: bash
