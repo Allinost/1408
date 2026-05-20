@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - "模块*/**/*.tex"
+      - "release*.tex"
       - "beamer_theme_408.sty"
   workflow_dispatch:
     inputs:

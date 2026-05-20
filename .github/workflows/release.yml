@@ -33,13 +33,14 @@ jobs:
         shell: bash
         run: |
           mkdir -p ./release
+
+          # 1. compile per-module releases
           for f in release_模块*.tex; do
             echo ""
             echo "============================================"
             echo "  Compiling: $f"
             echo "============================================"
             latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || echo "FAIL: $f"
-            # rename output to module name
             base="${f%.tex}"
             pdf="${base}.pdf"
             module="${base#release_}"
@@ -47,6 +48,17 @@ jobs:
               cp "$pdf" "./release/${module}.pdf"
             fi
           done
+
+          # 2. compile all-in-one release
+          echo ""
+          echo "============================================"
+          echo "  Compiling: release.tex (全系列合集)"
+          echo "============================================"
+          latexmk -xelatex -interaction=nonstopmode release.tex && echo "OK: release.tex" || echo "FAIL: release.tex"
+          if [[ -f "release.pdf" ]]; then
+            cp "release.pdf" "./release/全系列合集.pdf"
+          fi
+
           echo ""
           echo "============================================"
           echo "  Output PDFs:"
@@ -61,7 +73,7 @@ jobs:
           # 408考研零基础课程课件
 
           > 发布日期：$DATE
-          > 格式：每模块一个合并 PDF，覆盖全部 76 课时
+          > 格式：每模块一个合并 PDF + 全系列合集，覆盖全部 76 课时
 
           ## 文件清单
 
