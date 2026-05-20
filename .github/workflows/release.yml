@@ -12,17 +12,10 @@ on:
         type: string
 
 jobs:
-  compile-all:
+  release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        module:
-          - 模块0_导学
-          - 模块1_数据结构
-          - 模块2_计算机组成原理
-          - 模块3_操作系统
-          - 模块4_计算机网络
-          - 模块5_四科串联总结
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -36,45 +29,37 @@ jobs:
             latexmk \
             fonts-noto-cjk
 
-      - name: Compile all .tex files
+      - name: Compile all modules sequentially
         shell: bash
         run: |
-          for f in *.tex; do
-            echo "=== Compiling: $f ==="
-            latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || echo "FAIL: $f"
+          MODULES=(
+            模块0_导学
+            模块1_数据结构
+            模块2_计算机组成原理
+            模块3_操作系统
+            模块4_计算机网络
+            模块5_四科串联总结
+          )
+          mkdir -p ./pdfs
+          for module in "${MODULES[@]}"; do
+            echo ""
+            echo "============================================"
+            echo "  Compiling: $module"
+            echo "============================================"
+            cd "$module"
+            for f in *.tex; do
+              echo "--- $f ---"
+              latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || echo "FAIL: $f"
+            done
+            cp *.pdf ../pdfs/ 2>/dev/null || true
+            cd ..
           done
-        working-directory: ./${{ matrix.module }}
-
-      - name: Upload PDFs
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.module }}
-          path: ./${{ matrix.module }}/*.pdf
-
-  release:
-    needs: compile-all
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download all PDFs
-        uses: actions/download-artifact@v4
-        with:
-          path: ./pdfs
-
-      - name: Flatten PDFs into one directory
-        shell: bash
-        run: |
-          mkdir -p ./release-pdfs
-          find ./pdfs -name "*.pdf" -exec cp {} ./release-pdfs/ \;
-          echo "=== PDF files ==="
-          ls -lh ./release-pdfs/ | head -30
-          echo "... total: $(ls ./release-pdfs/*.pdf | wc -l) files"
+          echo ""
+          echo "============================================"
+          echo "  Done. Total PDFs: $(ls pdfs/*.pdf | wc -l)"
+          echo "============================================"
 
       - name: Generate release notes
-        id: notes
         shell: bash
         run: |
           DATE=$(date '+%Y-%m-%d')
@@ -82,8 +67,6 @@ jobs:
           # 408考研零基础课程课件
 
           > 发布日期：$DATE
-
-          ## 模块清单
 
           | 模块 | 集数 |
           |------|:----:|
@@ -94,23 +77,19 @@ jobs:
           | 模块4_计算机网络 | 14 集 |
           | 模块5_四科串联总结 | 4 集 |
           | **合计** | **76 集** |
-
-          本次发布包含以上全部模块的 PDF 课件。
           EOF
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         if: github.event_name == 'push'
         with:
-          generate_release_notes: true
           body_path: ./release-notes.md
-          files: ./release-pdfs/*.pdf
+          files: ./pdfs/*.pdf
 
       - name: Create Release (manual)
         uses: softprops/action-gh-release@v2
         if: github.event_name == 'workflow_dispatch'
         with:
           tag_name: ${{ inputs.tag }}
-          generate_release_notes: true
           body_path: ./release-notes.md
-          files: ./release-pdfs/*.pdf
+          files: ./pdfs/*.pdf

@@ -12,14 +12,16 @@ on:
         type: string
 
 jobs:
-  detect-changes:
+  compile:
     runs-on: ubuntu-latest
-    outputs:
-      modules: ${{ steps.set-modules.outputs.modules }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed modules
         id: filter
+        uses: dorny/paths-filter@v3
         with:
           filters: |
             模块0_导学:
@@ -36,47 +38,62 @@ jobs:
               - "模块5_四科串联总结/**"
             beamer_theme:
               - "beamer_theme_408.sty"
-      - name: Determine modules to compile
-        id: set-modules
+
+      - name: Determine target modules
+        id: target
         shell: bash
         run: |
-          ALL='["模块0_导学","模块1_数据结构","模块2_计算机组成原理","模块3_操作系统","模块4_计算机网络","模块5_四科串联总结"]'
+          ALL_MODULES='["模块0_导学","模块1_数据结构","模块2_计算机组成原理","模块3_操作系统","模块4_计算机网络","模块5_四科串联总结"]'
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             if [[ -n "${{ inputs.modules }}" ]]; then
               IFS=',' read -ra PARTS <<< "${{ inputs.modules }}"
               echo "modules=$(printf '%s\n' "${PARTS[@]}" | jq -R . | jq -sc .)" >> $GITHUB_OUTPUT
             else
-              echo "modules=$ALL" >> $GITHUB_OUTPUT
+              echo "modules=$ALL_MODULES" >> $GITHUB_OUTPUT
             fi
           elif [[ "${{ steps.filter.outputs.beamer_theme }}" == "true" ]]; then
-            echo "modules=$ALL" >> $GITHUB_OUTPUT
+            echo "modules=$ALL_MODULES" >> $GITHUB_OUTPUT
           else
             echo "modules=${{ steps.filter.outputs.changes }}" >> $GITHUB_OUTPUT
           fi
 
-  compile:
-    needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.modules != '[]' && needs.detect-changes.outputs.modules != '' }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        module: ${{ fromJSON(needs.detect-changes.outputs.modules) }}
-    steps:
-      - uses: actions/checkout@v4
       - name: Install TeX Live & Chinese fonts
+        if: ${{ steps.target.outputs.modules != '[]' && steps.target.outputs.modules != '' }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y texlive-xetex texlive-latex-extra texlive-lang-chinese latexmk fonts-noto-cjk
-      - name: Compile all .tex files
+          sudo apt-get install -y \
+            texlive-xetex \
+            texlive-latex-extra \
+            texlive-lang-chinese \
+            latexmk \
+            fonts-noto-cjk
+
+      - name: Compile changed modules sequentially
+        if: ${{ steps.target.outputs.modules != '[]' && steps.target.outputs.modules != '' }}
         shell: bash
         run: |
-          for f in *.tex; do
-            echo "=== Compiling: $f ==="
-            latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || echo "FAIL: $f"
+          MODULES='${{ steps.target.outputs.modules }}'
+          for module in $(echo "$MODULES" | jq -r '.[]'); do
+            echo ""
+            echo "============================================"
+            echo "  Compiling: $module"
+            echo "============================================"
+            cd "$module"
+            for f in *.tex; do
+              echo "--- $f ---"
+              latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || echo "FAIL: $f"
+            done
+            cd ..
           done
-        working-directory: ./${{ matrix.module }}
+
       - name: Upload PDFs
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.module }}
-          path: ./${{ matrix.module }}/*.pdf
+          name: courseware-pdfs
+          path: |
+            模块0_导学/*.pdf
+            模块1_数据结构/*.pdf
+            模块2_计算机组成原理/*.pdf
+            模块3_操作系统/*.pdf
+            模块4_计算机网络/*.pdf
+            模块5_四科串联总结/*.pdf
