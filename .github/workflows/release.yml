@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install TeX Live & Chinese fonts
+      - name: Install TeX Live & PDF tools
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -27,7 +27,8 @@ jobs:
             texlive-latex-extra \
             texlive-lang-chinese \
             latexmk \
-            fonts-noto-cjk
+            fonts-noto-cjk \
+            poppler-utils
 
       - name: Compile all modules sequentially
         shell: bash
@@ -51,32 +52,68 @@ jobs:
               echo "--- $f ---"
               latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || echo "FAIL: $f"
             done
-            cp *.pdf ../pdfs/ 2>/dev/null || true
             cd ..
           done
+
+      - name: Merge PDFs per module
+        shell: bash
+        run: |
+          declare -A MODULE_NAMES=(
+            ["模块0_导学"]="模块0_导学"
+            ["模块1_数据结构"]="模块1_数据结构"
+            ["模块2_计算机组成原理"]="模块2_计算机组成原理"
+            ["模块3_操作系统"]="模块3_操作系统"
+            ["模块4_计算机网络"]="模块4_计算机网络"
+            ["模块5_四科串联总结"]="模块5_四科串联总结"
+          )
+          mkdir -p ./release
+
+          for module in "${!MODULE_NAMES[@]}"; do
+            files=(./"$module"/*.pdf)
+            if [[ ${#files[@]} -gt 0 ]]; then
+              echo "Merging $module (${#files[@]} files)..."
+              pdfunite "${files[@]}" "./release/${module}.pdf"
+            fi
+          done
+
           echo ""
           echo "============================================"
-          echo "  Done. Total PDFs: $(ls pdfs/*.pdf | wc -l)"
+          echo "  Merged PDFs:"
+          ls -lh ./release/
           echo "============================================"
 
       - name: Generate release notes
         shell: bash
         run: |
           DATE=$(date '+%Y-%m-%d')
+
+          # Count lessons per module
+          for mod in 模块0_导学 模块1_数据结构 模块2_计算机组成原理 模块3_操作系统 模块4_计算机网络 模块5_四科串联总结; do
+            count=$(ls "$mod"/*.tex 2>/dev/null | wc -l)
+            printf "| %s | %d 集 |\n" "$mod" "$count"
+          done > /tmp/module-counts.txt
+
           cat > ./release-notes.md << EOF
           # 408考研零基础课程课件
 
           > 发布日期：$DATE
+          > 格式：每模块一个合并 PDF，共 6 个文件
+
+          ## 文件清单
+
+          | 文件 | 大小 |
+          |------|:----:|
+          $(for f in ./release/*.pdf; do name=$(basename "$f"); size=$(du -h "$f" | cut -f1); printf "| %s | %s |\n" "$name" "$size"; done)
+
+          ## 模块详情
 
           | 模块 | 集数 |
           |------|:----:|
-          | 模块0_导学 | 4 集 |
-          | 模块1_数据结构 | 18 集 |
-          | 模块2_计算机组成原理 | 20 集 |
-          | 模块3_操作系统 | 16 集 |
-          | 模块4_计算机网络 | 14 集 |
-          | 模块5_四科串联总结 | 4 集 |
-          | **合计** | **76 集** |
+          $(cat /tmp/module-counts.txt)
+          | **合计** | **$(ls 模块*/*.tex 2>/dev/null | wc -l) 集** |
+
+          ---
+          由 GitHub Actions 自动构建
           EOF
 
       - name: Create Release
@@ -84,7 +121,7 @@ jobs:
         if: github.event_name == 'push'
         with:
           body_path: ./release-notes.md
-          files: ./pdfs/*.pdf
+          files: ./release/*.pdf
 
       - name: Create Release (manual)
         uses: softprops/action-gh-release@v2
@@ -92,4 +129,4 @@ jobs:
         with:
           tag_name: ${{ inputs.tag }}
           body_path: ./release-notes.md
-          files: ./pdfs/*.pdf
+          files: ./release/*.pdf
