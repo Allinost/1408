@@ -19,10 +19,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Cache TeX Live
+        id: cache-texlive
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/share/texlive
+            /usr/local/share/texmf
+          key: texlive-${{ runner.os }}-v1
+
       - name: Install TeX Live & Chinese fonts
+        if: ${{ steps.cache-texlive.outputs.cache-hit != 'true' }}
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
             texlive-xetex \
             texlive-latex-extra \
             texlive-lang-chinese \

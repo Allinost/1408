@@ -58,11 +58,22 @@ jobs:
             echo "modules=${{ steps.filter.outputs.changes }}" >> $GITHUB_OUTPUT
           fi
 
+      - name: Cache TeX Live
+        id: cache-texlive
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/share/texlive
+            /usr/local/share/texmf
+          key: texlive-${{ runner.os }}-v1
+
       - name: Install TeX Live & Chinese fonts
-        if: ${{ steps.target.outputs.modules != '[]' && steps.target.outputs.modules != '' }}
+        if: ${{ steps.cache-texlive.outputs.cache-hit != 'true' && steps.target.outputs.modules != '[]' && steps.target.outputs.modules != '' }}
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
             texlive-xetex \
             texlive-latex-extra \
             texlive-lang-chinese \
