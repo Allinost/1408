@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      DEBIAN_FRONTEND: noninteractive
     steps:
       - uses: actions/checkout@v4
 
@@ -25,9 +27,7 @@ jobs:
           path: /var/cache/apt/archives
           key: apt-${{ runner.os }}-texlive-v1
 
-      - name: Install TeX Live & Chinese fonts
-        env:
-          DEBIAN_FRONTEND: noninteractive
+      - name: Install TeX Live & tools
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
@@ -35,52 +35,70 @@ jobs:
             texlive-latex-extra \
             texlive-lang-chinese \
             latexmk \
-            fonts-noto-cjk
+            fonts-noto-cjk \
+            poppler-utils
 
-      - name: Compile release PDFs
+      - name: Compile all lessons and merge per module
         shell: bash
         run: |
           set -e
           mkdir -p ./release
           FAILED=""
+          MODULES=(
+            "模块0_导学"
+            "模块1_数据结构"
+            "模块2_计算机组成原理"
+            "模块3_操作系统"
+            "模块4_计算机网络"
+            "模块5_四科串联总结"
+          )
 
-          # 1. compile per-module releases
-          for f in release_模块*.tex; do
+          for module in "${MODULES[@]}"; do
             echo ""
             echo "============================================"
-            echo "  Compiling: $f"
+            echo "  Module: $module"
             echo "============================================"
-            LOGFILE="${f%.tex}.log"
-            latexmk -xelatex -interaction=nonstopmode "$f" 2>&1 | tee "$LOGFILE" && echo "OK: $f" || { echo "FAIL: $f"; FAILED="$FAILED $f"; }
-            base="${f%.tex}"
-            pdf="${base}.pdf"
-            module="${base#release_}"
-            if [[ -f "$pdf" ]]; then
-              cp "$pdf" "./release/${module}.pdf"
+            cd "$module"
+
+            # Compile all lesson PDFs in this module
+            module_pdfs=()
+            for f in ppt_*.tex; do
+              echo "--- $f ---"
+              latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || { echo "FAIL: $f"; FAILED="$FAILED $f"; }
+              pdf="${f%.tex}.pdf"
+              if [[ -f "$pdf" ]]; then
+                module_pdfs+=("$pdf")
+              fi
+            done
+
+            cd ..
+
+            # Merge into module PDF
+            if [[ ${#module_pdfs[@]} -gt 0 ]]; then
+              echo "Merging ${#module_pdfs[@]} PDFs for $module"
+              pdfunite "${module_pdfs[@]/#/$module/}" "./release/${module}.pdf"
               echo "  -> ./release/${module}.pdf"
             else
-              echo "  -> NO PDF GENERATED for: $f"
+              echo "  -> NO PDFs for $module"
             fi
-            echo "=== Last 50 lines of $LOGFILE ==="
-            tail -50 "$LOGFILE" 2>/dev/null || true
-            tail -50 "$LOGFILE" 2>/dev/null >> $GITHUB_STEP_SUMMARY || true
           done
 
-          # 2. compile all-in-one release
+          # Merge all module PDFs into all-in-one
           echo ""
           echo "============================================"
-          echo "  Compiling: release.tex (全系列合集)"
+          echo "  Merging: 全系列合集"
           echo "============================================"
-          latexmk -xelatex -interaction=nonstopmode release.tex 2>&1 | tee release.log && echo "OK: release.tex" || { echo "FAIL: release.tex"; FAILED="$FAILED release.tex"; }
-          if [[ -f "release.pdf" ]]; then
-            cp "release.pdf" "./release/全系列合集.pdf"
+          module_pdfs=()
+          for module in "${MODULES[@]}"; do
+            pdf="./release/${module}.pdf"
+            if [[ -f "$pdf" ]]; then
+              module_pdfs+=("$pdf")
+            fi
+          done
+          if [[ ${#module_pdfs[@]} -gt 0 ]]; then
+            pdfunite "${module_pdfs[@]}" "./release/全系列合集.pdf"
             echo "  -> ./release/全系列合集.pdf"
-          else
-            echo "  -> NO PDF GENERATED for: release.tex"
           fi
-          echo "=== Last 100 lines of release.log ==="
-          tail -100 release.log 2>/dev/null || true
-          tail -100 release.log 2>/dev/null >> $GITHUB_STEP_SUMMARY || true
 
           echo ""
           echo "============================================"
@@ -88,17 +106,11 @@ jobs:
           ls -lh ./release/
           echo "============================================"
 
-          echo "=== Errors from logs ==="
-          grep -n '^!' release_模块*.log release.log 2>/dev/null >> $GITHUB_STEP_SUMMARY || true
-          grep -n '^!' release_模块*.log release.log 2>/dev/null || echo "(no fatal errors found)"
-
           if [[ -n "$FAILED" ]]; then
             echo ""
             echo "*** COMPILATION FAILURES: $FAILED ***"
             exit 1
           fi
-
-
 
       - name: Generate release notes
         shell: bash
