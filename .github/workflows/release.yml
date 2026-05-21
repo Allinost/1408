@@ -67,7 +67,7 @@ jobs:
             for f in *.tex; do
               [[ -f "$f" ]] || continue
               echo "--- $f ---"
-              log=$(xelatex -extra-mem-top=50000000 -main-memory=50000000 -interaction=nonstopmode "$f" 2>&1) && echo "  OK: $f" || { error=$(echo "$log" | grep -a "^!"); echo "  FAIL: $f"; echo "$error"; FAILED="$FAILED $f"; echo "=== ERROR for $f ===" >> ../release/FAILED.txt; echo "$error" >> ../release/FAILED.txt; }
+              log=$(xelatex -extra-mem-top=50000000 -main-memory=50000000 -interaction=nonstopmode "$f" 2>&1) && echo "  OK: $f" || { error=$(echo "$log" | grep -a "^!"); echo "  FAIL: $f"; echo "$error"; FAILED="$FAILED $f"; echo "=== $f ===" >> ../release/ERRORS.txt; echo "$error" >> ../release/ERRORS.txt; }
             done
             cd ..
           done
@@ -125,6 +125,12 @@ jobs:
               cat ./release/FAILED.txt
               echo '```'
               echo ""
+              echo "## Error Details"
+              echo ""
+              echo '```'
+              cat ./release/ERRORS.txt 2>/dev/null || echo "(no error details)"
+              echo '```'
+              echo ""
               echo "## Successfully Generated PDFs"
               echo ""
               ls -lh ./release/*.pdf
@@ -139,6 +145,7 @@ jobs:
           path: |
             ./release/*.pdf
             ./release/FAILED.txt
+            ./release/ERRORS.txt
             ./release/BUILD_REPORT.md
 
       - name: Generate release notes
@@ -168,6 +175,10 @@ jobs:
               echo ""
               while IFS= read -r line; do
                 [[ -n "$line" ]] && echo "- \`$line\`"
+                if [[ -f ./release/ERRORS.txt ]]; then
+                  error=$(grep -A5 "^=== $line ===" ./release/ERRORS.txt | head -3)
+                  [[ -n "$error" ]] && echo "  - \`$(echo "$error" | head -1)\`"
+                fi
               done < ./release/FAILED.txt
             fi
           } > ./release-notes.md
