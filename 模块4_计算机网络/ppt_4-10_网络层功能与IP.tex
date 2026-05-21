@@ -112,16 +112,11 @@
             \definecolor{tmpE}{RGB}{147,112,219}
             \node at (0,2.5) {\textbf{IP地址分类}};
             \draw (0,2.0) -- (6,2.0);
-            \foreach \class/\pattern/\range/\start/\ypos in {
-                A/0+7net+24host/1.0.0.0-126.0.0.0/0/0.9,
-                B/10+14net+16host/128.0.0.0-191.255.0.0/1/-0.4,
-                C/110+21net+8host/192.0.0.0-223.255.255.0/2/-1.7,
-                D/1110组播/224.0.0.0-239.255.255.255/3/-3.0,
-                E/1111保留/240.0.0.0-255.255.255.255/4/-4.3
-            } {
-                \edef\myfill{tmp\class!20}
-                \node[draw,minimum width=6cm,minimum height=0.7cm,fill=\myfill] at (0,\ypos) {\textbf{\class类}: \pattern \hspace{1em} \range};
-            }
+            \node[draw,minimum width=6cm,minimum height=0.7cm,fill=tmpA!20] at (0,0.9) {\textbf{A类}: 0+7net+24host \hspace{1em} 1.0.0.0-126.0.0.0};
+            \node[draw,minimum width=6cm,minimum height=0.7cm,fill=tmpB!20] at (0,-0.4) {\textbf{B类}: 10+14net+16host \hspace{1em} 128.0.0.0-191.255.0.0};
+            \node[draw,minimum width=6cm,minimum height=0.7cm,fill=tmpC!20] at (0,-1.7) {\textbf{C类}: 110+21net+8host \hspace{1em} 192.0.0.0-223.255.255.0};
+            \node[draw,minimum width=6cm,minimum height=0.7cm,fill=tmpD!20] at (0,-3.0) {\textbf{D类}: 1110组播 \hspace{1em} 224.0.0.0-239.255.255.255};
+            \node[draw,minimum width=6cm,minimum height=0.7cm,fill=tmpE!20] at (0,-4.3) {\textbf{E类}: 1111保留 \hspace{1em} 240.0.0.0-255.255.255.255};
         \end{tikzpicture}
     \end{center}
     \vspace{0.3em}
