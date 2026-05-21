@@ -19,17 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache TeX Live
-        id: cache-texlive
+      - name: Cache APT packages
         uses: actions/cache@v4
         with:
-          path: |
-            /usr/share/texlive
-            /usr/local/share/texmf
-          key: texlive-${{ runner.os }}-v1
+          path: /var/cache/apt/archives
+          key: apt-${{ runner.os }}-texlive-v1
 
       - name: Install TeX Live & Chinese fonts
-        if: ${{ steps.cache-texlive.outputs.cache-hit != 'true' }}
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
@@ -54,7 +50,7 @@ jobs:
             echo "============================================"
             echo "  Compiling: $f"
             echo "============================================"
-            latexmk -xelatex -interaction=nonstopmode -e '$xelatex = "xelatex -extra-mem-top=20000000 -main-memory=10000000 %O %S";' "$f" && echo "OK: $f" || { echo "FAIL: $f"; FAILED="$FAILED $f"; }
+            latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || { echo "FAIL: $f"; FAILED="$FAILED $f"; }
             base="${f%.tex}"
             pdf="${base}.pdf"
             module="${base#release_}"
@@ -71,7 +67,7 @@ jobs:
           echo "============================================"
           echo "  Compiling: release.tex (全系列合集)"
           echo "============================================"
-          latexmk -xelatex -interaction=nonstopmode -e '$xelatex = "xelatex -extra-mem-top=20000000 -main-memory=10000000 %O %S";' release.tex && echo "OK: release.tex" || { echo "FAIL: release.tex"; FAILED="$FAILED release.tex"; }
+          latexmk -xelatex -interaction=nonstopmode release.tex && echo "OK: release.tex" || { echo "FAIL: release.tex"; FAILED="$FAILED release.tex"; }
           if [[ -f "release.pdf" ]]; then
             cp "release.pdf" "./release/全系列合集.pdf"
             echo "  -> ./release/全系列合集.pdf"

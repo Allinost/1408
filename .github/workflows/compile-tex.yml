@@ -58,17 +58,14 @@ jobs:
             echo "modules=${{ steps.filter.outputs.changes }}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Cache TeX Live
-        id: cache-texlive
+      - name: Cache APT packages
         uses: actions/cache@v4
         with:
-          path: |
-            /usr/share/texlive
-            /usr/local/share/texmf
-          key: texlive-${{ runner.os }}-v1
+          path: /var/cache/apt/archives
+          key: apt-${{ runner.os }}-texlive-v1
 
       - name: Install TeX Live & Chinese fonts
-        if: ${{ steps.cache-texlive.outputs.cache-hit != 'true' && steps.target.outputs.modules != '[]' && steps.target.outputs.modules != '' }}
+        if: ${{ steps.target.outputs.modules != '[]' && steps.target.outputs.modules != '' }}
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
