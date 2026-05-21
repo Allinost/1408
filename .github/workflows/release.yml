@@ -41,6 +41,7 @@ jobs:
       - name: Compile all lessons and merge per module
         shell: bash
         run: |
+          set -o pipefail
           mkdir -p ./release
           FAILED=""
           MODULES=(
@@ -59,19 +60,14 @@ jobs:
             echo "============================================"
             if [[ ! -d "$module" ]]; then
               echo "ERROR: Directory not found: $module"
-              echo "pwd=$(pwd)"
-              ls -la
               FAILED="$FAILED $module(dir)"
               continue
             fi
             cd "$module"
-            echo "  pwd=$(pwd)"
-            echo "  files: $(ls *.tex 2>/dev/null | wc -l) tex files"
             for f in *.tex; do
               [[ -f "$f" ]] || continue
               echo "--- $f ---"
-              echo "  Compiling: $f"
-              latexmk -xelatex -interaction=nonstopmode "$f" && echo "  OK: $f" || { echo "  FAIL: $f"; FAILED="$FAILED $f"; }
+              latexmk -xelatex -interaction=nonstopmode "$f" 2>&1 && echo "  OK: $f" || { echo "  FAIL: $f"; FAILED="$FAILED $f"; }
             done
             cd ..
           done
@@ -89,8 +85,6 @@ jobs:
             if [[ ${#pdfs[@]} -gt 0 ]]; then
               echo "  Merging ${#pdfs[@]} PDFs for $module"
               pdfunite "${pdfs[@]}" "./release/${module}.pdf" 2>&1 && echo "  -> ./release/${module}.pdf" || echo "  FAIL: pdfunite for $module"
-            else
-              echo "  WARNING: No PDFs found for $module"
             fi
           done
 
@@ -107,17 +101,26 @@ jobs:
             pdfunite "${pdfs[@]}" "./release/全系列合集.pdf" 2>&1 && echo "  -> ./release/全系列合集.pdf" || echo "  FAIL: pdfunite all-in-one"
           fi
 
+          # Save errors to file for artifact upload
+          echo "$FAILED" > ./release/FAILED.txt
           echo ""
           echo "============================================"
           echo "  Output PDFs:"
           ls -lh ./release/
           echo "============================================"
-
           if [[ -n "$FAILED" ]]; then
-            echo ""
             echo "*** COMPILATION FAILURES: $FAILED ***"
             exit 1
           fi
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-output
+          path: |
+            ./release/*.pdf
+            ./release/FAILED.txt
 
       - name: Generate release notes
         shell: bash
