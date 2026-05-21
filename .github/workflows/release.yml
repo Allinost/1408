@@ -37,6 +37,20 @@ jobs:
             latexmk \
             fonts-noto-cjk
 
+      - name: Debug environment
+        shell: bash
+        run: |
+          echo "=== Working directory ==="
+          pwd
+          echo "=== Files ==="
+          ls -la
+          echo "=== .latexmkrc ==="
+          cat .latexmkrc
+          echo "=== latexmk version ==="
+          latexmk -v | head -1
+          echo "=== xelatex version ==="
+          xelatex -version | head -1
+
       - name: Compile release PDFs
         shell: bash
         run: |
@@ -50,7 +64,8 @@ jobs:
             echo "============================================"
             echo "  Compiling: $f"
             echo "============================================"
-            latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || { echo "FAIL: $f"; FAILED="$FAILED $f"; }
+            LOGFILE="${f%.tex}.log"
+            latexmk -xelatex -interaction=nonstopmode "$f" 2>&1 | tee "$LOGFILE" && echo "OK: $f" || { echo "FAIL: $f"; FAILED="$FAILED $f"; }
             base="${f%.tex}"
             pdf="${base}.pdf"
             module="${base#release_}"
@@ -60,6 +75,8 @@ jobs:
             else
               echo "  -> NO PDF GENERATED for: $f"
             fi
+            echo "=== Last 20 lines of $LOGFILE ==="
+            tail -20 "$LOGFILE" 2>/dev/null || true
           done
 
           # 2. compile all-in-one release
@@ -67,13 +84,15 @@ jobs:
           echo "============================================"
           echo "  Compiling: release.tex (全系列合集)"
           echo "============================================"
-          latexmk -xelatex -interaction=nonstopmode release.tex && echo "OK: release.tex" || { echo "FAIL: release.tex"; FAILED="$FAILED release.tex"; }
+          latexmk -xelatex -interaction=nonstopmode release.tex 2>&1 | tee release.log && echo "OK: release.tex" || { echo "FAIL: release.tex"; FAILED="$FAILED release.tex"; }
           if [[ -f "release.pdf" ]]; then
             cp "release.pdf" "./release/全系列合集.pdf"
             echo "  -> ./release/全系列合集.pdf"
           else
             echo "  -> NO PDF GENERATED for: release.tex"
           fi
+          echo "=== Last 30 lines of release.log ==="
+          tail -30 release.log 2>/dev/null || true
 
           echo ""
           echo "============================================"
@@ -86,6 +105,15 @@ jobs:
             echo "*** COMPILATION FAILURES: $FAILED ***"
             exit 1
           fi
+
+      - name: Upload compile logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compile-logs
+          path: |
+            release_模块*.log
+            release.log
 
       - name: Generate release notes
         shell: bash
