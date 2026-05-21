@@ -63,13 +63,12 @@ jobs:
               FAILED="$FAILED $module(dir)"
               continue
             fi
-            cd "$module"
-            for f in *.tex; do
+            for f in "$module"/*.tex; do
               [[ -f "$f" ]] || continue
-              echo "--- $f ---"
-              latexmk -r ../.latexmkrc -xelatex -interaction=nonstopmode "$f" 2>&1 && echo "  OK: $f" || { echo "  FAIL: $f"; FAILED="$FAILED $f"; }
+              name=$(basename "$f")
+              echo "--- $name ---"
+              log=$(xelatex -extra-mem-top=50000000 -main-memory=50000000 -interaction=nonstopmode -output-directory="$module" "$f" 2>&1) && echo "  OK: $f" || { error=$(echo "$log" | grep -a "^!"); echo "  FAIL: $f"; echo "$error"; FAILED="$FAILED $name"; }
             done
-            cd ..
           done
 
           echo ""
