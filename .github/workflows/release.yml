@@ -101,8 +101,8 @@ jobs:
             pdfunite "${pdfs[@]}" "./release/全系列合集.pdf" 2>&1 && echo "  -> ./release/全系列合集.pdf" || echo "  FAIL: pdfunite all-in-one"
           fi
 
-          # Save errors to file for artifact upload
-          echo "$FAILED" > ./release/FAILED.txt
+          # Save errors to file for artifact upload (newline-separated)
+          for _f in $FAILED; do echo "$_f"; done > ./release/FAILED.txt
           echo ""
           echo "============================================"
           echo "  Output PDFs:"
@@ -175,11 +175,15 @@ jobs:
               echo ""
               while IFS= read -r line; do
                 [[ -n "$line" ]] && echo "- \`$line\`"
-                if [[ -f ./release/ERRORS.txt ]]; then
-                  error=$(grep -A5 "^=== $line ===" ./release/ERRORS.txt | head -3)
-                  [[ -n "$error" ]] && echo "  - \`$(echo "$error" | head -1)\`"
-                fi
               done < ./release/FAILED.txt
+              if [[ -s ./release/ERRORS.txt ]]; then
+                echo ""
+                echo "### 错误详情"
+                echo ""
+                echo '```'
+                head -c 2000 ./release/ERRORS.txt
+                echo '```'
+              fi
             fi
           } > ./release-notes.md
 
