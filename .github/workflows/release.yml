@@ -67,7 +67,7 @@ jobs:
             for f in *.tex; do
               [[ -f "$f" ]] || continue
               echo "--- $f ---"
-              latexmk -xelatex -interaction=nonstopmode "$f" 2>&1 && echo "  OK: $f" || { echo "  FAIL: $f"; FAILED="$FAILED $f"; }
+              latexmk -r ../.latexmkrc -xelatex -interaction=nonstopmode "$f" 2>&1 && echo "  OK: $f" || { echo "  FAIL: $f"; FAILED="$FAILED $f"; }
             done
             cd ..
           done
