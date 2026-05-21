@@ -244,41 +244,7 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{BGP边界网关协议}
-    \begin{block}{BGP的作用}
-        在不同自治系统（AS）之间交换路由信息，是互联网的"粘合剂"。
-    \end{block}
-    \vspace{0.3em}
-    \begin{columns}[t]
-        \column{0.5\textwidth}
-        \textbf{基本概念}
-        \begin{itemize}
-            \item AS：同一管理机构下的网络集合
-            \item 每个AS有唯一AS号（16位/32位）
-            \item BGP基于\textbf{路径向量}算法
-            \item TCP端口179
-        \end{itemize}
-        \column{0.5\textwidth}
-        \textbf{路径向量}
-        \begin{itemize}
-            \item 记录到达目的AS的完整路径
-            \item 避免环路（AS\_PATH中包含自身则丢弃）
-            \item 可基于策略选择路由
-            \item 不是追求最短路径
-        \end{itemize}
-    \end{columns}
-    \vspace{0.3em}
-    \begin{center}
-        \begin{tikzpicture}[>=stealth]
-            \node[draw,minimum width=2cm,minimum height=1cm,fill=blue!10] (AS1) {AS 100};
-            \node[draw,minimum width=2cm,minimum height=1cm,fill=red!10] (AS2) at (3.5,0) {AS 200};
-            \node[draw,minimum width=2cm,minimum height=1cm,fill=green!10] (AS3) at (7,0) {AS 300};
-            \draw[->] (AS1) -- node[above]{BGP} (AS2);
-            \draw[->] (AS2) -- node[above]{BGP} (AS3);
-            \node[below] at (2.5,-1.2) {路径: AS100 $\to$ AS200 $\to$ AS300};
-        \end{tikzpicture}
-    \end{center}
-\end{frame}
+
 
 \begin{frame}[fragile]{路由协议对比总结}
     \begin{table}
