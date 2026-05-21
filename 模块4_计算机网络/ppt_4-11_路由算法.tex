@@ -244,4 +244,72 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]{BGP边界网关协议}
+    \begin{block}{BGP的作用}
+        在不同自治系统（AS）之间交换路由信息，是互联网的"粘合剂"。
+    \end{block}
+    \vspace{0.3em}
+    \begin{columns}[t]
+        \column{0.5\textwidth}
+        \textbf{基本概念}
+        \begin{itemize}
+            \item AS：同一管理机构下的网络集合
+            \item 每个AS有唯一AS号（16位/32位）
+            \item BGP基于\textbf{路径向量}算法
+            \item TCP端口179
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{路径向量}
+        \begin{itemize}
+            \item 记录到达目的AS的完整路径
+            \item 避免环路（AS\_PATH中包含自身则丢弃）
+            \item 可基于策略选择路由
+            \item 不是追求"最短路径"
+        \end{itemize}
+    \end{columns}
+    \vspace{0.3em}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,ellipse,minimum width=2cm,minimum height=1cm,fill=blue!10] (AS1) {AS 100};
+            \node[draw,ellipse,minimum width=2cm,minimum height=1cm,fill=red!10,right=of AS1] (AS2) {AS 200};
+            \node[draw,ellipse,minimum width=2cm,minimum height=1cm,fill=green!10,right=of AS2] (AS3) {AS 300};
+            \draw[<->] (AS1) -- node[above]{BGP} (AS2);
+            \draw[<->] (AS2) -- node[above]{BGP} (AS3);
+            \node[below] at (AS2.south) {路径: AS100 $\to$ AS200 $\to$ AS300};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{路由协议对比总结}
+    \begin{table}
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{协议} & \textbf{RIP} & \textbf{OSPF} & \textbf{BGP} \\
+            \hline
+            类型 & 内部(IGP) & 内部(IGP) & 外部(EGP) \\
+            算法 & 距离向量 & 链路状态 & 路径向量 \\
+            度量 & 跳数 & 代价 & 路径属性 \\
+            收敛 & 慢 & 快 & 中等 \\
+            传输层 & UDP 520 & IP 89 & TCP 179 \\
+            适用范围 & 小型 & 大型 & 互联网 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item IGP：同一AS内部使用的路由协议（RIP、OSPF）
+        \item EGP：不同AS之间使用的路由协议（BGP）
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{本节总结}
+    \begin{enumerate}
+        \item 静态路由（手动配置）vs 动态路由（自动计算）
+        \item 距离向量算法（RIP）：Bellman-Ford方程，邻居交换路由表，跳数$\le$15，慢收敛、计数到无穷
+        \item 链路状态算法（OSPF）：收集全网LS，Dijkstra计算，触发更新，收敛快，区域划分
+        \item BGP：自治系统间路由，路径向量算法，TCP 179
+    \end{enumerate}
+\end{frame}
+
 \end{document}
