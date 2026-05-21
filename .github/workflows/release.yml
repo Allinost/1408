@@ -181,7 +181,7 @@ jobs:
                 echo "### 错误详情"
                 echo ""
                 echo '```'
-                head -c 2000 ./release/ERRORS.txt
+                cat ./release/ERRORS.txt
                 echo '```'
               fi
             fi
