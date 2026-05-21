@@ -119,7 +119,8 @@
                 D/1110组播/224.0.0.0-239.255.255.255/3/-3.0,
                 E/1111保留/240.0.0.0-255.255.255.255/4/-4.3
             } {
-                \node[draw,minimum width=6cm,minimum height=0.7cm,fill=tmp\class!20] at (0,\ypos) {\textbf{\class类}: \pattern \hspace{1em} \range};
+                \edef\myfill{tmp\class!20}
+                \node[draw,minimum width=6cm,minimum height=0.7cm,fill=\myfill] at (0,\ypos) {\textbf{\class类}: \pattern \hspace{1em} \range};
             }
         \end{tikzpicture}
     \end{center}
