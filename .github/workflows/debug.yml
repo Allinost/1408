@@ -1,0 +1,24 @@
+name: Debug Compile
+on: workflow_dispatch
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq texlive-xetex texlive-latex-extra texlive-lang-chinese latexmk fonts-noto-cjk
+        env:
+          DEBIAN_FRONTEND: noninteractive
+      - run: |
+          echo "=== Files ==="
+          ls -la release_*.tex 2>&1 || echo "No release_*.tex files found"
+          echo "=== PWD ==="
+          pwd
+          echo "=== .latexmkrc ==="
+          cat .latexmkrc 2>&1 || echo "No .latexmkrc"
+          echo "=== Compile release_模块0_导学.tex ==="
+          latexmk -xelatex -interaction=nonstopmode release_模块0_导学.tex 2>&1 || true
+          echo "=== Compile release.tex ==="
+          latexmk -xelatex -interaction=nonstopmode release.tex 2>&1 || true
+        shell: bash
