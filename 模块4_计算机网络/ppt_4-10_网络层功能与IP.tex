@@ -105,16 +105,21 @@
 \begin{frame}{分类编址}
     \begin{center}
         \begin{tikzpicture}[>=stealth]
+            \definecolor{tmpA}{RGB}{70,130,180}
+            \definecolor{tmpB}{RGB}{60,179,113}
+            \definecolor{tmpC}{RGB}{218,165,32}
+            \definecolor{tmpD}{RGB}{205,92,92}
+            \definecolor{tmpE}{RGB}{147,112,219}
             \node at (0,2.5) {\textbf{IP地址分类}};
             \draw (0,2.0) -- (6,2.0);
-            \foreach \class/\pattern/\range/\start/\end in {
+            \foreach \class/\pattern/\range/\start/\ypos in {
                 A/0+7net+24host/1.0.0.0-126.0.0.0/0/0.9,
                 B/10+14net+16host/128.0.0.0-191.255.0.0/1/-0.4,
                 C/110+21net+8host/192.0.0.0-223.255.255.0/2/-1.7,
                 D/1110组播/224.0.0.0-239.255.255.255/3/-3.0,
                 E/1111保留/240.0.0.0-255.255.255.255/4/-4.3
             } {
-                \node[draw,minimum width=6cm,minimum height=0.7cm,fill=\class!20] at (0,\end) {\textbf{\class类}: \pattern \hspace{1em} \range};
+                \node[draw,minimum width=6cm,minimum height=0.7cm,fill=tmp\class!20] at (0,\ypos) {\textbf{\class类}: \pattern \hspace{1em} \range};
             }
         \end{tikzpicture}
     \end{center}
