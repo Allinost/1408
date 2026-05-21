@@ -41,7 +41,6 @@ jobs:
       - name: Compile all lessons and merge per module
         shell: bash
         run: |
-          set -e
           mkdir -p ./release
           FAILED=""
           MODULES=(
@@ -58,46 +57,54 @@ jobs:
             echo "============================================"
             echo "  Module: $module"
             echo "============================================"
+            if [[ ! -d "$module" ]]; then
+              echo "ERROR: Directory not found: $module"
+              echo "pwd=$(pwd)"
+              ls -la
+              FAILED="$FAILED $module(dir)"
+              continue
+            fi
             cd "$module"
-
-            # Compile all lesson PDFs in this module
-            module_pdfs=()
-            for f in ppt_*.tex; do
+            echo "  pwd=$(pwd)"
+            echo "  files: $(ls *.tex 2>/dev/null | wc -l) tex files"
+            for f in *.tex; do
+              [[ -f "$f" ]] || continue
               echo "--- $f ---"
-              latexmk -xelatex -interaction=nonstopmode "$f" && echo "OK: $f" || { echo "FAIL: $f"; FAILED="$FAILED $f"; }
-              pdf="${f%.tex}.pdf"
-              if [[ -f "$pdf" ]]; then
-                module_pdfs+=("$pdf")
-              fi
+              echo "  Compiling: $f"
+              latexmk -xelatex -interaction=nonstopmode "$f" && echo "  OK: $f" || { echo "  FAIL: $f"; FAILED="$FAILED $f"; }
             done
-
             cd ..
+          done
 
-            # Merge into module PDF
-            if [[ ${#module_pdfs[@]} -gt 0 ]]; then
-              echo "Merging ${#module_pdfs[@]} PDFs for $module"
-              pdfunite "${module_pdfs[@]/#/$module/}" "./release/${module}.pdf"
-              echo "  -> ./release/${module}.pdf"
+          echo ""
+          echo "============================================"
+          echo "  Merging per-module PDFs"
+          echo "============================================"
+          for module in "${MODULES[@]}"; do
+            if [[ ! -d "$module" ]]; then continue; fi
+            pdfs=()
+            for f in "$module"/*.pdf; do
+              [[ -f "$f" ]] && pdfs+=("$f")
+            done
+            if [[ ${#pdfs[@]} -gt 0 ]]; then
+              echo "  Merging ${#pdfs[@]} PDFs for $module"
+              pdfunite "${pdfs[@]}" "./release/${module}.pdf" 2>&1 && echo "  -> ./release/${module}.pdf" || echo "  FAIL: pdfunite for $module"
             else
-              echo "  -> NO PDFs for $module"
+              echo "  WARNING: No PDFs found for $module"
             fi
           done
 
-          # Merge all module PDFs into all-in-one
           echo ""
           echo "============================================"
           echo "  Merging: 全系列合集"
           echo "============================================"
-          module_pdfs=()
+          pdfs=()
           for module in "${MODULES[@]}"; do
             pdf="./release/${module}.pdf"
-            if [[ -f "$pdf" ]]; then
-              module_pdfs+=("$pdf")
-            fi
+            [[ -f "$pdf" ]] && pdfs+=("$pdf")
           done
-          if [[ ${#module_pdfs[@]} -gt 0 ]]; then
-            pdfunite "${module_pdfs[@]}" "./release/全系列合集.pdf"
-            echo "  -> ./release/全系列合集.pdf"
+          if [[ ${#pdfs[@]} -gt 0 ]]; then
+            pdfunite "${pdfs[@]}" "./release/全系列合集.pdf" 2>&1 && echo "  -> ./release/全系列合集.pdf" || echo "  FAIL: pdfunite all-in-one"
           fi
 
           echo ""
