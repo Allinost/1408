@@ -37,20 +37,6 @@ jobs:
             latexmk \
             fonts-noto-cjk
 
-      - name: Debug environment
-        shell: bash
-        run: |
-          echo "=== Working directory ==="
-          pwd
-          echo "=== Files ==="
-          ls -la
-          echo "=== .latexmkrc ==="
-          cat .latexmkrc
-          echo "=== latexmk version ==="
-          latexmk -v | head -1
-          echo "=== xelatex version ==="
-          xelatex -version | head -1
-
       - name: Compile release PDFs
         shell: bash
         run: |
@@ -75,8 +61,9 @@ jobs:
             else
               echo "  -> NO PDF GENERATED for: $f"
             fi
-            echo "=== Last 20 lines of $LOGFILE ==="
-            tail -20 "$LOGFILE" 2>/dev/null || true
+            echo "=== Last 50 lines of $LOGFILE ==="
+            tail -50 "$LOGFILE" 2>/dev/null || true
+            tail -50 "$LOGFILE" 2>/dev/null >> $GITHUB_STEP_SUMMARY || true
           done
 
           # 2. compile all-in-one release
@@ -91,8 +78,9 @@ jobs:
           else
             echo "  -> NO PDF GENERATED for: release.tex"
           fi
-          echo "=== Last 30 lines of release.log ==="
-          tail -30 release.log 2>/dev/null || true
+          echo "=== Last 100 lines of release.log ==="
+          tail -100 release.log 2>/dev/null || true
+          tail -100 release.log 2>/dev/null >> $GITHUB_STEP_SUMMARY || true
 
           echo ""
           echo "============================================"
@@ -100,20 +88,17 @@ jobs:
           ls -lh ./release/
           echo "============================================"
 
+          echo "=== Errors from logs ==="
+          grep -n '^!' release_模块*.log release.log 2>/dev/null >> $GITHUB_STEP_SUMMARY || true
+          grep -n '^!' release_模块*.log release.log 2>/dev/null || echo "(no fatal errors found)"
+
           if [[ -n "$FAILED" ]]; then
             echo ""
             echo "*** COMPILATION FAILURES: $FAILED ***"
             exit 1
           fi
 
-      - name: Upload compile logs
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: compile-logs
-          path: |
-            release_模块*.log
-            release.log
+
 
       - name: Generate release notes
         shell: bash
