@@ -113,21 +113,28 @@ jobs:
             exit 1
           fi
 
-      - name: Report errors
+      - name: Report errors via issue
         if: failure()
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          echo "## Compilation Errors" > ./release/error-report.md
-          echo "" >> ./release/error-report.md
+          REPORT="## Release Build Failed
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          "
           if [[ -f ./release/FAILED.txt ]]; then
-            echo "Failed files: $(cat ./release/FAILED.txt)" >> ./release/error-report.md
+            REPORT+="
+          ### Failed files
+          \`\`\`
+          $(cat ./release/FAILED.txt)
+          \`\`\`
+          "
           fi
-          echo "" >> ./release/error-report.md
-          echo "### Module PDFs generated" >> ./release/error-report.md
-          ls -lh ./release/*.pdf 2>/dev/null >> ./release/error-report.md || echo "(none)" >> ./release/error-report.md
-          cat ./release/error-report.md >> $GITHUB_STEP_SUMMARY
+          REPORT+="
+          ### Module PDFs
+          $(ls -lh ./release/*.pdf 2>/dev/null || echo "(none)")
+          "
+          gh issue create --title "Release build failure v1.1" --body "$REPORT" --label "bug"
 
       - name: Upload artifacts
         if: always()
