@@ -67,7 +67,7 @@ jobs:
             for f in *.tex; do
               [[ -f "$f" ]] || continue
               echo "--- $f ---"
-              log=$(xelatex -extra-mem-top=50000000 -main-memory=50000000 -interaction=nonstopmode "$f" 2>&1) && echo "  OK: $f" || { error=$(echo "$log" | grep -a "^!"); echo "  FAIL: $f"; echo "$error"; FAILED="$FAILED $f"; }
+              log=$(xelatex -extra-mem-top=50000000 -main-memory=50000000 -interaction=nonstopmode "$f" 2>&1) && echo "  OK: $f" || { error=$(echo "$log" | grep -a "^!"); echo "  FAIL: $f"; echo "$error"; FAILED="$FAILED $f"; echo "=== ERROR for $f ===" >> ../release/FAILED.txt; echo "$error" >> ../release/FAILED.txt; }
             done
             cd ..
           done
