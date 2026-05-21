@@ -264,18 +264,18 @@
             \item 记录到达目的AS的完整路径
             \item 避免环路（AS\_PATH中包含自身则丢弃）
             \item 可基于策略选择路由
-            \item 不是追求"最短路径"
+            \item 不是追求最短路径
         \end{itemize}
     \end{columns}
     \vspace{0.3em}
     \begin{center}
         \begin{tikzpicture}[>=stealth]
-            \node[draw,ellipse,minimum width=2cm,minimum height=1cm,fill=blue!10] (AS1) {AS 100};
-            \node[draw,ellipse,minimum width=2cm,minimum height=1cm,fill=red!10,right=of AS1] (AS2) {AS 200};
-            \node[draw,ellipse,minimum width=2cm,minimum height=1cm,fill=green!10,right=of AS2] (AS3) {AS 300};
-            \draw[<->] (AS1) -- node[above]{BGP} (AS2);
-            \draw[<->] (AS2) -- node[above]{BGP} (AS3);
-            \node[below] at (AS2.south) {路径: AS100 $\to$ AS200 $\to$ AS300};
+            \node[draw,minimum width=2cm,minimum height=1cm,fill=blue!10] (AS1) {AS 100};
+            \node[draw,minimum width=2cm,minimum height=1cm,fill=red!10] (AS2) at (3.5,0) {AS 200};
+            \node[draw,minimum width=2cm,minimum height=1cm,fill=green!10] (AS3) at (7,0) {AS 300};
+            \draw[->] (AS1) -- node[above]{BGP} (AS2);
+            \draw[->] (AS2) -- node[above]{BGP} (AS3);
+            \node[below] at (2.5,-1.2) {路径: AS100 $\to$ AS200 $\to$ AS300};
         \end{tikzpicture}
     \end{center}
 \end{frame}
