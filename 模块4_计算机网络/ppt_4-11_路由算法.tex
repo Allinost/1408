@@ -246,29 +246,6 @@
 
 
 
-\begin{frame}[fragile]{路由协议对比总结}
-    \begin{table}
-        \centering
-        \begin{tabular}{|c|c|c|c|}
-            \hline
-            \textbf{协议} & \textbf{RIP} & \textbf{OSPF} & \textbf{BGP} \\
-            \hline
-            类型 & 内部(IGP) & 内部(IGP) & 外部(EGP) \\
-            算法 & 距离向量 & 链路状态 & 路径向量 \\
-            度量 & 跳数 & 代价 & 路径属性 \\
-            收敛 & 慢 & 快 & 中等 \\
-            传输层 & UDP 520 & IP 89 & TCP 179 \\
-            适用范围 & 小型 & 大型 & 互联网 \\
-            \hline
-        \end{tabular}
-    \end{table}
-    \vspace{0.5em}
-    \begin{itemize}
-        \item IGP：同一AS内部使用的路由协议（RIP、OSPF）
-        \item EGP：不同AS之间使用的路由协议（BGP）
-    \end{itemize}
-\end{frame}
-
 \begin{frame}[fragile]{本节总结}
     \begin{enumerate}
         \item 静态路由（手动配置）vs 动态路由（自动计算）
