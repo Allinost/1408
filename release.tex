@@ -5,7 +5,13 @@
 \title{408考研零基础 --- 全系列合集}
 \author{}
 
-\AtBeginSection{\frame{\sectionpage}}
+\AtBeginSection{%
+  \begin{frame}
+    \centering\vfill
+    {\usebeamerfont{title}\Huge\textbf{\insertsection}}
+    \vfill
+  \end{frame}
+}
 \begin{document}
 
 \frame{\titlepage}
