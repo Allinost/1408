@@ -1,6 +1,6 @@
 \ProvidesPackage{beamer_theme_408}
 
-% 408 考研零基础课程 Beamer 共用主题
+% 408 考研零基础课程 Beamer 共用主题 v2.1
 % 使用方法: \usepackage{beamer_theme_408}
 
 % --- 主题与配色 ---
@@ -32,6 +32,7 @@
 % --- 绘图 ---
 \usepackage{tikz}
 \usetikzlibrary{positioning,decorations.pathreplacing,decorations.pathmorphing,shapes.geometric,arrows.meta}
+\usepackage{graphicx}
 
 % --- 颜色定义 ---
 \usepackage{xcolor}
@@ -49,14 +50,25 @@
 \setbeamertemplate{footline}{
     \leavevmode
     \hbox{%
-        \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.5ex,dp=1ex,center]{author in head/foot}%
-            \usebeamerfont{author in head/foot}\insertshorttitle
+        \begin{beamercolorbox}[wd=.38\paperwidth,ht=2.5ex,dp=1ex,center]{author in head/foot}%
+            \usebeamerfont{author in head/foot}%
+            \ifx\insertshorttitle\empty
+                408考研零基础
+            \else
+                \insertshorttitle
+            \fi
         \end{beamercolorbox}%
-        \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1ex,center]{section in head/foot}%
-            \usebeamerfont{section in head/foot}\insertsectionhead
+        \begin{beamercolorbox}[wd=.34\paperwidth,ht=2.5ex,dp=1ex,center]{section in head/foot}%
+            \usebeamerfont{section in head/foot}%
+            \ifx\insertsectionhead\empty
+                \ifx\insertshortsubtitle\empty\else\insertshortsubtitle\fi
+            \else
+                \insertsectionhead
+            \fi
         \end{beamercolorbox}%
-        \begin{beamercolorbox}[wd=.2\paperwidth,ht=2.5ex,dp=1ex,right]{date in head/foot}%
-            \usebeamerfont{date in head/foot}\insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+        \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.5ex,dp=1ex,right]{date in head/foot}%
+            \usebeamerfont{date in head/foot}%
+            \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
         \end{beamercolorbox}%
     }
     \vskip0pt
@@ -66,45 +78,82 @@
 \setbeamertemplate{title page}{
     \vfill
     \begin{centering}
-        \vspace{2em}
+        \vspace{1.5em}
         {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}
-        \vspace{1em}
+        \vspace{0.8em}
         {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}
-        \vspace{2em}
+        \vspace{1.5em}
         \begin{tikzpicture}[>=stealth]
-            \node[draw,fill=408blue!10,rounded corners,inner sep=8pt] {
-                \begin{minipage}{0.7\textwidth}
+            \node[draw=408blue,fill=408blue!5,rounded corners,inner sep=10pt] {
+                \begin{minipage}{0.75\textwidth}
                     \centering
-                    {\small
-                    \textbf{本节要点}\\
-                    路由算法概述 \quad 距离向量算法（RIP）\quad 链路状态算法（OSPF）\quad BGP边界网关协议
-                    }
+                    {\small\textbf{本节要点}\\[0.3em]
+                    本讲将系统讲解核心知识点，配合例题巩固理解}
                 \end{minipage}
             };
         \end{tikzpicture}
         \vspace{1em}
         \par
-        {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}
+        {\small\textcolor{408blue}{408考研零基础系列课程}}
     \end{centering}
     \vfill
 }
 
-% --- 节标题页 ---
+% --- 模块标题页（节） ---
 \setbeamertemplate{section page}{
     \begin{centering}
-        \vspace{3em}
-        {\usebeamerfont{section name}\usebeamercolor[fg]{section name}\sectionname~\insertsectionnumber\par}
-        \vspace{1em}
-        {\usebeamerfont{section title}\usebeamercolor[fg]{section title}\insertsection\par}
+        \vspace{2em}
+        {\usebeamerfont{section name}\usebeamercolor[fg]{section name}%
+         \textcolor{408blue}{第 \insertsectionnumber 模块}}\par
+        \vspace{0.5em}
+        {\usebeamerfont{section title}\usebeamercolor[fg]{section title}%
+         \textcolor{408orange}{\insertsection}\par}
+        \vspace{0.3em}
+        \begin{tikzpicture}
+            \draw[408blue, thick] (0,0) -- (6,0);
+        \end{tikzpicture}
+        \vspace{0.5em}
+        \begin{minipage}{0.7\textwidth}
+            \tableofcontents[currentsection,hideallsubsections]
+        \end{minipage}
+    \end{centering}
+}
+
+% --- 课时标题页（子节） ---
+\setbeamertemplate{subsection page}{
+    \begin{centering}
+        \vspace{2em}
+        {\usebeamerfont{subsection name}\usebeamercolor[fg]{subsection name}%
+         \textcolor{408blue}{\insertsection}}\par
+        \vspace{0.5em}
+        {\usebeamerfont{subsection title}\usebeamercolor[fg]{subsection title}%
+         \textcolor{408orange}{\insertsubsection}\par}
+        \vspace{0.3em}
+        \begin{tikzpicture}
+            \draw[408blue, thick] (0,0) -- (5,0);
+        \end{tikzpicture}
+        \vspace{0.5em}
+        \begin{minipage}{0.6\textwidth}
+            \tableofcontents[currentsubsection,hideothersubsections]
+        \end{minipage}
     \end{centering}
 }
 
 \AtBeginSection{
-    \frame{\sectionpage}
+    \ifbeamer@inframe\else
+        \frame[plain,c]{\sectionpage}
+    \fi
+}
+
+\AtBeginSubsection{
+    \ifbeamer@inframe\else
+        \frame[plain,c]{\subsectionpage}
+    \fi
 }
 
 % --- 目录页 ---
 \setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}{\leavevmode\leftskip=3.2em\inserttocsubsection\par}
 
 % --- 超链接 ---
 \usepackage{hyperref}
@@ -113,3 +162,12 @@
     linkcolor=408blue,
     urlcolor=408blue
 }
+
+% --- 允许自动分页（解决页面溢出） ---
+\setbeamertemplate{frametitle continuation}{}
+
+% --- 全局字体微调 ---
+\setbeamerfont{title}{size=\Large}
+\setbeamerfont{subtitle}{size=\large}
+\setbeamerfont{frametitle}{size=\large}
+\setbeamerfont{block title}{size=\small}
