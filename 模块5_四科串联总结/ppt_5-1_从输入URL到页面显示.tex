@@ -14,6 +14,37 @@
     \end{enumerate}
 \end{frame}
 
+\begin{frame}{课程导入：四科串联的经典场景}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{前四个模块的知识回顾}
+        \begin{itemize}
+            \item \textbf{计网}：数据如何从源端传输到目的端
+            \item \textbf{OS}：如何管理进程、内存、文件、I/O
+            \item \textbf{计组}：CPU如何执行指令、存储器层次
+            \item \textbf{数据结构}：数据如何高效组织和查找
+        \end{itemize}
+        \vspace{0.5em}
+        \alert{各科并非孤立的，在实际场景中协同工作}
+        \column{0.5\textwidth}
+        \begin{center}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw=408blue,fill=408blue!5,rounded corners,minimum width=3cm,minimum height=0.8cm] (net) {计算机网络};
+            \node[draw=408blue,fill=408blue!5,rounded corners,minimum width=3cm,minimum height=0.8cm,below=0.3of net] (os) {操作系统};
+            \node[draw=408blue,fill=408blue!5,rounded corners,minimum width=3cm,minimum height=0.8cm,below=0.3of os] (arch) {计算机组成原理};
+            \node[draw=408blue,fill=408blue!5,rounded corners,minimum width=3cm,minimum height=0.8cm,below=0.3of arch] (ds) {数据结构};
+            \draw[->,thick,408orange] (net.east) -- ++(0.5,0) -- ++(0,-0.75) -- (os.east);
+            \draw[->,thick,408orange] (os.east) -- ++(0.5,0) -- ++(0,-0.75) -- (arch.east);
+            \draw[->,thick,408orange] (arch.east) -- ++(0.5,0) -- ++(0,-0.75) -- (ds.east);
+            \node[right=0.5of net,text=408orange,font=\small] {传输};
+            \node[right=0.5of os,text=408orange,font=\small] {调度};
+            \node[right=0.5of arch,text=408orange,font=\small] {执行};
+            \node[right=0.5of ds,text=408orange,font=\small] {组织};
+        \end{tikzpicture}
+        \end{center}
+    \end{columns}
+\end{frame}
+
 \begin{frame}{完整流程概览}
     \begin{center}
     \begin{tikzpicture}[node distance=3mm, auto]
@@ -48,6 +79,32 @@
     \centering\textcolor{secondary}{贯穿科目：计算机网络~$\cdot$~操作系统~$\cdot$~计组~$\cdot$~数据结构}
 \end{frame}
 
+\begin{frame}{URL解析：浏览器第一步}
+    \begin{block}{URL分解}
+        \texttt{http://www.example.com:80/index.html}
+    \end{block}
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{URL组成部分}
+        \begin{itemize}
+            \item \textbf{协议}：http / https（默认80/443端口）
+            \item \textbf{域名}：www.example.com（需DNS解析）
+            \item \textbf{端口}：:80（可省略使用默认值）
+            \item \textbf{路径}：/index.html（资源定位）
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{浏览器预处理}
+        \begin{itemize}
+            \item HSTS预加载列表检查（强制HTTPS）
+            \item 检查是否有缓存的重定向（301/302）
+            \item 解析域名前查本地hosts文件
+        \end{itemize}
+    \end{columns}
+    \vspace{0.3em}
+    \alert{URL解析是后续一切操作的起点，必须将域名解析为IP地址才能建立连接}
+\end{frame}
+
 \begin{frame}{计网：DNS域名解析}
     \begin{block}{DNS（域名系统）}
         \begin{itemize}
@@ -63,6 +120,39 @@
     \end{block}
     \vspace{0.3em}
     \alert{DNS使用UDP协议（53端口），响应中包含TTL控制缓存有效期}
+\end{frame}
+
+\begin{frame}{DNS解析：递归查询 vs 迭代查询}
+    \begin{columns}[T]
+        \column{0.48\textwidth}
+        \textbf{递归查询}
+        \begin{itemize}
+            \item 客户端向本地DNS服务器发起查询
+            \item 本地DNS服务器负责完成整个查询过程
+            \item 最终返回最终结果给客户端
+            \item \textcolor{blue}{查询负担集中在本地DNS服务器}
+        \end{itemize}
+        \vspace{0.3em}
+        \textbf{流程图}：\\
+        客户端 $\to$ 本地DNS（递归）$\to$ 根DNS\\
+        \hspace{4.5em}$\to$ 顶级DNS $\to$ 权威DNS
+        \column{0.48\textwidth}
+        \textbf{迭代查询}
+        \begin{itemize}
+            \item 本地DNS服务器依次向各DNS服务器发起查询
+            \item 每个DNS服务器返回下一步的服务器地址
+            \item 本地DNS服务器"迭代"逐级查询
+            \item \textcolor{blue}{减轻各级DNS的负担}
+        \end{itemize}
+        \vspace{0.3em}
+        \textbf{实际场景}：\\
+        客户端$\to$本地DNS（递归）\\
+        本地DNS$\to$根DNS（迭代）\\
+        本地DNS$\to$顶级DNS（迭代）\\
+        本地DNS$\to$权威DNS（迭代）
+    \end{columns}
+    \vspace{0.3em}
+    \alert{考试重点：递归查询是"谁帮我查完"，迭代查询是"告诉我下一步找谁"}
 \end{frame}
 
 \begin{frame}{计网：HTTP请求 --- TCP三次握手}
@@ -81,6 +171,106 @@
     \end{block}
     \vspace{0.3em}
     \alert{TCP头部至少20字节，包含源/目的端口、序号、确认号、窗口大小等字段}
+\end{frame}
+
+\begin{frame}{TCP三次握手与HTTP的关系（时序）}
+    \begin{center}
+    \begin{tikzpicture}[>=stealth, node distance=1.2cm]
+        \node (client) at (0,0) {客户端};
+        \node (server) at (6,0) {服务器};
+        \draw[dashed] (client) -- (0,-5);
+        \draw[dashed] (server) -- (6,-5);
+        \draw[->,blue,thick] (0.2,-0.3) -- node[above,sloped]{\small SYN, seq=x} (5.8,-0.8);
+        \draw[->,red,thick] (5.8,-1.2) -- node[above,sloped]{\small SYN+ACK, seq=y, ack=x+1} (0.2,-1.7);
+        \draw[->,blue,thick] (0.2,-2.1) -- node[above,sloped]{\small ACK, seq=x+1, ack=y+1} (5.8,-2.6);
+        \node at (3,-3.0) {\small \textbf{三次握手完成，连接建立}};
+        \draw[->,blue,thick] (0.2,-3.7) -- node[above,sloped]{\small HTTP GET请求 (数据)} (5.8,-4.2);
+        \node[right,font=\small] at (6.2,-4.0) {传输HTTP数据};
+    \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \alert{关键理解：TCP三次握手发生在HTTP数据发送\textbf{之前}，握手完成后才传输真正的HTTP请求}
+\end{frame}
+
+\begin{frame}{IP数据报转发过程}
+    \begin{center}
+    \begin{tikzpicture}[>=stealth, node distance=1cm]
+        \node[draw,circle,minimum size=1cm,fill=blue!10] (host) {主机};
+        \node[draw,rectangle,minimum width=1.5cm,minimum height=0.8cm,right=of host,fill=green!10] (r1) {路由器1};
+        \node[draw,rectangle,minimum width=1.5cm,minimum height=0.8cm,right=of r1,fill=green!10] (r2) {路由器2};
+        \node[draw,rectangle,minimum width=1.5cm,minimum height=0.8cm,right=of r2,fill=green!10] (r3) {路由器3};
+        \node[draw,circle,minimum size=1cm,right=of r3,fill=red!10] (server) {服务器};
+        \draw[->,thick] (host) -- node[above,font=\small] {查路由表} (r1);
+        \draw[->,thick] (r1) -- node[above,font=\small] {下一跳} (r2);
+        \draw[->,thick] (r2) -- node[above,font=\small] {下一跳} (r3);
+        \draw[->,thick] (r3) -- node[above,font=\small] {到达} (server);
+        \node[below=0.3of r2,font=\small] {\textcolor{408orange}{逐跳转发（Hop-by-Hop）}};
+    \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{block}{路由过程}
+        \begin{enumerate}
+            \item 主机判断目的IP是否在同一子网
+            \item 不在同一子网则发送给默认网关（路由器）
+            \item 每个路由器查路由表做最长前缀匹配
+            \item 逐跳转发直到到达目标网络
+        \end{enumerate}
+    \end{block}
+    \alert{路由表查找失败 $\to$ 触发ICMP"目的不可达"报文}
+\end{frame}
+
+\begin{frame}{ARP协议：IP地址到MAC地址的映射}
+    \begin{block}{为什么需要ARP？}
+        \begin{itemize}
+            \item IP数据报在网络层使用IP地址标识
+            \item 实际传输时，数据链路层需要\textbf{MAC地址}来封装帧
+            \item ARP提供IP地址到MAC地址的动态映射
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \begin{columns}[T]
+        \column{0.48\textwidth}
+        \textbf{ARP请求过程}
+        \begin{enumerate}
+            \item 主机A广播ARP请求："谁的IP是192.168.1.2？"
+            \item 局域网内所有主机收到广播
+            \item 目标主机B回复ARP响应："我是，我的MAC是AA:BB:CC:DD:EE:FF"
+        \end{enumerate}
+        \column{0.48\textwidth}
+        \textbf{ARP缓存表（哈希表）}
+        \begin{itemize}
+            \item Key：IP地址
+            \item Value：MAC地址 + TTL
+            \item 典型超时：2-10分钟
+            \item \textcolor{blue}{减少ARP广播次数}
+        \end{itemize}
+    \end{columns}
+    \vspace{0.3em}
+    \alert{易错点：ARP发生在IP路由\textbf{之后} --- 先确定下一跳IP，再通过ARP获取其MAC地址}
+\end{frame}
+
+\begin{frame}{数据封装成帧过程}
+    \begin{center}
+    \begin{tikzpicture}[>=stealth]
+        \draw[fill=blue!10,rounded corners] (0,0) rectangle (10,0.6);
+        \node at (5,0.3) {\small \textbf{应用层}：HTTP请求报文（GET /index.html）};
+        \draw[fill=green!10,rounded corners] (0,0.8) rectangle (10,1.4);
+        \node at (5,1.1) {\small \textbf{传输层}：TCP段（源端口+目的端口+序号+HTTP数据）};
+        \draw[fill=yellow!10,rounded corners] (0,1.6) rectangle (10,2.2);
+        \node at (5,1.9) {\small \textbf{网络层}：IP数据报（源IP+目的IP+TCP段）};
+        \draw[fill=red!10,rounded corners] (0,2.4) rectangle (10,3.0);
+        \node at (5,2.7) {\small \textbf{数据链路层}：帧（MAC+类型+IP数据报+CRC）};
+        \draw[fill=gray!10,rounded corners] (0,3.2) rectangle (10,3.8);
+        \node at (5,3.5) {\small \textbf{物理层}：比特流（010101...）};
+        \draw[<->,thick] (10.5,0.3) -- (10.5,3.5);
+        \node[right,font=\small] at (10.5,1.9) {每层添加头部};
+    \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item 数据从高层向低层传递，每层添加自己的头信息
+        \item 接收端逐层拆封，反向解析
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{计网：IP路由 --- ARP --- 封装成帧}
@@ -200,6 +390,43 @@
     \alert{浏览器渲染引擎（如Blink、WebKit）涉及栈、树等多种数据结构的综合运用}
 \end{frame}
 
+\begin{frame}{分层时间线图（完整流程）}
+    \centering
+    \begin{tikzpicture}[>=stealth, scale=0.85]
+        % Draw layers
+        \draw[fill=blue!5] (0,0) rectangle (13,0.5);
+        \node[left] at (0,0.25) {\small 应用层};
+        \draw[fill=green!5] (0,0.7) rectangle (13,1.2);
+        \node[left] at (0,0.95) {\small 传输层};
+        \draw[fill=yellow!5] (0,1.4) rectangle (13,1.9);
+        \node[left] at (0,1.65) {\small 网络层};
+        \draw[fill=red!5] (0,2.1) rectangle (13,2.6);
+        \node[left] at (0,2.35) {\small 链路层};
+        \draw[fill=gray!5] (0,2.8) rectangle (13,3.3);
+        \node[left] at (0,3.05) {\small 物理层};
+        % Timeline arrows
+        \draw[->,thick,408blue] (1,0.25) -- node[above,font=\tiny] {HTTP} (2.5,0.25);
+        \draw[->,thick,408blue] (2.5,0.95) -- node[above,font=\tiny] {TCP} (4,0.95);
+        \draw[->,thick,408blue] (4,1.65) -- node[above,font=\tiny] {IP} (5.5,1.65);
+        \draw[->,thick,408blue] (5.5,2.35) -- node[above,font=\tiny] {帧} (7,2.35);
+        \draw[->,thick,408blue] (7,3.05) -- node[above,font=\tiny] {比特流} (8.5,3.05);
+        % Reverse process (on server)
+        \draw[->,thick,408orange] (9,3.05) -- node[below,font=\tiny] {接收} (10,2.35);
+        \draw[->,thick,408orange] (10,2.35) -- (10.5,1.65);
+        \draw[->,thick,408orange] (10.5,1.65) -- (11,0.95);
+        \draw[->,thick,408orange] (11,0.95) -- (11.5,0.25);
+        % Labels
+        \node[below,font=\tiny] at (1.75,-0.3) {DNS/HTTP};
+        \node[below,font=\tiny] at (3.25,-0.3) {三次握手};
+        \node[below,font=\tiny] at (5.75,-0.3) {路由+ARP};
+        \node[below,font=\tiny] at (10,-0.3) {服务器处理};
+    \end{tikzpicture}
+    \vspace{0.3em}
+    \begin{block}{跨层理解}
+        数据从高层逐层向下封装，经物理介质传输，到达目的地后逐层向上拆封。每层只关心自己的协议头，对上下层透明。
+    \end{block}
+\end{frame}
+
 \begin{frame}{本节总结}
     \begin{enumerate}
         \item 输入URL到页面显示是一道经典的综合题，串联四门核心科目
@@ -208,5 +435,25 @@
         \item 计组完成数据搬运：DMA传输 + 中断处理 + Cache加速
         \item 数据结构是底层骨架：哈希表(DNS缓存)、Trie树(路由表)、队列(TCP缓冲区)、树(DOM树)
     \end{enumerate}
+\end{frame}
+
+\begin{frame}{下节预告}
+    \begin{center}
+    \vspace{1em}
+    {\Large \textbf{5-2 程序的一生}}\\
+    \vspace{0.5em}
+    \textcolor{408blue}{从源代码到进程运行的全过程}
+    \vspace{1em}
+    \begin{block}{下节内容预告}
+        \begin{itemize}
+            \item 编译器如何将源代码翻译为汇编指令？
+            \item 链接器如何合并目标文件？
+            \item 加载器如何将程序载入内存？
+            \item 操作系统如何创建和管理进程？
+        \end{itemize}
+    \end{block}
+    \vspace{1em}
+    \textcolor{408orange}{敬请期待下一讲！}
+    \end{center}
 \end{frame}
 \end{document}

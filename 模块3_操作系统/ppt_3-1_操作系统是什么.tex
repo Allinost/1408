@@ -18,6 +18,35 @@
     \end{enumerate}
 \end{frame}
 
+\begin{frame}{为什么需要操作系统}
+    \begin{block}{问题：裸机为什么难以使用？}
+        \begin{itemize}
+            \item 用户直接操作硬件需要了解复杂的底层细节
+            \item 多个程序同时运行时，资源分配与冲突管理复杂
+            \item 缺乏统一的接口标准，软件移植困难
+        \end{itemize}
+    \end{block}
+    \vspace{0.3em}
+    \textbf{解决方案：引入中间层 --- 操作系统}
+    \begin{center}
+    \begin{tikzpicture}
+        \draw[fill=blue!10,rounded corners] (0,0) rectangle (6,0.7);
+        \node at (3,0.35) {\textbf{用户应用程序}};
+        \draw[fill=orange!10,rounded corners] (0,-1) rectangle (6,-0.3);
+        \node at (3,-0.65) {\textbf{\textcolor{408orange}{操作系统}}};
+        \draw[fill=green!10,rounded corners] (0,-2) rectangle (6,-1.3);
+        \node at (3,-1.65) {\textbf{计算机硬件（CPU、内存、磁盘...）}};
+        \draw[<->,thick] (3,-0.3) -- (3,-1.3);
+        \node[right,font=\small] at (6.2,-0.8) {系统调用/驱动};
+    \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item OS隐藏硬件细节，提供统一的抽象接口
+        \item 管理资源分配，确保多程序有序运行
+    \end{itemize}
+\end{frame}
+
 \begin{frame}{操作系统定义}
     \textbf{操作系统（Operating System，OS）}是：
     \begin{itemize}
@@ -52,6 +81,29 @@
     \vspace{0.5em}
     \begin{block}{目标}
         向上层用户和应用程序提供\textbf{方便、安全、高效}的服务。
+    \end{block}
+\end{frame}
+
+\begin{frame}{四大功能与管理对象对应关系}
+    \begin{table}
+        \centering
+        \begin{tabular}{|c|c|c|}
+            \hline
+            \textbf{功能} & \textbf{管理对象} & \textbf{核心问题} \\
+            \hline
+            处理机管理 & CPU（中央处理器） & 进程/线程调度、上下文切换 \\
+            \hline
+            存储器管理 & 内存（主存） & 地址转换、虚拟内存、页面置换 \\
+            \hline
+            设备管理 & I/O设备 & 缓冲区管理、SPOOLing、设备驱动 \\
+            \hline
+            文件管理 & 磁盘上的文件 & 目录结构、文件共享、访问控制 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.5em}
+    \begin{block}{理解要点}
+        每个功能对应一类硬件资源，OS的核心职责就是对\textbf{所有硬件资源进行抽象、分配、回收和保护}。
     \end{block}
 \end{frame}
 
@@ -104,6 +156,63 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}{四大特征关系图}
+    \begin{center}
+    \begin{tikzpicture}[>=stealth]
+        \node[draw=408blue,fill=408blue!10,rounded corners,minimum width=3cm,minimum height=1cm] (con) at (0,1.5) {\textbf{并发}};
+        \node[draw=408blue,fill=408blue!10,rounded corners,minimum width=3cm,minimum height=1cm] (share) at (3.5,1.5) {\textbf{共享}};
+        \node[draw=408orange,fill=408orange!10,rounded corners,minimum width=3cm,minimum height=1cm] (virt) at (0,0) {\textbf{虚拟}};
+        \node[draw=408orange,fill=408orange!10,rounded corners,minimum width=3cm,minimum height=1cm] (async) at (3.5,0) {\textbf{异步}};
+        \draw[<->,thick,408blue] (con) -- (share);
+        \draw[->,thick,408blue] (con) -- (virt);
+        \draw[->,thick,408blue] (share) -- (async);
+        \node[below,font=\small] at (1.75,-0.5) {互为存在条件};
+        \node[below,font=\small] at (1.75,-0.9) {并发和共享是最基本的两个特征};
+    \end{tikzpicture}
+    \end{center}
+    \vspace{0.3em}
+    \begin{itemize}
+        \item \textbf{并发}是产生\textbf{共享}的前提，\textbf{共享}是\textbf{并发}的结果
+        \item \textbf{虚拟}和\textbf{异步}是并发和共享的衍生特征
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{例题：判断OS特征}
+    \textbf{例题1}：在一台单核CPU计算机上，用户同时打开了浏览器和Word，两个程序都在"运行"。请判断这体现了OS的什么特征？
+    \vspace{0.5em}
+    \begin{block}{解析}
+        体现\textbf{并发}特征。单核CPU在某一时刻只能执行一个程序，浏览器和Word在宏观上同时运行，微观上交替使用CPU。
+    \end{block}
+    \vspace{0.5em}
+    \textbf{例题2}：打印机在任何时刻只能为一个进程服务，这体现了OS的什么特征？
+    \vspace{0.5em}
+    \begin{block}{解析}
+        体现\textbf{共享}特征中的\textbf{互斥共享}方式。打印机是临界资源，一次只能被一个进程访问，其他进程需要等待。
+    \end{block}
+\end{frame}
+
+\begin{frame}{课堂练习}
+    \textbf{判断以下场景体现的特征或功能：}
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item \textbf{场景A}：你的电脑同时播放音乐和编辑文档，感觉两个程序在"同时运行"。\\
+        \textcolor{white!30!black}{\tiny 答案：并发}
+        \vspace{0.3em}
+        \item \textbf{场景B}：你的程序使用了4GB内存，但物理内存只有2GB，程序依然正常运行。\\
+        \textcolor{white!30!black}{\tiny 答案：虚拟（虚拟内存/空分复用）}
+        \vspace{0.3em}
+        \item \textbf{场景C}：两个不同的程序同时读取同一个磁盘文件。\\
+        \textcolor{white!30!black}{\tiny 答案：共享（同时共享）}
+        \vspace{0.3em}
+        \item \textbf{场景D}：操作系统从就绪队列中选择一个进程分配CPU。\\
+        \textcolor{white!30!black}{\tiny 答案：处理机管理（进程调度）}
+    \end{enumerate}
+    \vspace{0.5em}
+    \begin{alertblock}{提示}
+        先自行思考，再对比答案。重点理解各特征的核心区分点。
+    \end{alertblock}
+\end{frame}
+
 \begin{frame}{操作系统的发展历程}
     \begin{enumerate}
         \item \textbf{手工操作阶段} —— 用户独占全机，人机速度矛盾
@@ -138,4 +247,25 @@
     \end{enumerate}
 \end{frame}
 
+\begin{frame}{下节预告}
+    \begin{center}
+    \vspace{1em}
+    {\Large \textbf{3-2 操作系统运行环境}}\\
+    \vspace{0.3em}
+    \textcolor{408blue}{了解操作系统运行的硬件基础}
+    \vspace{1em}
+    \end{center}
+    \begin{block}{下节内容}
+        \begin{itemize}
+            \item \textbf{处理器状态}：内核态与用户态的区别与切换
+            \item \textbf{中断机制}：外中断、内中断、异常的分类
+            \item \textbf{系统调用}：用户程序请求OS服务的唯一入口
+            \item \textbf{系统体系结构}：大内核与微内核的对比
+        \end{itemize}
+    \end{block}
+    \vspace{0.5em}
+    \begin{center}
+        \textcolor{408orange}{敬请期待！}
+    \end{center}
+\end{frame}
 \end{document}

@@ -18,6 +18,38 @@
     \end{enumerate}
 \end{frame}
 
+\begin{frame}{课程导引：为什么要学计组？}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{计算机组成原理研究什么？}
+        \begin{itemize}
+            \item 计算机的\textbf{硬件}组成结构和工作原理
+            \item CPU如何执行指令？内存如何组织？
+            \item 数据如何在计算机中表示和运算？
+            \item I/O设备如何与CPU通信？
+        \end{itemize}
+        \vspace{0.5em}
+        \textbf{它是408中：}
+        \begin{itemize}
+            \item \alert{难度最高}的科目（$\bigstar\bigstar\bigstar\bigstar\bigstar$）
+            \item 与\textbf{操作系统}关联最紧密
+            \item 抽象程度高，需要建立硬件思维
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{学习建议}
+        \begin{block}{本节知识结构}
+            \begin{enumerate}
+                \item 冯·诺依曼结构（核心框架）
+                \item 存储程序概念（灵魂思想）
+                \item 计算机发展史（宏观视角）
+                \item 性能指标（量化评价）
+            \end{enumerate}
+        \end{block}
+        \vspace{0.3em}
+        \textcolor{408blue}{学好计组 = 理解计算机的"身体"如何工作}
+    \end{columns}
+\end{frame}
+
 \begin{frame}{冯·诺依曼结构}
     \begin{itemize}
         \item 1945年，冯·诺依曼提出\textbf{存储程序}概念
@@ -176,6 +208,28 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}{例题：CPI与MIPS计算}
+    \textbf{题目}：某CPU主频为2GHz，执行某程序共$10^6$条指令，所需总时钟周期数为$4 \times 10^6$。求该程序的CPI和MIPS。
+    \vspace{0.8em}
+    \begin{block}{解析}
+        \begin{itemize}
+            \item \textbf{CPI} = 总时钟周期数 / 指令条数
+            \[
+            \text{CPI} = \frac{4 \times 10^6}{10^6} = 4
+            \]
+            \item \textbf{MIPS} = 主频(Hz) / (CPI $\times 10^6$)
+            \[
+            \text{MIPS} = \frac{2 \times 10^9}{4 \times 10^6} = 500
+            \]
+        \end{itemize}
+    \end{block}
+    \vspace{0.5em}
+    \begin{alertblock}{考研提示}
+        牢记公式：$\text{CPU时间} = \text{指令条数} \times \text{CPI} \times \text{时钟周期}$\\
+        MIPS越大性能越好，但注意MIPS与指令集有关，不同架构不能直接比较。
+    \end{alertblock}
+\end{frame}
+
 \begin{frame}{本节总结}
     \begin{enumerate}
         \item 冯·诺依曼结构 = 五大部件 + 存储程序
@@ -185,4 +239,25 @@
     \end{enumerate}
 \end{frame}
 
+\begin{frame}{下节预告}
+    \begin{center}
+    \vspace{1em}
+    {\Large \textbf{2-2 数制与编码}}\\
+    \vspace{0.3em}
+    \textcolor{408blue}{计算机中数据的表示方法}
+    \vspace{1em}
+    \end{center}
+    \begin{block}{下节内容}
+        \begin{itemize}
+            \item 进位计数制与不同进制之间的转换
+            \item BCD码、ASCII码、汉字编码
+            \item 原码、反码、补码的表示与运算
+            \item 定点数与浮点数的概念
+        \end{itemize}
+    \end{block}
+    \vspace{0.5em}
+    \begin{center}
+        \textcolor{408orange}{敬请期待！}
+    \end{center}
+\end{frame}
 \end{document}
