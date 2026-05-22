@@ -102,40 +102,47 @@
 % --- 模块标题页（节） ---
 \setbeamertemplate{section page}{
     \begin{centering}
-        \vspace{2em}
-        {\usebeamerfont{section name}\usebeamercolor[fg]{section name}%
-         \textcolor{408blue}{第 \insertsectionnumber 模块}}\par
-        \vspace{0.5em}
-        {\usebeamerfont{section title}\usebeamercolor[fg]{section title}%
-         \textcolor{408orange}{\insertsection}\par}
-        \vspace{0.3em}
+        \vspace{1em}
+        % 顶部装饰条
         \begin{tikzpicture}
-            \draw[408blue, thick] (0,0) -- (6,0);
-        \end{tikzpicture}
-        \vspace{0.5em}
-        \begin{minipage}{0.7\textwidth}
+            \fill[408blue] (0,0) rectangle (\paperwidth,0.08);
+        \end{tikzpicture}\\[1em]
+        {\usebeamerfont{section name}\usebeamercolor[fg]{section name}%
+         \Large\textcolor{408blue}{第 \insertsectionnumber 模块}}\\[0.8em]
+        {\usebeamerfont{section title}\usebeamercolor[fg]{section title}%
+         \Huge\textcolor{408orange}{\textbf{\insertsection}}}\\[0.5em]
+        \begin{tikzpicture}
+            \fill[408orange] (0,0) rectangle (8,0.06);
+        \end{tikzpicture}\\[1.2em]
+        \begin{minipage}{0.72\textwidth}
+            \small
             \tableofcontents[currentsection,hideallsubsections]
-        \end{minipage}
+        \end{minipage}\\[1.5em]
+        \begin{tikzpicture}
+            \fill[408blue] (0,0) rectangle (\paperwidth,0.08);
+        \end{tikzpicture}
     \end{centering}
 }
 
 % --- 课时标题页（子节） ---
 \setbeamertemplate{subsection page}{
     \begin{centering}
-        \vspace{2em}
-        {\usebeamerfont{subsection name}\usebeamercolor[fg]{subsection name}%
-         \textcolor{408blue}{\insertsection}}\par
-        \vspace{0.5em}
-        {\usebeamerfont{subsection title}\usebeamercolor[fg]{subsection title}%
-         \textcolor{408orange}{\insertsubsection}\par}
-        \vspace{0.3em}
+        \vspace{1em}
         \begin{tikzpicture}
-            \draw[408blue, thick] (0,0) -- (5,0);
-        \end{tikzpicture}
-        \vspace{0.5em}
-        \begin{minipage}{0.6\textwidth}
+            \fill[408blue] (0,0) rectangle (\paperwidth,0.06);
+        \end{tikzpicture}\\[0.8em]
+        {\usebeamerfont{subsection name}\usebeamercolor[fg]{subsection name}%
+         \large\textcolor{408blue}{\insertsection}}\\[0.5em]
+        {\usebeamerfont{subsection title}\usebeamercolor[fg]{subsection title}%
+         \LARGE\textcolor{408orange}{\textbf{\insertsubsection}}}\\[0.4em]
+        \begin{tikzpicture}
+            \fill[408orange] (0,0) rectangle (6,0.04);
+        \end{tikzpicture}\\[1em]
+        \begin{minipage}{0.65\textwidth}
+            \small
             \tableofcontents[currentsubsection,hideothersubsections]
         \end{minipage}
+        \vspace{1em}
     \end{centering}
 }
 
