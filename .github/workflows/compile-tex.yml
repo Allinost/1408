@@ -1,6 +1,8 @@
 name: Compile LaTeX Courseware
 on:
   push:
+    branches:
+      - main
     paths:
       - "模块*/**/*.tex"
       - "release*.tex"
