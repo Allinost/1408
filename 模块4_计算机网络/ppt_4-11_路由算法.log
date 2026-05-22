@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.22)  22 MAY 2026 10:06
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.22)  22 MAY 2026 11:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1492,7 +1492,7 @@ File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfarrowwidth=\dimen362
 \pgfarrowlinewidth=\dimen363
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 53.
+Package hyperref Info: Option `colorlinks' set `true' on input line 115.
 )
 
 ! Package fontspec Error: 
@@ -1522,7 +1522,7 @@ Package fontspec Info:
 (fontspec)             okay then ignore this warning. Otherwise a different
 (fontspec)             font should be chosen.
 
-No file ppt_4-11_路由算法.aux.
+(ppt_4-11_路由算法.aux)
 \openout1 = `ppt_4-11_路由算法.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 7.
@@ -1545,6 +1545,7 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 7.
 LaTeX Font Info:    ... okay on input line 7.
 LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 7.
 LaTeX Font Info:    ... okay on input line 7.
+
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
 *geometry* verbose mode - [ preamble ] result:
@@ -1580,11 +1581,9 @@ LaTeX Font Info:    ... okay on input line 7.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 Package hyperref Info: Link coloring ON on input line 7.
+(ppt_4-11_路由算法.out) (ppt_4-11_路由算法.out)
 \@outlinefile=\write5
 \openout5 = `ppt_4-11_路由算法.out'.
-
-
-Package hyperref Warning: Rerun to get /PageLabels entry.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> OT1/cmss/m/n on input line 7.
@@ -1750,18 +1749,245 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
-! Font TU/NotoSansCJKSC(0)/m/n/10="Noto Sans CJK SC/OT" at 10.0pt not loadable:
- Metric (TFM) file or installed font not found.
+! Font TU/NotoSansCJKSC(0)/m/n/14.4="Noto Sans CJK SC/OT" at 14.4pt not loadabl
+e: Metric (TFM) file or installed font not found.
 <to be read again> 
                    relax 
-l.16 \end{frame}
-                
+l.9 \frame{\titlepage}
+                      
 I wasn't able to read the size data for this font,
 so I will ignore the font specification.
 [Wizards can fix TFM files using TFtoPL/PLtoTF.]
 You might try inserting a different font spec;
 e.g., type `I\font<same font id>=<substitute font name>'.
 
+Missing character: There is no 考 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans12-regular]:mapping=tex-text;!
+! Font TU/NotoSansCJKSC(0)/m/n/10="Noto Sans CJK SC/OT" at 10.0pt not loadable:
+ Metric (TFM) file or installed font not found.
+<to be read again> 
+                   relax 
+l.9 \frame{\titlepage}
+                      
+I wasn't able to read the size data for this font,
+so I will ignore the font specification.
+[Wizards can fix TFM files using TFtoPL/PLtoTF.]
+You might try inserting a different font spec;
+e.g., type `I\font<same font id>=<substitute font name>'.
+
+Missing character: There is no 路 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans10-regular]:mapping=tex-text;!
+
+LaTeX Font Warning: Font shape `TU/NotoSansCJKSC(0)/b/n' undefined
+(Font)              using `TU/NotoSansCJKSC(0)/m/n' instead on input line 9.
+
+! Font TU/NotoSansCJKSC(0)/m/n/9="Noto Sans CJK SC/OT" at 9.0pt not loadable: M
+etric (TFM) file or installed font not found.
+<to be read again> 
+                   relax 
+l.9 \frame{\titlepage}
+                      
+I wasn't able to read the size data for this font,
+so I will ignore the font specification.
+[Wizards can fix TFM files using TFtoPL/PLtoTF.]
+You might try inserting a different font spec;
+e.g., type `I\font<same font id>=<substitute font name>'.
+
+Missing character: There is no 本 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 节 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 要 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 点 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 距 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 链 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 状 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 态 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 边 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 界 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 关 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 协 in font [lmsans9-regular]:mapping=tex-text;!
+Missing character: There is no 议 in font [lmsans9-regular]:mapping=tex-text;!
+LaTeX Font Info:    Trying to load font information for U+msa on input line 9.
+(C:\Users\Tom\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 9.
+
+(C:\Users\Tom\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <10> not available
+(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 9.
+LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <7> not available
+(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 9.
+LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <5> not available
+(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 9.
+
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+[1
+
+]
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans8-regular]:mapping=tex-text;!
+[2
+
+]
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans8-regular]:mapping=tex-text;!
+(ppt_4-11_路由算法.toc
+Missing character: There is no 路 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 距 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 链 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 状 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 态 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 协 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 议 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 对 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 比 in font [lmsans10-regular]:mapping=tex-text;!
+)
+Missing character: There is no 目 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 录 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans8-regular]:mapping=tex-text;!
+[3
+
+]
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 理 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 解 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 静 in font [lmsans10-regular]:mapping=tex-text;!
@@ -1821,18 +2047,6 @@ Missing character: There is no 基 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 本 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 作 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 用 in font [lmsans10-regular]:mapping=tex-text;!
-! Font TU/NotoSansCJKSC(0)/m/n/14.4="Noto Sans CJK SC/OT" at 14.4pt not loadabl
-e: Metric (TFM) file or installed font not found.
-<to be read again> 
-                   relax 
-l.16 \end{frame}
-                
-I wasn't able to read the size data for this font,
-so I will ignore the font specification.
-[Wizards can fix TFM files using TFtoPL/PLtoTF.]
-You might try inserting a different font spec;
-e.g., type `I\font<same font id>=<substitute font name>'.
-
 Missing character: There is no 本 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 节 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 目 in font [lmsans12-regular]:mapping=tex-text;!
@@ -1847,7 +2061,13 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
-[1
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans8-regular]:mapping=tex-text;!
+[4
 
 ]
 Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
@@ -1860,9 +2080,23 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
-
-LaTeX Font Warning: Font shape `TU/NotoSansCJKSC(0)/b/n' undefined
-(Font)              using `TU/NotoSansCJKSC(0)/m/n' instead on input line 51.
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans8-regular]:mapping=tex-text;!
+! Font TU/NotoSansCJKSC(0)/b/n/10="Noto Sans CJK SC/OT" at 10.0pt not loadable:
+ Metric (TFM) file or installed font not found.
+<to be read again> 
+                   relax 
+l.44 \end{frame}
+                
+I wasn't able to read the size data for this font,
+so I will ignore the font specification.
+[Wizards can fix TFM files using TFtoPL/PLtoTF.]
+You might try inserting a different font spec;
+e.g., type `I\font<same font id>=<substitute font name>'.
 
 Missing character: There is no 静 in font [lmsans10-bold]:mapping=tex-text;!
 Missing character: There is no 态 in font [lmsans10-bold]:mapping=tex-text;!
@@ -1901,18 +2135,6 @@ Missing character: There is no 小 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 型 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans10-regular]:mapping=tex-text;!
-! Font TU/NotoSansCJKSC(0)/b/n/10="Noto Sans CJK SC/OT" at 10.0pt not loadable:
- Metric (TFM) file or installed font not found.
-<to be read again> 
-                   relax 
-l.51 \end{frame}
-                
-I wasn't able to read the size data for this font,
-so I will ignore the font specification.
-[Wizards can fix TFM files using TFtoPL/PLtoTF.]
-You might try inserting a different font spec;
-e.g., type `I\font<same font id>=<substitute font name>'.
-
 Missing character: There is no 动 in font [lmsans10-bold]:mapping=tex-text;!
 Missing character: There is no 态 in font [lmsans10-bold]:mapping=tex-text;!
 Missing character: There is no 路 in font [lmsans10-bold]:mapping=tex-text;!
@@ -1951,6 +2173,47 @@ Missing character: There is no 链 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 路 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 状 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 态 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans8-regular]:mapping=tex-text;!
+[5
+
+]
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 路 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 由 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 算 in font [lmsans10-regular]:mapping=tex-text;!
@@ -1971,8 +2234,8 @@ Missing character: There is no 路 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 由 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 算 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 法 in font [lmsans12-regular]:mapping=tex-text;!
-Missing character: There is no 概 in font [lmsans12-regular]:mapping=tex-text;!
-Missing character: There is no 述 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 分 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 类 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
@@ -1983,7 +2246,13 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
-[2
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 概 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 述 in font [lmsans8-regular]:mapping=tex-text;!
+[6
 
 ]
 Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
@@ -1996,11 +2265,66 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 距 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 距 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 距 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
+[7
+
+]
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 距 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
 ! Font TU/NotoSansCJKSC(0)/m/n/12="Noto Sans CJK SC/OT" at 12.0pt not loadable:
  Metric (TFM) file or installed font not found.
 <to be read again> 
                    relax 
-l.79 \end{frame}
+l.89 \end{frame}
                 
 I wasn't able to read the size data for this font,
 so I will ignore the font specification.
@@ -2072,24 +2396,6 @@ Missing character: There is no 表 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 。 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 方 in font [lmsans10-bold]:mapping=tex-text;!
 Missing character: There is no 程 in font [lmsans10-bold]:mapping=tex-text;!
-LaTeX Font Info:    Trying to load font information for U+msa on input line 79.
-
-(C:\Users\Tom\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 79.
-
-
-(C:\Users\Tom\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <10> not available
-(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 79.
-LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <7> not available
-(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 79.
-LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <5> not available
-(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 79.
-
 Missing character: There is no ： in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 从 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 到 in font [lmsans10-regular]:mapping=tex-text;!
@@ -2155,7 +2461,15 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
-[3
+Missing character: There is no 距 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
+[8
 
 ]
 Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
@@ -2168,6 +2482,14 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 距 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 初 in font [lmsans10-bold]:mapping=tex-text;!
 Missing character: There is no 始 in font [lmsans10-bold]:mapping=tex-text;!
 Missing character: There is no 路 in font [lmsans10-bold]:mapping=tex-text;!
@@ -2235,7 +2557,15 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
-[4
+Missing character: There is no 距 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
+[9
 
 ]
 Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
@@ -2248,6 +2578,14 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 距 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 问 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 题 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 当 in font [lmsans10-regular]:mapping=tex-text;!
@@ -2353,6 +2691,56 @@ Missing character: There is no 不 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 可 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 达 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no ） in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 慢 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 收 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 敛 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 与 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 数 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 到 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 无 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 穷 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 距 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
+[10
+
+]
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 距 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 解 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 决 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 方 in font [lmsans12-regular]:mapping=tex-text;!
@@ -2382,6 +2770,81 @@ Missing character: There is no 口 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 通 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 告 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 。 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 其 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 他 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 优 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 化 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 措 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 施 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 毒 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 性 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 逆 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 转 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no ： in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 将 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 不 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 可 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 达 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 的 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 跳 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 数 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 设 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 为 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 直 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 接 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 通 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 告 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 给 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 邻 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 居 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 触 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 发 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 更 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 新 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no ： in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 拓 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 扑 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 变 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 化 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 时 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 立 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 即 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 发 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 送 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 更 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 新 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no ， in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 不 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 等 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 秒 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 周 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 期 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 抑 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 制 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 时 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no 器 in font [lmsans10-bold]:mapping=tex-text;!
+Missing character: There is no ： in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 收 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 到 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 某 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 不 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 可 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 达 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 信 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 息 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 后 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no ， in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 进 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 入 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 抑 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 制 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 状 in font [lmsans10-regular]:mapping=tex-text;!
+Missing character: There is no 态 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 慢 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 收 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 敛 in font [lmsans12-regular]:mapping=tex-text;!
@@ -2391,6 +2854,8 @@ Missing character: There is no 数 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 到 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 无 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 穷 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
@@ -2401,7 +2866,15 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
-[5
+Missing character: There is no 距 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 离 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 向 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 量 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
+[11
 
 ]
 Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
@@ -2414,6 +2887,61 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 链 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 状 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 态 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 链 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 状 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 态 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 链 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 状 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 态 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
+[12
+
+]
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 链 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 状 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 态 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 核 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 心 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 思 in font [lmsans12-regular]:mapping=tex-text;!
@@ -2564,7 +3092,15 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
-[6
+Missing character: There is no 链 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 状 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 态 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
+[13
 
 ]
 Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
@@ -2577,6 +3113,14 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 链 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 状 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 态 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 算 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 法 in font [lmsans12-regular]:mapping=tex-text;!
 Missing character: There is no 步 in font [lmsans12-regular]:mapping=tex-text;!
@@ -2655,7 +3199,15 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
-[7
+Missing character: There is no 链 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 状 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 态 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
+[14
 
 ]
 Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
@@ -2668,6 +3220,14 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 链 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 状 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 态 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 骨 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 干 in font [lmsans10-regular]:mapping=tex-text;!
 Missing character: There is no 区 in font [lmsans10-regular]:mapping=tex-text;!
@@ -2758,7 +3318,15 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
-[8
+Missing character: There is no 链 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 状 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 态 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 法 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no （ in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no ） in font [lmsans8-regular]:mapping=tex-text;!
+[15
 
 ]
 Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
@@ -2771,6 +3339,53 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 协 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 议 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 对 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 比 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 协 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 议 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 对 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 比 in font [lmsans12-regular]:mapping=tex-text;!
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 协 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 议 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 对 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 比 in font [lmsans8-regular]:mapping=tex-text;!
+[16
+
+]
+Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 研 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 零 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 基 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 础 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 计 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 协 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 议 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 对 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 比 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 特 in font [lmsans10-bold]:mapping=tex-text;!
 Missing character: There is no 性 in font [lmsans10-bold]:mapping=tex-text;!
 Missing character: There is no 距 in font [lmsans10-bold]:mapping=tex-text;!
@@ -2893,7 +3508,13 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
-[9
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 协 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 议 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 对 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 比 in font [lmsans8-regular]:mapping=tex-text;!
+[17
 
 ]
 Missing character: There is no 考 in font [lmsans8-regular]:mapping=tex-text;!
@@ -2906,6 +3527,12 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 协 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 议 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 对 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 比 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 协 in font [lmsans10-bold]:mapping=tex-text;!
 Missing character: There is no 议 in font [lmsans10-bold]:mapping=tex-text;!
 Missing character: There is no 类 in font [lmsans10-regular]:mapping=tex-text;!
@@ -3007,7 +3634,13 @@ Missing character: There is no 算 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 机 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 网 in font [lmsans8-regular]:mapping=tex-text;!
 Missing character: There is no 络 in font [lmsans8-regular]:mapping=tex-text;!
-[10
+Missing character: There is no 路 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 由 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 协 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 议 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 对 in font [lmsans8-regular]:mapping=tex-text;!
+Missing character: There is no 比 in font [lmsans8-regular]:mapping=tex-text;!
+[18
 
 ]
 \tf@nav=\write6
@@ -3028,22 +3661,16 @@ L3 programming layer <2022/08/05>
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-Package rerunfilecheck Warning: File `ppt_4-11_路由算法.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `ppt_4-11_路由算法.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  D41D8CD98F00B204E9800998ECF8427E;0.
+Package rerunfilecheck Info: File `ppt_4-11_路由算法.out' has not changed.
+(rerunfilecheck)             Checksum: 5C47C48E0D34BF943B778BD0D527DA27;431.
  ) 
 Here is how much of TeX's memory you used:
- 32697 strings out of 402987
- 721270 string characters out of 5448938
- 1199383 words of memory out of 5000000
- 60816 multiletter control sequences out of 15000+600000
- 631598 words of font info for 73 fonts, out of 8000000 for 9000
+ 32890 strings out of 402987
+ 727788 string characters out of 5448938
+ 1197383 words of memory out of 5000000
+ 60998 multiletter control sequences out of 15000+600000
+ 631614 words of font info for 75 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 128i,15n,125p,460b,957s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 128i,15n,125p,460b,958s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on ppt_4-11_路由算法.pdf (10 pages).
+Output written on ppt_4-11_路由算法.pdf (18 pages).

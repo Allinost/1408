@@ -41,8 +41,70 @@
 \definecolor{secondary}{HTML}{5856D6}
 \definecolor{accent}{HTML}{FF9500}
 
-% --- 页脚设置 ---
-\setbeamertemplate{page number in head/foot}{}
+% --- 导航栏（顶部小节圆点） ---
+\setbeamertemplate{mini frames}[box]
+\setbeamertemplate{navigation symbols}{}
+
+% --- 页脚 ---
+\setbeamertemplate{footline}{
+    \leavevmode
+    \hbox{%
+        \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.5ex,dp=1ex,center]{author in head/foot}%
+            \usebeamerfont{author in head/foot}\insertshorttitle
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1ex,center]{section in head/foot}%
+            \usebeamerfont{section in head/foot}\insertsectionhead
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.2\paperwidth,ht=2.5ex,dp=1ex,right]{date in head/foot}%
+            \usebeamerfont{date in head/foot}\insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+        \end{beamercolorbox}%
+    }
+    \vskip0pt
+}
+
+% --- 标题页 ---
+\setbeamertemplate{title page}{
+    \vfill
+    \begin{centering}
+        \vspace{2em}
+        {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}
+        \vspace{1em}
+        {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}
+        \vspace{2em}
+        \begin{tikzpicture}[>=stealth]
+            \node[draw,fill=408blue!10,rounded corners,inner sep=8pt] {
+                \begin{minipage}{0.7\textwidth}
+                    \centering
+                    {\small
+                    \textbf{本节要点}\\
+                    路由算法概述 \quad 距离向量算法（RIP）\quad 链路状态算法（OSPF）\quad BGP边界网关协议
+                    }
+                \end{minipage}
+            };
+        \end{tikzpicture}
+        \vspace{1em}
+        \par
+        {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}
+    \end{centering}
+    \vfill
+}
+
+% --- 节标题页 ---
+\setbeamertemplate{section page}{
+    \begin{centering}
+        \vspace{3em}
+        {\usebeamerfont{section name}\usebeamercolor[fg]{section name}\sectionname~\insertsectionnumber\par}
+        \vspace{1em}
+        {\usebeamerfont{section title}\usebeamercolor[fg]{section title}\insertsection\par}
+    \end{centering}
+}
+
+\AtBeginSection{
+    \frame{\sectionpage}
+}
+
+% --- 目录页 ---
+\setbeamertemplate{section in toc}[sections numbered]
 
 % --- 超链接 ---
 \usepackage{hyperref}

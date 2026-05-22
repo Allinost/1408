@@ -6,6 +6,13 @@
 \date{}
 \begin{document}
 
+\frame{\titlepage}
+
+\section{路由算法概述}
+\begin{frame}{目录}
+    \tableofcontents
+\end{frame}
+
 \begin{frame}{本节目标}
     \begin{enumerate}
         \item 理解静态路由与动态路由的区别
@@ -34,7 +41,9 @@
             \item 分为距离向量和链路状态
         \end{itemize}
     \end{columns}
-    \vspace{0.5em}
+\end{frame}
+
+\begin{frame}{路由算法分类}
     \begin{center}
         \begin{tikzpicture}[>=stealth]
             \node[draw,fill=blue!10] at (-1.5,0) {路由算法};
@@ -50,6 +59,7 @@
     \end{center}
 \end{frame}
 
+\section{距离向量算法（RIP）}
 \begin{frame}{距离向量算法 --- RIP协议}
     \begin{block}{核心思想}
         每个路由器维护一张路由表，记录到所有目的网络的距离（跳数）和下一跳。
@@ -115,7 +125,7 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}{RIP --- 慢收敛与计数到无穷}
+\begin{frame}{RIP --- 慢收敛与计数到无穷（1/2）}
     \begin{block}{问题}
         当网络拓扑发生变化（如链路断开），RIP可能需要很长时间才能收敛。
     \end{block}
@@ -137,12 +147,23 @@
         \item C告诉B：我到A的距离是3 $\Rightarrow$ B更新为4
         \item 恶性循环，计数到16才停止（16=不可达）
     \end{itemize}
-    \vspace{0.3em}
+\end{frame}
+
+\begin{frame}{RIP --- 慢收敛与计数到无穷（2/2）}
     \begin{exampleblock}{解决方法}
         水平分割（Split Horizon）：从某接口学到的路由，不向该接口通告。
     \end{exampleblock}
+    \vspace{0.5em}
+    \begin{block}{其他优化措施}
+        \begin{itemize}
+            \item \textbf{毒性逆转}：将不可达路由的跳数设为16直接通告给邻居
+            \item \textbf{触发更新}：拓扑变化时立即发送更新，不等30秒周期
+            \item \textbf{抑制计时器}：收到某网络不可达信息后，进入抑制状态
+        \end{itemize}
+    \end{block}
 \end{frame}
 
+\section{链路状态算法（OSPF）}
 \begin{frame}{链路状态算法 --- OSPF协议}
     \begin{block}{核心思想}
         每个路由器收集全网的链路状态信息（LS），形成一致的网络拓扑图，独立运行Dijkstra算法计算最短路径树。
@@ -220,6 +241,7 @@
     \end{itemize}
 \end{frame}
 
+\section{路由协议对比}
 \begin{frame}{距离向量 vs 链路状态}
     \begin{table}
         \centering
