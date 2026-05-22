@@ -45,23 +45,16 @@ jobs:
         id: target
         shell: bash
         run: |
+          ALL_MODULES='["模块0_导学","模块1_数据结构","模块2_计算机组成原理","模块3_操作系统","模块4_计算机网络","模块5_四科串联总结"]'
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             if [[ -n "${{ inputs.modules }}" ]]; then
               IFS=',' read -ra PARTS <<< "${{ inputs.modules }}"
               echo "modules=$(printf '%s\n' "${PARTS[@]}" | jq -R . | jq -sc .)" >> $GITHUB_OUTPUT
             else
-              echo 'modules<<EOF' >> $GITHUB_OUTPUT
-              echo '["模块0_导学","模块1_数据结构","模块2_计算机组成原理","模块3_操作系统","模块4_计算机网络","模块5_四科串联总结"]' >> $GITHUB_OUTPUT
-              echo 'EOF' >> $GITHUB_OUTPUT
+              echo "modules=$ALL_MODULES" >> $GITHUB_OUTPUT
             fi
-          elif [[ "${{ steps.filter.outputs.beamer_theme }}" == "true" ]]; then
-            echo 'modules<<EOF' >> $GITHUB_OUTPUT
-            echo '["模块0_导学","模块1_数据结构","模块2_计算机组成原理","模块3_操作系统","模块4_计算机网络","模块5_四科串联总结"]' >> $GITHUB_OUTPUT
-            echo 'EOF' >> $GITHUB_OUTPUT
           else
-            echo 'modules<<EOF' >> $GITHUB_OUTPUT
-            echo '${{ steps.filter.outputs.changes }}' >> $GITHUB_OUTPUT
-            echo 'EOF' >> $GITHUB_OUTPUT
+            echo "modules=$ALL_MODULES" >> $GITHUB_OUTPUT
           fi
 
       - name: Cache APT packages
