@@ -1,13 +1,5 @@
 name: Compile LaTeX Courseware
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "模块*/**/*.tex"
-      - "release*.tex"
-      - "beamer_theme_408.sty"
-      - ".github/workflows/*.yml"
   workflow_dispatch:
     inputs:
       modules:
